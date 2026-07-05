@@ -66,11 +66,19 @@ export default function PremiumPage() {
           </p>
         </div>
 
+        {/* KYC Pending notice */}
+        {!isPremium && (
+          <div className="rounded-xl border border-[#FFB300]/30 bg-[#FFB300]/10 p-4 text-center">
+            <p className="text-sm font-semibold text-[#FFB300]">⏳ Menunggu verifikasi KYC Mayar</p>
+            <p className="mt-1 text-xs text-on-surface-variant/70">Untuk sementara, kamu bisa coba Premium gratis dengan klik tombol Langganan di bawah</p>
+          </div>
+        )}
+
         {/* Active premium banner */}
         {isPremium && (
           <div className="rounded-xl border border-[#00D68F]/30 bg-[#00D68F]/10 p-4 text-center">
             <ShieldCheck className="mx-auto mb-2 h-8 w-8 text-[#00D68F]" />
-            <p className="font-semibold text-[#00D68F]">Anda sudah Premium!</p>
+            <p className="font-semibold text-[#00D68F]">Anda sudah Premium! 🎉</p>
             <p className="mt-1 text-sm text-on-surface-variant">Nikmati semua fitur tanpa batas</p>
           </div>
         )}
