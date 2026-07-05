@@ -1,29 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth-client";
 
 export function useAuthGuard() {
   const router = useRouter();
-  const isAuthenticated = useAuth((s) => s.isAuthenticated);
-  const [ready, setReady] = useState(false);
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    if (useAuth.persist.hasHydrated()) {
-      setReady(true);
-    } else {
-      const unsub = useAuth.persist.onFinishHydration(() => setReady(true));
-      return unsub;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    if (!isAuthenticated) {
+    if (!isLoading && !user) {
       router.replace("/");
     }
-  }, [isAuthenticated, ready, router]);
+  }, [isLoading, user, router]);
 
-  return isAuthenticated && ready;
+  return !isLoading && !!user;
 }

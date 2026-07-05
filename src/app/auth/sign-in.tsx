@@ -1,64 +1,45 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { LogIn, Eye, EyeOff, ShieldCheck } from "lucide-react";
-import { useAuth } from "@/lib/auth";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { LogIn, Eye, EyeOff, ShieldCheck } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
 
-export default function AuthPage() {
-  const router = useRouter();
-  const login = useAuth((s) => s.login);
-  const user = useAuth((s) => s.user);
-  const isAuthenticated = useAuth((s) => s.isAuthenticated);
-  const [ready, setReady] = useState(false);
+export function SignInView() {
+  const router = useRouter()
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPw, setShowPw] = useState(false)
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (useAuth.persist.hasHydrated()) {
-      setReady(true);
-    } else {
-      const unsub = useAuth.persist.onFinishHydration(() => setReady(true));
-      return unsub;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    if (isAuthenticated) {
-      if (user?.username === "codebytrisno") {
-        router.replace("/admin");
-      } else {
-        router.replace("/");
-      }
-    }
-  }, [isAuthenticated, ready, router, user]);
-
-  if (!ready) return null;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
 
     if (!username.trim() || !password.trim()) {
-      setError("Isi username dan password");
-      return;
+      setError("Isi username dan password")
+      return
     }
 
-    const ok = login(username, password);
-    if (ok) {
-      if (username === "codebytrisno") {
-        router.replace("/admin");
-      } else {
-        router.replace("/");
-      }
-    } else {
-      setError("Username atau password salah");
+    setLoading(true)
+
+    const { error: signInError } = await authClient.signIn.username({
+      username,
+      password,
+    })
+
+    setLoading(false)
+
+    if (signInError) {
+      setError("Username atau password salah")
+      return
     }
-  };
+
+    const { data: session } = await authClient.getSession()
+    const isAdmin = (session?.user as any)?.role === "admin"
+    router.replace(isAdmin ? "/admin" : "/")
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -109,20 +90,21 @@ export default function AuthPage() {
 
           <button
             type="submit"
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-container text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
+            disabled={loading}
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary-container text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
           >
             <LogIn className="h-4 w-4" />
-            Masuk
+            {loading ? "Memproses..." : "Masuk"}
           </button>
         </form>
 
         <button
           onClick={() => router.back()}
-          className="mx-auto mt-6 block text-sm text-on-surface-variant hover:text-on-surface"
+          className="mx-auto mt-4 block text-sm text-on-surface-variant hover:text-on-surface"
         >
           Kembali
         </button>
       </div>
     </div>
-  );
+  )
 }

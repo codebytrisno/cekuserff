@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ToastWrapper from "@/components/ToastWrapper";
+import { Providers } from "@/components/Providers";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,7 +36,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.svg?v=3" />
       </head>
       <body className="flex min-h-full flex-col bg-background text-on-surface font-sans">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <ToastWrapper />
       </body>
     </html>

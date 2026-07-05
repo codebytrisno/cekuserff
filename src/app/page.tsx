@@ -7,7 +7,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
 import { useStore } from "@/lib/store";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth-client";
 
 const RANKS = [
   "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Heroic", "Grandmaster",
@@ -37,15 +37,6 @@ function isOnline(uid: string): boolean {
 
 function LandingPage() {
   const router = useRouter();
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user?.username === "codebytrisno") {
-      router.replace("/admin");
-    }
-  }, [user, router]);
-
-  if (user?.username === "codebytrisno") return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,7 +54,7 @@ function LandingPage() {
             <span className="hidden sm:inline">Premium</span>
           </button>
           <button
-            onClick={() => router.push("/auth")}
+            onClick={() => router.push("/auth/sign-in")}
             className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
           >
             <LogIn className="h-3.5 w-3.5" />
@@ -96,7 +87,7 @@ function LandingPage() {
                 Mulai Sekarang
               </button>
               <button
-                onClick={() => router.push("/auth")}
+                onClick={() => router.push("/auth/sign-in")}
                 className="flex h-12 items-center gap-2 rounded-xl border border-outline-variant bg-surface-container px-6 text-base font-semibold text-on-surface transition-all hover:bg-surface-container-high active:scale-[0.98]"
               >
                 Pelajari Lebih Lanjut
@@ -142,7 +133,7 @@ function LandingPage() {
               <h2 className="text-xl font-bold text-on-surface">Siap tracking performa player?</h2>
               <p className="mt-2 text-sm text-on-surface-variant/80">Masuk sekarang dan mulai pantau statistik player Free Fire</p>
               <button
-                onClick={() => router.push("/auth")}
+                onClick={() => router.push("/auth/sign-in")}
                 className="mx-auto mt-6 flex h-12 items-center gap-2 rounded-xl bg-primary-container px-6 text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
               >
                 <LogIn className="h-4 w-4" />
@@ -447,19 +438,9 @@ function AppHome() {
 }
 
 export default function HomePage() {
-  const isAuthenticated = useAuth((s) => s.isAuthenticated);
-  const [ready, setReady] = useState(false);
+  const { isAuthenticated, isLoading, user } = useAuth();
 
-  useEffect(() => {
-    if (useAuth.persist.hasHydrated()) {
-      setReady(true);
-    } else {
-      const unsub = useAuth.persist.onFinishHydration(() => setReady(true));
-      return unsub;
-    }
-  }, []);
-
-  if (!ready) {
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-container border-t-transparent" />

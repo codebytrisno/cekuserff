@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth-client";
 
 const ALL_TABS = [
   { href: "/", label: "Beranda", icon: "home" },
@@ -15,7 +15,7 @@ const ALL_TABS = [
 export function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const isAdmin = user?.username === "codebytrisno";
+  const isAdmin = user?.role === "admin";
   const tabs = isAdmin ? ALL_TABS.filter((t) => t.href === "/admin") : ALL_TABS.filter((t) => t.href !== "/admin");
 
   return (

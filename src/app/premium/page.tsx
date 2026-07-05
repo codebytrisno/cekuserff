@@ -3,7 +3,7 @@
 import { Crown, Zap, Check, Star, Sparkles, ShieldCheck } from "lucide-react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@/lib/auth-client";
 import { getPlans, formatPrice } from "@/lib/mayar";
 import { usePremium } from "@/lib/premium";
 

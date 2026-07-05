@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Plus, Trash2, ShieldCheck, Crown, UserCog } from "lucide-react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
-import { useAuth } from "@/lib/auth";
-import { useAdminStore, type ManagedUser } from "@/lib/adminStore";
+import { useAuth } from "@/lib/auth-client";
+
+type ManagedUser = {
+  id: string;
+  username: string | null;
+  label: string;
+  plan: string;
+  createdAt: number;
+};
 
 const PLANS = [
   { value: "weekly" as const, label: "Premium Mingguan (7 hari)", price: "Rp 5.000" },
@@ -15,17 +22,28 @@ const PLANS = [
 
 export default function AdminPage() {
   const { user } = useAuth();
-  const { users, addUser, removeUser } = useAdminStore();
-
+  const [users, setUsers] = useState<ManagedUser[]>([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [label, setLabel] = useState("");
   const [plan, setPlan] = useState<"weekly" | "monthly" | "lifetime">("monthly");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const isAdmin = user?.username === "codebytrisno";
+  const isAdmin = user?.role === "admin";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fetchUsers = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/users");
+      if (res.ok) setUsers(await res.json());
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    if (isAdmin) fetchUsers();
+  }, [isAdmin, fetchUsers]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -34,23 +52,36 @@ export default function AdminPage() {
       return;
     }
 
-    const newUser: ManagedUser = {
-      username: username.trim().toLowerCase(),
-      password,
-      label: label.trim() || username.trim(),
-      plan,
-      createdAt: Date.now(),
-    };
+    setLoading(true);
 
-    const ok = addUser(newUser);
-    if (!ok) {
-      setError("Username sudah ada");
+    const formData = new FormData();
+    formData.set("username", username.trim().toLowerCase());
+    formData.set("password", password);
+    formData.set("label", label.trim() || username.trim());
+    formData.set("plan", plan);
+
+    const res = await fetch("/api/admin/create-user", {
+      method: "POST",
+      body: formData,
+    });
+
+    setLoading(false);
+
+    const data = await res.json();
+    if (data.error) {
+      setError(data.error);
       return;
     }
 
     setUsername("");
     setPassword("");
     setLabel("");
+    fetchUsers();
+  };
+
+  const handleDelete = async (id: string) => {
+    const res = await fetch(`/api/admin/users?id=${id}`, { method: "DELETE" });
+    if (res.ok) fetchUsers();
   };
 
   if (!isAdmin) {
@@ -134,10 +165,11 @@ export default function AdminPage() {
           {error && <p className="mt-2 text-xs text-red-400">{error}</p>}
           <button
             type="submit"
-            className="mt-4 flex h-10 items-center gap-2 rounded-lg bg-primary-container px-5 text-sm font-semibold text-on-primary-container transition-all hover:opacity-90 active:scale-[0.98]"
+            disabled={loading}
+            className="mt-4 flex h-10 items-center gap-2 rounded-lg bg-primary-container px-5 text-sm font-semibold text-on-primary-container transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
           >
             <Crown className="h-4 w-4" />
-            Tambah User
+            {loading ? "Menyimpan..." : "Tambah User"}
           </button>
         </form>
 
@@ -164,7 +196,7 @@ export default function AdminPage() {
                 </thead>
                 <tbody>
                   {users.map((u) => (
-                    <tr key={u.username} className="border-b border-outline-variant/10 text-on-surface">
+                    <tr key={u.id} className="border-b border-outline-variant/10 text-on-surface">
                       <td className="py-3 font-medium">{u.username}</td>
                       <td className="py-3 text-on-surface-variant">{u.label}</td>
                       <td className="py-3">
@@ -181,7 +213,7 @@ export default function AdminPage() {
                       </td>
                       <td className="py-3">
                         <button
-                          onClick={() => removeUser(u.username)}
+                          onClick={() => handleDelete(u.id)}
                           className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant/50 transition-colors hover:bg-red-500/20 hover:text-red-400"
                         >
                           <Trash2 className="h-4 w-4" />

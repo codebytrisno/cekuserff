@@ -6,12 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
+    "@better-auth/prisma-adapter": "^1.6.23",
+    "@prisma/client": "^6.19.3",
+    "better-auth": "^1.6.23",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.23.0",
     "next": "16.2.10",
+    "prisma": "^6.19.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zustand": "^5.0.14"
@@ -24,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5"
   }
 }
