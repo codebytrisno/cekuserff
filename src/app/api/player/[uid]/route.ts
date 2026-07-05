@@ -95,26 +95,26 @@ async function fetchHL(uid: string): Promise<HLResponse["result"] | null> {
   return null;
 }
 
-// ── Free Fire Community API (fallback) ─────────────────────
-async function fetchFF(uid: string, path: string, apiKeys: string[]): Promise<any> {
-  for (const key of apiKeys) {
-    for (const region of REGIONS) {
-      const hdr = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}`;
-      try {
-        const r1 = await fetch(hdr, { headers: { "User-Agent": UA, Accept: "application/json", "x-api-key": key } });
-        if (r1.ok) return r1.json();
-        if (r1.status === 500 || r1.status === 503) return null;
-        if (r1.status !== 403) continue;
-      } catch {}
-      try {
-        const qry = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}&key=${key}`;
-        const r2 = await fetch(qry, { headers: { "User-Agent": UA, Accept: "application/json" } });
-        if (r2.ok) return r2.json();
-        if (r2.status === 500 || r2.status === 503) return null;
-      } catch {}
-    }
+// ── Free Fire Community API ────────────────────────────────
+function isQuotaExceeded(res: Response): boolean {
+  return res.status === 429;
+}
+
+async function tryKey(uid: string, path: string, region: string, key: string): Promise<{ ok: boolean; quotaExceeded: boolean; data?: any }> {
+  // header auth
+  const hdr = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}`;
+  const r1 = await fetch(hdr, { headers: { "User-Agent": UA, Accept: "application/json", "x-api-key": key } }).catch(() => null);
+  if (r1?.ok) return { ok: true, quotaExceeded: false, data: await r1.json() };
+  if (r1 && isQuotaExceeded(r1)) return { ok: false, quotaExceeded: true };
+
+  // query param fallback (kalo header auth gak didukung)
+  if (r1?.status === 403) {
+    const qry = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}&key=${key}`;
+    const r2 = await fetch(qry, { headers: { "User-Agent": UA, Accept: "application/json" } }).catch(() => null);
+    if (r2?.ok) return { ok: true, quotaExceeded: false, data: await r2.json() };
+    if (r2 && isQuotaExceeded(r2)) return { ok: false, quotaExceeded: true };
   }
-  return null;
+  return { ok: false, quotaExceeded: false };
 }
 
 // ── GET ─────────────────────────────────────────────────────
@@ -128,63 +128,73 @@ export async function GET(
 
   const apiKeys = getApiKeys();
 
-  // 1. Free Fire Community API (full data: info + ban + stats)
+  // 1. Free Fire Community API dengan key rotation
   if (apiKeys.length > 0) {
-    const body = await fetchFF(uid, "info", apiKeys);
-    if (body?.basicInfo) {
-      const info = body.basicInfo;
-      const clan = body.clanBasicInfo || {};
-      const socialHL = body.socialInfo || {};
-      const pet = body.petInfo || {};
-      const profile = body.profileInfo || {};
-      const credit = body.creditScoreInfo || {};
-      const diamond = body.diamondCostRes || {};
-      const captain = body.captainBasicInfo || {};
+    let infoData: any = null;
+    let usedKey = "";
+
+    for (const key of apiKeys) {
+      for (const region of REGIONS) {
+        const r = await tryKey(uid, "info", region, key);
+        if (r.ok) { infoData = r.data; usedKey = key; break; }
+        if (r.quotaExceeded) break;
+      }
+      if (infoData) break;
+    }
+
+    if (infoData?.basicInfo) {
+      const info = infoData.basicInfo;
+      const clan = infoData.clanBasicInfo || {};
+      const socialHL = infoData.socialInfo || {};
+      const pet = infoData.petInfo || {};
+      const profile = infoData.profileInfo || {};
+      const credit = infoData.creditScoreInfo || {};
+      const diamond = infoData.diamondCostRes || {};
+      const captain = infoData.captainBasicInfo || {};
       const points = info.rankingPoints || 0;
 
-      const [banResult, statsResult] = await Promise.all([
+      // ban + stats pake key yang sama (sudah terverifikasi work)
+      const [banResult, statsData] = await Promise.all([
         (async () => {
-          for (const key of apiKeys) {
-            for (const useHeader of [true, false]) {
-              try {
-                const url = useHeader ? `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}` : `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}&key=${key}`;
-                const h: Record<string, string> = { "User-Agent": UA };
-                if (useHeader) h["x-api-key"] = key;
-                const res = await fetch(url, { headers: h });
-                if (res.ok) { const d = await res.json(); return { isBanned: d?.data?.is_banned === 1, banPeriod: d?.data?.period || 0 }; }
-              } catch {}
-            }
+          for (const useHeader of [true, false]) {
+            const url = useHeader ? `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}` : `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}&key=${usedKey}`;
+            const h: Record<string, string> = { "User-Agent": UA };
+            if (useHeader) h["x-api-key"] = usedKey;
+            const res = await fetch(url, { headers: h }).catch(() => null);
+            if (res?.ok) { const d = await res.json(); return { isBanned: d?.data?.is_banned === 1, banPeriod: d?.data?.period || 0 }; }
           }
           return { isBanned: false, banPeriod: 0 };
         })(),
         (async () => {
-          try {
-            const raw = await fetchFF(uid, "stats", apiKeys);
-            const d = raw?.data;
-            if (!d) return {};
-            let brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0;
-            for (const mode of [d.soloStats, d.duoStats, d.quadStats, d.solostats, d.duostats, d.quadstats]) {
-              if (!mode) continue;
-              brMatches += mode.gamesPlayed || mode.gamesplayed || 0;
-              brWins += mode.wins || 0;
-              brKills += mode.kills || 0;
-              brDeaths += mode.detailedStats?.deaths || mode.detailedstats?.deaths || 0;
-              brHeadshots += mode.detailedStats?.headshots || mode.detailedstats?.headshots || 0;
-              brHeadshotKills += mode.detailedStats?.headshotKills || mode.detailedstats?.headshotkills || 0;
-              brDamage += mode.detailedStats?.damage || mode.detailedstats?.damage || 0;
-              brRevives += mode.detailedStats?.revives || mode.detailedstats?.revives || 0;
-              brTopN += mode.detailedStats?.topNTimes || mode.detailedstats?.topNTimes || 0;
-              const hk = mode.detailedStats?.highestKills || mode.detailedstats?.highestkills || 0;
-              if (hk > brHighestKills) brHighestKills = hk;
+          for (const region of REGIONS) {
+            const r = await tryKey(uid, "stats", region, usedKey);
+            if (r.ok) {
+              const d = r.data?.data;
+              if (!d) break;
+              let brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0;
+              for (const mode of [d.soloStats, d.duoStats, d.quadStats, d.solostats, d.duostats, d.quadstats]) {
+                if (!mode) continue;
+                brMatches += mode.gamesPlayed || mode.gamesplayed || 0; brWins += mode.wins || 0; brKills += mode.kills || 0;
+                brDeaths += mode.detailedStats?.deaths || mode.detailedstats?.deaths || 0;
+                brHeadshots += mode.detailedStats?.headshots || mode.detailedstats?.headshots || 0;
+                brHeadshotKills += mode.detailedStats?.headshotKills || mode.detailedstats?.headshotkills || 0;
+                brDamage += mode.detailedStats?.damage || mode.detailedstats?.damage || 0;
+                brRevives += mode.detailedStats?.revives || mode.detailedstats?.revives || 0;
+                brTopN += mode.detailedStats?.topNTimes || mode.detailedstats?.topNTimes || 0;
+                const hk = mode.detailedStats?.highestKills || mode.detailedstats?.highestkills || 0;
+                if (hk > brHighestKills) brHighestKills = hk;
+              }
+              if (d.csStats || d.csstats) { const cs = d.csStats || d.csstats; csMatches = cs.gamesPlayed || cs.gamesplayed || 0; csWins = cs.wins || 0; csKills = cs.kills || 0; }
+              return { brKills, brWins, brMatches, brDeaths, brHeadshots, brHeadshotKills, brDamage, brHighestKills, brRevives, brTopN, csKills, csWins, csMatches };
             }
-            if (d.csStats || d.csstats) { const cs = d.csStats || d.csstats; csMatches = cs.gamesPlayed || cs.gamesplayed || 0; csWins = cs.wins || 0; csKills = cs.kills || 0; }
-            return { brKills, brWins, brMatches, brDeaths, brHeadshots, brHeadshotKills, brDamage, brHighestKills, brRevives, brTopN, csKills, csWins, csMatches };
-          } catch { return {}; }
+            if (r.quotaExceeded) break;
+          }
+          return {};
         })(),
       ]);
 
       const { isBanned, banPeriod } = banResult;
-      const { brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0 } = statsResult;
+      const { brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0 } = statsData;
 
       const player = {
         uid,
