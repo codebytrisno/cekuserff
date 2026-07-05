@@ -26,6 +26,43 @@ export async function GET() {
   );
 }
 
+export async function PATCH(request: Request) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session?.user || (session.user as any)?.role !== "admin") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id, username, label, password } = await request.json();
+
+  if (!id) {
+    return NextResponse.json({ error: "Missing id" }, { status: 400 });
+  }
+
+  const data: Record<string, any> = {};
+  if (username !== undefined) data.username = username;
+  if (label !== undefined) data.label = label;
+
+  if (Object.keys(data).length > 0) {
+    await auth.api.adminUpdateUser({
+      body: {
+        userId: id,
+        data,
+      },
+    });
+  }
+
+  if (password) {
+    await auth.api.setUserPassword({
+      body: {
+        userId: id,
+        newPassword: password,
+      },
+    });
+  }
+
+  return NextResponse.json({ success: true });
+}
+
 export async function DELETE(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user || (session.user as any)?.role !== "admin") {

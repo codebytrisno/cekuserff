@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Trash2, ShieldCheck, Crown, UserCog } from "lucide-react";
+import { Plus, Trash2, ShieldCheck, Crown, UserCog, Pen } from "lucide-react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/lib/auth-client";
@@ -29,6 +29,13 @@ export default function AdminPage() {
   const [plan, setPlan] = useState<"weekly" | "monthly" | "lifetime">("monthly");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
+  const [editUsername, setEditUsername] = useState("");
+  const [editLabel, setEditLabel] = useState("");
+  const [editPassword, setEditPassword] = useState("");
+  const [editError, setEditError] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
 
   const isAdmin = user?.role === "admin";
 
@@ -76,6 +83,49 @@ export default function AdminPage() {
     setUsername("");
     setPassword("");
     setLabel("");
+    fetchUsers();
+  };
+
+  const startEdit = (u: ManagedUser) => {
+    setEditingUser(u);
+    setEditUsername(u.username ?? "");
+    setEditLabel(u.label);
+    setEditPassword("");
+    setEditError("");
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingUser) return;
+
+    if (!editUsername.trim()) {
+      setEditError("Username tidak boleh kosong");
+      return;
+    }
+
+    setEditLoading(true);
+    setEditError("");
+
+    const res = await fetch("/api/admin/users", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: editingUser.id,
+        username: editUsername.trim().toLowerCase(),
+        label: editLabel.trim() || editUsername.trim(),
+        password: editPassword || undefined,
+      }),
+    });
+
+    setEditLoading(false);
+
+    const data = await res.json();
+    if (data.error) {
+      setEditError(data.error);
+      return;
+    }
+
+    setEditingUser(null);
     fetchUsers();
   };
 
@@ -212,12 +262,20 @@ export default function AdminPage() {
                         {new Date(u.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
                       </td>
                       <td className="py-3">
-                        <button
-                          onClick={() => handleDelete(u.id)}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant/50 transition-colors hover:bg-red-500/20 hover:text-red-400"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => startEdit(u)}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant/50 transition-colors hover:bg-primary-container/20 hover:text-primary-container"
+                          >
+                            <Pen className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(u.id)}
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-on-surface-variant/50 transition-colors hover:bg-red-500/20 hover:text-red-400"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -227,6 +285,64 @@ export default function AdminPage() {
           )}
         </section>
       </main>
+
+      {/* Edit Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 px-4">
+          <div className="w-full max-w-sm rounded-xl border border-outline-variant bg-surface-container-high shadow-xl">
+            <form onSubmit={handleEdit} className="p-5">
+              <h3 className="mb-4 text-sm font-semibold text-on-surface">Edit User</h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-on-surface-variant">Username</label>
+                  <input
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-outline-variant/50 bg-surface px-3 text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-on-surface-variant">Label</label>
+                  <input
+                    value={editLabel}
+                    onChange={(e) => setEditLabel(e.target.value)}
+                    className="h-10 w-full rounded-lg border border-outline-variant/50 bg-surface px-3 text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-on-surface-variant">
+                    Password <span className="text-on-surface-variant/50">(biarkan kosong jika tidak diubah)</span>
+                  </label>
+                  <input
+                    type="password"
+                    value={editPassword}
+                    onChange={(e) => setEditPassword(e.target.value)}
+                    placeholder="Kosongkan jika tidak diubah"
+                    className="h-10 w-full rounded-lg border border-outline-variant/50 bg-surface px-3 text-sm text-on-surface outline-none transition-colors focus:border-primary-container"
+                  />
+                </div>
+              </div>
+              {editError && <p className="mt-2 text-xs text-red-400">{editError}</p>}
+              <div className="mt-4 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setEditingUser(null)}
+                  className="flex h-10 flex-1 items-center justify-center rounded-lg border border-outline-variant/50 text-sm font-medium text-on-surface transition-colors hover:bg-surface-container-higher"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLoading}
+                  className="flex h-10 flex-1 items-center justify-center rounded-lg bg-primary-container text-sm font-semibold text-on-primary-container transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+                >
+                  {editLoading ? "Menyimpan..." : "Simpan"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <BottomNav />
     </div>
