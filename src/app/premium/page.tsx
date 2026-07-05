@@ -1,45 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Crown, Zap, Check, Star, Sparkles, ShieldCheck } from "lucide-react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/lib/auth";
-import { getPlans, formatPrice, createPaymentLink } from "@/lib/mayar";
+import { getPlans, formatPrice } from "@/lib/mayar";
 import { usePremium } from "@/lib/premium";
 
 const ICONS = [Crown, Zap, Star];
 
 export default function PremiumPage() {
-  const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
-  const { tier, activate } = usePremium();
-  const [loading, setLoading] = useState<string | null>(null);
+  const { user } = useAuth();
+  const { tier } = usePremium();
 
   const plans = getPlans();
 
   const isPremium = tier === "lifetime" || (tier !== "none" && usePremium.getState().isPremium());
 
-  const handleBuy = async (slug: string) => {
-    if (!isAuthenticated) {
-      router.push("/auth");
-      return;
-    }
-    setLoading(slug);
-
+  const handleBuy = (slug: string) => {
     const plan = plans.find((p) => p.slug === slug);
     if (!plan) return;
 
-    const result = await createPaymentLink(plan, user!.username);
-    if (result.ok && result.url) {
-      window.open(result.url, "_blank");
-    } else {
-      // fallback langsung activate tanpa Mayar (development mode)
-      activate({ tier: slug === "premium-lifetime" ? "lifetime" : slug === "premium-weekly" ? "weekly" : "monthly", duration: plan.days, uid: user!.username });
-      router.push("/");
-    }
-    setLoading(null);
+    const WA_NUMBER = "6285124926508";
+    const text = encodeURIComponent(
+      `Halo kak, saya ingin berlangganan paket ${plan.name}\n\n` +
+      `Paket: ${plan.name}\n` +
+      `Harga: ${formatPrice(plan.amount)}${plan.days > 0 ? ` / ${plan.days} hari` : ""}\n` +
+      `Username: ${user?.username ?? "Guest"}\n\n` +
+      `Mohon info pembayarannya kak. Terima kasih 🙏`
+    );
+    window.open(`https://wa.me/${WA_NUMBER}?text=${text}`, "_blank");
   };
 
   const features = [
@@ -70,7 +60,7 @@ export default function PremiumPage() {
         {!isPremium && (
           <div className="rounded-xl border border-[#FFB300]/30 bg-[#FFB300]/10 p-4 text-center">
             <p className="text-sm font-semibold text-[#FFB300]">⏳ Menunggu verifikasi KYC Mayar</p>
-            <p className="mt-1 text-xs text-on-surface-variant/70">Untuk sementara, kamu bisa coba Premium gratis dengan klik tombol Langganan di bawah</p>
+            <p className="mt-1 text-xs text-on-surface-variant/70">Klik Langganan lalu hubungi admin via WhatsApp untuk pembayaran</p>
           </div>
         )}
 
@@ -131,16 +121,14 @@ export default function PremiumPage() {
                 </div>
                 <button
                   onClick={() => handleBuy(plan.slug)}
-                  disabled={loading !== null || isPremium}
+                  disabled={isPremium}
                   className={`flex h-11 w-full items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-50 ${
                     isPopular
                       ? "bg-primary-container text-on-primary-container shadow-lg shadow-primary-container/20"
                       : "border border-outline-variant text-on-surface hover:bg-surface-container-high"
                   }`}
                 >
-                  {loading === plan.slug ? (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  ) : isPremium ? (
+                  {isPremium ? (
                     "Sudah aktif"
                   ) : (
                     <>
@@ -156,7 +144,7 @@ export default function PremiumPage() {
 
         {/* Dev note */}
         <p className="text-center text-xs text-on-surface-variant/50">
-          Pembayaran diproses oleh Mayar. QRIS, GoPay, OVO, Dana, Bank Transfer.
+          Hubungi admin via WhatsApp untuk pembayaran. QRIS, GoPay, OVO, Dana, Bank Transfer.
         </p>
       </main>
 

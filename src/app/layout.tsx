@@ -13,9 +13,9 @@ export const metadata: Metadata = {
   description: "Cek statistik player Free Fire — cukup paste UID",
   icons: {
     icon: [
-      { url: "/favicon.svg?v=2", type: "image/svg+xml" },
+      { url: "/favicon.svg?v=3", type: "image/svg+xml" },
     ],
-    apple: "/favicon.svg?v=2",
+    apple: "/favicon.svg?v=3",
   },
 };
 
@@ -31,8 +31,8 @@ export default function RootLayout({
     >
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-        <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3" />
+        <link rel="apple-touch-icon" href="/favicon.svg?v=3" />
       </head>
       <body className="flex min-h-full flex-col bg-background text-on-surface font-sans">
         {children}

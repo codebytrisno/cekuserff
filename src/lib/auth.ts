@@ -3,19 +3,14 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { AuthStore, AuthUser } from "@/types";
+import { useAdminStore, activateManagedUser } from "./adminStore";
 
 const ACCOUNTS: Record<string, string> = {
-  trisno: "admin123",
-  dev: "dev123",
-  owner: "owner123",
-  kyy: "201307",
+  codebytrisno: "iCa.syG.1405",
 };
 
 const PROFILES: Record<string, AuthUser> = {
-  trisno: { username: "trisno", label: "Trisno" },
-  dev: { username: "dev", label: "Developer" },
-  owner: { username: "owner", label: "Owner" },
-  kyy: { username: "kyy", label: "Kyy" },
+  codebytrisno: { username: "codebytrisno", label: "Admin" },
 };
 
 export const useAuth = create<AuthStore>()(
@@ -30,6 +25,15 @@ export const useAuth = create<AuthStore>()(
           set({ user: PROFILES[key], isAuthenticated: true });
           return true;
         }
+
+        const managed = useAdminStore.getState().findByCredentials(key, password);
+        if (managed) {
+          const label = managed.label || managed.username;
+          set({ user: { username: managed.username, label }, isAuthenticated: true });
+          activateManagedUser(managed);
+          return true;
+        }
+
         return false;
       },
 

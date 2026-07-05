@@ -1,11 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF6B35"/>
-      <stop offset="100%" stop-color="#FF3366"/>
+    <linearGradient id="fg" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF3366"/>
+      <stop offset="100%" stop-color="#FF6B35"/>
     </linearGradient>
   </defs>
-  <rect width="100" height="100" rx="18" fill="url(#bg)"/>
-  <rect x="4" y="4" width="92" height="92" rx="14" fill="#1D100C"/>
-  <text x="50" y="66" font-family="Inter,Arial,sans-serif" font-size="44" font-weight="900" fill="#FF6B35" text-anchor="middle">FF</text>
+  <path fill="url(#fg)" d="M50 8C50 8 20 34 20 58c0 16.6 13.4 30 30 30s30-13.4 30-30c0-24-30-50-30-50z"/>
+  <path fill="url(#fg)" d="M50 68c-5.5 0-10-4.5-10-10 0-6.2 6.2-12 10-14 3.8 2 10 7.8 10 14 0 5.5-4.5 10-10 10z" opacity=".5"/>
 </svg>

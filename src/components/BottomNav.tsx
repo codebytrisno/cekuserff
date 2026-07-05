@@ -2,16 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/auth";
 
-const tabs = [
+const ALL_TABS = [
   { href: "/", label: "Beranda", icon: "home" },
   { href: "/compare", label: "Bandingkan", icon: "compare_arrows" },
   { href: "/bookmarks", label: "Bookmark", icon: "bookmark" },
   { href: "/history", label: "Riwayat", icon: "history" },
+  { href: "/admin", label: "Admin", icon: "admin_panel_settings" },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const tabs = ALL_TABS.filter((t) => t.href !== "/admin" || user?.username === "codebytrisno");
 
   return (
     <nav className="fixed bottom-0 z-50 w-full rounded-t-xl border-t border-outline-variant bg-surface-container/90 px-2 pb-2 shadow-[0_-4px_12px_rgba(255,107,53,0.1)] backdrop-blur-xl">

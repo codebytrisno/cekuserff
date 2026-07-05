@@ -50,14 +50,6 @@ export function TopAppBar({
         </span>
       </div>
       <div className="flex items-center gap-2">
-        <a
-          href="https://sociabuzz.com/trisnosanjaya"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-2 py-1 text-[11px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
-        >
-          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-        </a>
         {showBookmark && (
           <button
             onClick={onBookmark}

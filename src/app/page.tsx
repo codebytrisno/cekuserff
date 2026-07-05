@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { LogIn, LogOut, Search, TrendingUp, Users, BarChart3, Bookmark, GitCompare, History, Zap, ShieldCheck, ChevronRight, Crown } from "lucide-react";
+import { LogIn, LogOut, Search, TrendingUp, Users, Bookmark, GitCompare, History, ShieldCheck, ChevronRight, Crown } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
@@ -46,15 +46,6 @@ function LandingPage() {
           <span className="font-headline-h2 text-[20px] font-bold text-on-surface">CEKUSERFF</span>
         </div>
         <div className="flex items-center gap-2">
-          <a
-            href="https://sociabuzz.com/trisnosanjaya"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
-          >
-            <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            <span className="hidden sm:inline">Donasi</span>
-          </a>
           <button
             onClick={() => router.push("/premium")}
             className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
@@ -78,7 +69,7 @@ function LandingPage() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,107,53,0.15),transparent_70%)]" />
           <div className="relative z-10 mx-auto max-w-container-max px-4 py-16 text-center sm:py-24">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-container/20">
-              <Zap className="h-8 w-8 text-primary-container" />
+              <span className="material-symbols-outlined text-primary-container text-[100px]">local_fire_department</span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-on-surface sm:text-4xl">
               Cek Statistik Player{' '}
@@ -89,10 +80,10 @@ function LandingPage() {
             </p>
             <div className="mt-8 flex items-center justify-center gap-3">
               <button
-                onClick={() => router.push("/auth")}
+                onClick={() => router.push("/premium")}
                 className="flex h-12 items-center gap-2 rounded-xl bg-primary-container px-6 text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
               >
-                <LogIn className="h-4 w-4" />
+                <Crown className="h-4 w-4" />
                 Mulai Sekarang
               </button>
               <button
@@ -120,7 +111,7 @@ function LandingPage() {
               { icon: GitCompare, label: "Bandingkan Player", desc: "Bandingkan statistik 2 player secara berdampingan untuk analisis 1v1.", color: "text-tertiary", bg: "bg-tertiary-container/20" },
               { icon: Bookmark, label: "Bookmark Player", desc: "Simpan player favorit dan pantau perkembangannya dari waktu ke waktu.", color: "text-primary-container", bg: "bg-primary-container/20" },
               { icon: History, label: "Riwayat Pencarian", desc: "Lihat kembali player yang pernah kamu cek dengan riwayat pencarian.", color: "text-secondary", bg: "bg-secondary-container/20" },
-              { icon: BarChart3, label: "Stat Lengkap", desc: "Data lengkap mulai dari rank, K/D, headshot, win rate, sampai damage.", color: "text-tertiary", bg: "bg-tertiary-container/20" },
+              { icon: ShieldCheck, label: "Akses Semua Fitur", desc: "Akses semua fitur tanpa iklan.", color: "text-tertiary", bg: "bg-tertiary-container/20" },
             ].map((f) => (
               <div key={f.label} className="rounded-xl border border-outline-variant/50 bg-surface-container/50 p-5 transition-all hover:border-primary-container/30 hover:bg-surface-container">
                 <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-lg ${f.bg}`}>
@@ -250,15 +241,6 @@ function AppHome() {
           <span className="font-headline-h2 text-[20px] font-bold text-on-surface">CEKUSERFF</span>
         </div>
         <div className="flex items-center gap-2">
-          <a
-            href="https://sociabuzz.com/trisnosanjaya"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
-          >
-            <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            <span className="hidden sm:inline">Donasi</span>
-          </a>
           <button
             onClick={() => router.push("/premium")}
             className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
