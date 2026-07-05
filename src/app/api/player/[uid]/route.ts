@@ -103,12 +103,14 @@ async function fetchFF(uid: string, path: string, apiKeys: string[]): Promise<an
       try {
         const r1 = await fetch(hdr, { headers: { "User-Agent": UA, Accept: "application/json", "x-api-key": key } });
         if (r1.ok) return r1.json();
+        if (r1.status === 500 || r1.status === 503) return null;
         if (r1.status !== 403) continue;
       } catch {}
       try {
         const qry = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}&key=${key}`;
         const r2 = await fetch(qry, { headers: { "User-Agent": UA, Accept: "application/json" } });
         if (r2.ok) return r2.json();
+        if (r2.status === 500 || r2.status === 503) return null;
       } catch {}
     }
   }
@@ -126,7 +128,99 @@ export async function GET(
 
   const apiKeys = getApiKeys();
 
-  // 1. HL Gaming API (cepat, limit 50/hari)
+  // 1. Free Fire Community API (full data: info + ban + stats)
+  if (apiKeys.length > 0) {
+    const body = await fetchFF(uid, "info", apiKeys);
+    if (body?.basicInfo) {
+      const info = body.basicInfo;
+      const clan = body.clanBasicInfo || {};
+      const socialHL = body.socialInfo || {};
+      const pet = body.petInfo || {};
+      const profile = body.profileInfo || {};
+      const credit = body.creditScoreInfo || {};
+      const diamond = body.diamondCostRes || {};
+      const captain = body.captainBasicInfo || {};
+      const points = info.rankingPoints || 0;
+
+      const [banResult, statsResult] = await Promise.all([
+        (async () => {
+          for (const key of apiKeys) {
+            for (const useHeader of [true, false]) {
+              try {
+                const url = useHeader ? `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}` : `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}&key=${key}`;
+                const h: Record<string, string> = { "User-Agent": UA };
+                if (useHeader) h["x-api-key"] = key;
+                const res = await fetch(url, { headers: h });
+                if (res.ok) { const d = await res.json(); return { isBanned: d?.data?.is_banned === 1, banPeriod: d?.data?.period || 0 }; }
+              } catch {}
+            }
+          }
+          return { isBanned: false, banPeriod: 0 };
+        })(),
+        (async () => {
+          try {
+            const raw = await fetchFF(uid, "stats", apiKeys);
+            const d = raw?.data;
+            if (!d) return {};
+            let brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0;
+            for (const mode of [d.soloStats, d.duoStats, d.quadStats, d.solostats, d.duostats, d.quadstats]) {
+              if (!mode) continue;
+              brMatches += mode.gamesPlayed || mode.gamesplayed || 0;
+              brWins += mode.wins || 0;
+              brKills += mode.kills || 0;
+              brDeaths += mode.detailedStats?.deaths || mode.detailedstats?.deaths || 0;
+              brHeadshots += mode.detailedStats?.headshots || mode.detailedstats?.headshots || 0;
+              brHeadshotKills += mode.detailedStats?.headshotKills || mode.detailedstats?.headshotkills || 0;
+              brDamage += mode.detailedStats?.damage || mode.detailedstats?.damage || 0;
+              brRevives += mode.detailedStats?.revives || mode.detailedstats?.revives || 0;
+              brTopN += mode.detailedStats?.topNTimes || mode.detailedstats?.topNTimes || 0;
+              const hk = mode.detailedStats?.highestKills || mode.detailedstats?.highestkills || 0;
+              if (hk > brHighestKills) brHighestKills = hk;
+            }
+            if (d.csStats || d.csstats) { const cs = d.csStats || d.csstats; csMatches = cs.gamesPlayed || cs.gamesplayed || 0; csWins = cs.wins || 0; csKills = cs.kills || 0; }
+            return { brKills, brWins, brMatches, brDeaths, brHeadshots, brHeadshotKills, brDamage, brHighestKills, brRevives, brTopN, csKills, csWins, csMatches };
+          } catch { return {}; }
+        })(),
+      ]);
+
+      const { isBanned, banPeriod } = banResult;
+      const { brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0, brHeadshots = 0, brHeadshotKills = 0, brDamage = 0, brHighestKills = 0, brRevives = 0, brTopN = 0, csKills = 0, csWins = 0, csMatches = 0 } = statsResult;
+
+      const player = {
+        uid,
+        name: info.nickname || "Tidak Diketahui",
+        level: info.level || 0,
+        avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(info.nickname || "FF")}`,
+        guild: clan.clanName || null,
+        server: REGION_MAP[info.region] || info.region || "Global",
+        kd: brDeaths > 0 ? parseFloat((brKills / brDeaths).toFixed(2)) : brKills > 0 ? brKills : 0,
+        wins: brWins, headshots: brHeadshots, kills: brKills, deaths: brDeaths,
+        rank: getRank(points), rankPoints: points, rankMaxPoints: getRankMax(points),
+        csRankPoints: info.csRankingPoints || 0, csRank: info.csRank || 0, csMaxRank: info.csMaxRank || 0, maxRank: info.maxRank || 0,
+        totalMatches: brMatches, brWins, brKills, brDeaths,
+        brHeadshots, brHeadshotKills, brDamage, brHighestKills, brRevives, brTopN,
+        brWinRate: brMatches > 0 ? parseFloat(((brWins / brMatches) * 100).toFixed(1)) : 0,
+        csMatches, csWins, csKills,
+        accountAge: info.createAt ? calcAccountAge(info.createAt) : "Tidak Diketahui",
+        accountCreatedAt: info.createAt ? formatDate(info.createAt) : null,
+        lastActive: info.lastLoginAt ? formatTimeAgo(info.lastLoginAt) : "Unknown",
+        online: false, inGame: false, isBanned, banPeriod,
+        exp: info.exp || 0, liked: info.liked || 0, seasonId: info.seasonId || 0,
+        creditScore: credit.creditScore || 0, diamondCost: diamond.diamondCost || 0,
+        signature: socialHL.signature || "", language: socialHL.language || "",
+        petLevel: pet.level || 0, badges: info.badgeCnt || 0, title: info.title || null,
+        releaseVersion: info.releaseVersion || "", headPic: info.headPic || 0,
+        clanLevel: clan.clanLevel || 0, clanMembers: clan.memberNum || 0, clanCapacity: clan.capacity || 0,
+        primeLevel: captain.primePrivilegeDetail?.primeLevel || 0, weaponSkins: captain.weaponSkinShows || [],
+        petId: String(pet.id || ""), avatarId: profile.avatarId || "",
+        clothes: profile.clothes || [], skills: profile.equipedSkills || [],
+      };
+      setCache(uid, player);
+      return NextResponse.json(player);
+    }
+  }
+
+  // 2. Fallback: HL Gaming API (account info only)
   const hl = await fetchHL(uid);
   if (hl) {
     const info = hl.AccountInfo;
@@ -183,149 +277,11 @@ export async function GET(
       clothes: hl.AccountProfileInfo?.EquippedOutfit || [],
       skills: hl.AccountProfileInfo?.EquippedSkills || [],
     };
-
     setCache(uid, player);
     return NextResponse.json(player);
   }
 
-  // 2. Fallback: Free Fire Community API
-  if (apiKeys.length === 0) {
-    return NextResponse.json({ error: "Server sibuk, coba lagi nanti" }, { status: 503 });
-  }
-
-  const body = await fetchFF(uid, "info", apiKeys);
-  if (!body) return NextResponse.json({ error: "Server sibuk, coba lagi nanti" }, { status: 503 });
-
-  const info = body.basicInfo;
-  const clan = body.clanBasicInfo || {};
-  const social = body.socialInfo || {};
-  const pet = body.petInfo || {};
-  const profile = body.profileInfo || {};
-  const credit = body.creditScoreInfo || {};
-  const diamond = body.diamondCostRes || {};
-  const captain = body.captainBasicInfo || {};
-
-  if (!info) return NextResponse.json({ error: "Player tidak ditemukan" }, { status: 404 });
-
-  const points = info.rankingPoints || 0;
-
-  // ban + stats concurrent
-  const [banResult, statsResult] = await Promise.all([
-    (async () => {
-      for (const key of apiKeys) {
-        for (const useHeader of [true, false]) {
-          try {
-            const url = useHeader
-              ? `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}`
-              : `https://developers.freefirecommunity.com/api/v1/bancheck?uid=${uid}&key=${key}`;
-            const h: Record<string, string> = { "User-Agent": UA };
-            if (useHeader) h["x-api-key"] = key;
-            const res = await fetch(url, { headers: h });
-            if (res.ok) {
-              const d = await res.json();
-              return { isBanned: d?.data?.is_banned === 1, banPeriod: d?.data?.period || 0 };
-            }
-          } catch {}
-        }
-      }
-      return { isBanned: false, banPeriod: 0 };
-    })(),
-
-    (async () => {
-      const raw = await fetchFF(uid, "stats", apiKeys);
-      const d = raw?.data;
-      if (!d) return {};
-
-      let brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0;
-      let brHeadshots = 0, brHeadshotKills = 0, brDamage = 0;
-      let brHighestKills = 0, brRevives = 0, brTopN = 0;
-      let csKills = 0, csWins = 0, csMatches = 0;
-
-      for (const mode of [d.soloStats, d.duoStats, d.quadStats, d.solostats, d.duostats, d.quadstats]) {
-        if (!mode) continue;
-        brMatches += mode.gamesPlayed || mode.gamesplayed || 0;
-        brWins += mode.wins || 0;
-        brKills += mode.kills || 0;
-        brDeaths += mode.detailedStats?.deaths || mode.detailedstats?.deaths || 0;
-        brHeadshots += mode.detailedStats?.headshots || mode.detailedstats?.headshots || 0;
-        brHeadshotKills += mode.detailedStats?.headshotKills || mode.detailedstats?.headshotkills || 0;
-        brDamage += mode.detailedStats?.damage || mode.detailedstats?.damage || 0;
-        brRevives += mode.detailedStats?.revives || mode.detailedstats?.revives || 0;
-        brTopN += mode.detailedStats?.topNTimes || mode.detailedstats?.topNTimes || 0;
-        const hk = mode.detailedStats?.highestKills || mode.detailedstats?.highestkills || 0;
-        if (hk > brHighestKills) brHighestKills = hk;
-      }
-      if (d.csStats || d.csstats) {
-        const cs = d.csStats || d.csstats;
-        csMatches = cs.gamesPlayed || cs.gamesplayed || 0;
-        csWins = cs.wins || 0;
-        csKills = cs.kills || 0;
-      }
-      return { brKills, brWins, brMatches, brDeaths, brHeadshots, brHeadshotKills, brDamage, brHighestKills, brRevives, brTopN, csKills, csWins, csMatches };
-    })(),
-  ]);
-
-  const { isBanned, banPeriod } = banResult;
-  const { brKills = 0, brWins = 0, brMatches = 0, brDeaths = 0,
-    brHeadshots = 0, brHeadshotKills = 0, brDamage = 0,
-    brHighestKills = 0, brRevives = 0, brTopN = 0,
-    csKills = 0, csWins = 0, csMatches = 0 } = statsResult;
-
-  const player = {
-    uid,
-    name: info.nickname || "Tidak Diketahui",
-    level: info.level || 0,
-    avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(info.nickname || "FF")}`,
-    guild: clan.clanName || null,
-    server: REGION_MAP[info.region] || info.region || "Global",
-    kd: brDeaths > 0 ? parseFloat((brKills / brDeaths).toFixed(2)) : brKills > 0 ? brKills : 0,
-    wins: brWins,
-    headshots: brHeadshots,
-    kills: brKills,
-    deaths: brDeaths,
-    rank: getRank(points),
-    rankPoints: points,
-    rankMaxPoints: getRankMax(points),
-    csRankPoints: info.csRankingPoints || 0,
-    csRank: info.csRank || 0,
-    csMaxRank: info.csMaxRank || 0,
-    maxRank: info.maxRank || 0,
-    totalMatches: brMatches,
-    brWins, brKills, brDeaths,
-    brHeadshots, brHeadshotKills, brDamage,
-    brHighestKills, brRevives, brTopN,
-    brWinRate: brMatches > 0 ? parseFloat(((brWins / brMatches) * 100).toFixed(1)) : 0,
-    csMatches, csWins, csKills,
-    accountAge: info.createAt ? calcAccountAge(info.createAt) : "Tidak Diketahui",
-    accountCreatedAt: info.createAt ? formatDate(info.createAt) : null,
-    lastActive: info.lastLoginAt ? formatTimeAgo(info.lastLoginAt) : "Unknown",
-    online: false, inGame: false,
-    isBanned, banPeriod,
-    exp: info.exp || 0,
-    liked: info.liked || 0,
-    seasonId: info.seasonId || 0,
-    creditScore: credit.creditScore || 0,
-    diamondCost: diamond.diamondCost || 0,
-    signature: social.signature || "",
-    language: social.language || "",
-    petLevel: pet.level || 0,
-    badges: info.badgeCnt || 0,
-    title: info.title || null,
-    releaseVersion: info.releaseVersion || "",
-    headPic: info.headPic || 0,
-    clanLevel: clan.clanLevel || 0,
-    clanMembers: clan.memberNum || 0,
-    clanCapacity: clan.capacity || 0,
-    primeLevel: captain.primePrivilegeDetail?.primeLevel || 0,
-    weaponSkins: captain.weaponSkinShows || [],
-    petId: String(pet.id || ""),
-    avatarId: profile.avatarId || "",
-    clothes: profile.clothes || [],
-    skills: profile.equipedSkills || [],
-  };
-
-  setCache(uid, player);
-  return NextResponse.json(player);
+  return NextResponse.json({ error: "Server sibuk, coba lagi nanti" }, { status: 503 });
 }
 
 function getApiKeys(): string[] {
