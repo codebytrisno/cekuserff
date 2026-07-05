@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FF Checker - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#400011",
+                    "secondary-fixed": "#ffd9dc",
+                    "primary-container": "#ff6b35",
+                    "on-primary-container": "#5f1900",
+                    "secondary-container": "#d4004b",
+                    "on-surface": "#f7ddd5",
+                    "surface-container-lowest": "#170b08",
+                    "surface": "#1d100c",
+                    "tertiary": "#59d5fb",
+                    "outline": "#a98a80",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "surface-bright": "#463630",
+                    "on-secondary": "#670020",
+                    "surface-container-low": "#261814",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#832600",
+                    "background": "#1d100c",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-tertiary": "#003543",
+                    "on-surface-variant": "#e1bfb5",
+                    "inverse-on-surface": "#3c2d28",
+                    "tertiary-container": "#00a7cb",
+                    "secondary-fixed-dim": "#ffb2ba",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#ffb59d",
+                    "surface-container": "#2a1c18",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#ffdbd0",
+                    "secondary": "#ffb2ba",
+                    "on-primary": "#5d1900",
+                    "primary": "#ffb59d",
+                    "on-secondary-fixed-variant": "#910030",
+                    "surface-variant": "#41312c",
+                    "surface-tint": "#ffb59d",
+                    "surface-container-highest": "#41312c",
+                    "outline-variant": "#594139",
+                    "surface-dim": "#1d100c",
+                    "on-secondary-container": "#ffe6e8",
+                    "surface-container-high": "#352722",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "inverse-surface": "#f7ddd5",
+                    "inverse-primary": "#ab3500",
+                    "on-tertiary-container": "#003744",
+                    "on-primary-fixed": "#390c00",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#f7ddd5",
+                    "tertiary-fixed": "#b5ebff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "container-max": "1200px",
+                    "base": "4px",
+                    "xl": "40px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-h2": ["Inter"],
+                    "headline-h1": ["Inter"],
+                    "headline-h1-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-h3": ["Inter"],
+                    "display-stats": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #1d100c;
+            color: #f7ddd5;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(42, 28, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(89, 65, 57, 0.5);
+        }
+        .orange-glow {
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #170b08;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff6b35;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md w-full">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</header>
+<main class="mt-20 px-gutter max-w-container-max mx-auto space-y-lg">
+<!-- Header Section -->
+<section class="mb-8">
+<h2 class="font-headline-h1-mobile text-headline-h1-mobile text-primary mb-2">Settings</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Personalize your competitive gaming experience.</p>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- Theme Toggle Card (Span 12) -->
+<div class="md:col-span-12 glass-panel rounded-xl p-md flex flex-col gap-4 orange-glow">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">palette</span>
+<h3 class="font-headline-h3 text-headline-h3">Visual Theme</h3>
+</div>
+<div class="grid grid-cols-3 gap-sm p-1 bg-surface-container-lowest rounded-full border border-outline-variant">
+<button class="flex items-center justify-center gap-2 py-2 px-4 rounded-full font-label-sm text-label-sm transition-all text-on-surface-variant hover:bg-surface-variant/20" id="theme-light" onclick="setTheme('light')">
+<span class="material-symbols-outlined text-[18px]">light_mode</span>
+<span class="hidden sm:inline">Light</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2 px-4 rounded-full font-label-sm text-label-sm transition-all bg-primary-container text-on-primary-container font-bold" id="theme-dark" onclick="setTheme('dark')">
+<span class="material-symbols-outlined text-[18px]">dark_mode</span>
+<span class="hidden sm:inline">Dark</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2 px-4 rounded-full font-label-sm text-label-sm transition-all text-on-surface-variant hover:bg-surface-variant/20" id="theme-system" onclick="setTheme('system')">
+<span class="material-symbols-outlined text-[18px]">settings_brightness</span>
+<span class="hidden sm:inline">System</span>
+</button>
+</div>
+</div>
+<!-- Server Selector (Span 7) -->
+<div class="md:col-span-7 glass-panel rounded-xl p-md flex flex-col justify-between orange-glow">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">public</span>
+<h3 class="font-headline-h3 text-headline-h3">Default Server</h3>
+</div>
+<span class="px-2 py-1 rounded bg-tertiary/10 text-tertiary font-label-sm text-[10px] uppercase tracking-wider">Fastest Connection</span>
+</div>
+<div class="space-y-sm">
+<label class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high border border-outline-variant cursor-pointer hover:border-primary transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md">Indonesia (ID)</span>
+</div>
+<input checked="" class="text-primary focus:ring-primary bg-transparent border-outline" name="server" type="radio" value="id"/>
+</label>
+<label class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high border border-outline-variant cursor-pointer hover:border-primary transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md">Singapore (SG)</span>
+</div>
+<input class="text-primary focus:ring-primary bg-transparent border-outline" name="server" type="radio" value="sg"/>
+</label>
+<label class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high border border-outline-variant cursor-pointer hover:border-primary transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<span class="font-body-md text-body-md">India (IN)</span>
+</div>
+<input class="text-primary focus:ring-primary bg-transparent border-outline" name="server" type="radio" value="in"/>
+</label>
+</div>
+</div>
+<!-- Clear Cache Card (Span 5) -->
+<div class="md:col-span-5 glass-panel rounded-xl p-md flex flex-col orange-glow">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">cleaning_services</span>
+<h3 class="font-headline-h3 text-headline-h3">Storage</h3>
+</div>
+<div class="flex-grow flex flex-col justify-center items-center text-center py-6">
+<div class="text-display-stats font-display-stats text-primary mb-1">124 MB</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-6 uppercase tracking-widest">Cache Used</div>
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-lg font-headline-h3 text-headline-h3 hover:opacity-90 active:scale-95 transition-all" onclick="clearCache()">
+                        Clear Cache
+                    </button>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60 text-center italic">Includes temporary game assets and player avatars.</p>
+</div>
+<!-- About App Section (Span 12) -->
+<div class="md:col-span-12 glass-panel rounded-xl p-md orange-glow overflow-hidden relative">
+<div class="absolute -right-12 -top-12 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'wght' 700;">info</span>
+</div>
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">info</span>
+<h3 class="font-headline-h3 text-headline-h3">About FF Checker</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<div class="space-y-2">
+<div class="font-label-sm text-label-sm text-primary uppercase">Version</div>
+<div class="font-body-md text-body-md">v2.4.0 (Stable Build)</div>
+</div>
+<div class="space-y-2">
+<div class="font-label-sm text-label-sm text-primary uppercase">Developer</div>
+<div class="font-body-md text-body-md">Apex Systems Interactive</div>
+</div>
+<div class="space-y-2">
+<div class="font-label-sm text-label-sm text-primary uppercase">Status</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#00D68F] shadow-[0_0_8px_#00D68F]"></span>
+<span class="font-body-md text-body-md text-[#00D68F]">Servers Operational</span>
+</div>
+</div>
+</div>
+<hr class="border-outline-variant my-6"/>
+<div class="flex flex-wrap gap-4 justify-between items-center">
+<div class="flex gap-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors underline underline-offset-4" href="#">Terms of Service</a>
+</div>
+<button class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant hover:text-tertiary transition-colors">
+                        Check for Updates <span class="material-symbols-outlined text-sm">open_in_new</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Support Aesthetic Card -->
+<div class="w-full rounded-xl bg-gradient-to-r from-primary-container to-secondary-container p-gutter text-on-primary-container flex flex-col md:flex-row items-center justify-between gap-md mt-lg relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-headline-h2 text-headline-h2 mb-1">Found a Bug?</h3>
+<p class="font-body-md text-body-md opacity-90">Report issues directly to our technical squad for a priority fix.</p>
+</div>
+<button class="relative z-10 px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full font-headline-h3 text-headline-h3 hover:bg-white/20 transition-all">
+                Submit Report
+            </button>
+<div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</a>
+<!-- Assuming History is the parent or closest match for Settings/App Management in this specific context or just showing the last tab -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        function setTheme(mode) {
+            const btns = ['theme-light', 'theme-dark', 'theme-system'];
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btnId === 'theme-' + mode) {
+                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant/20');
+                    btn.classList.add('bg-primary-container', 'text-on-primary-container', 'font-bold');
+                } else {
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-variant/20');
+                    btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'font-bold');
+                }
+            });
+            
+            if (mode === 'dark') document.documentElement.classList.add('dark');
+            else if (mode === 'light') document.documentElement.classList.remove('dark');
+            else {
+                // System check
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark');
+                else document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function clearCache() {
+            const btn = event.currentTarget;
+            const originalText = btn.innerText;
+            btn.innerText = 'Clearing...';
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            
+            setTimeout(() => {
+                btn.innerText = 'Cache Cleared';
+                btn.classList.remove('bg-secondary-container');
+                btn.classList.add('bg-[#00D68F]', 'text-[#001f28]');
+                
+                // Update stats
+                const stats = document.querySelector('.text-display-stats');
+                stats.innerText = '0 KB';
+                
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'bg-[#00D68F]', 'text-[#001f28]');
+                    btn.classList.add('bg-secondary-container');
+                }, 2000);
+            }, 1200);
+        }
+
+        // Ripple Effect for glass panels
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousedown', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '100px';
+                ripple.style.height = '100px';
+                ripple.style.background = 'rgba(255, 107, 53, 0.1)';
+                ripple.style.borderRadius = '50%';
+                ripple.style.left = `${x - 50}px`;
+                ripple.style.top = `${y - 50}px`;
+                ripple.style.pointerEvents = 'none';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+                
+                this.style.position = 'relative';
+                this.appendChild(ripple);
+                
+                requestAnimationFrame(() => {
+                    ripple.style.transform = 'scale(4)';
+                    ripple.style.opacity = '0';
+                });
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body></html>

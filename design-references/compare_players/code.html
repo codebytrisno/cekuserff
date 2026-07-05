@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FF Checker - Compare Players</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#e1bfb5",
+                        "primary-container": "#ff6b35",
+                        "on-primary-container": "#5f1900",
+                        "on-tertiary-container": "#003744",
+                        "primary": "#ffb59d",
+                        "primary-fixed-dim": "#ffb59d",
+                        "surface": "#1d100c",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-primary-fixed-variant": "#832600",
+                        "background": "#1d100c",
+                        "outline-variant": "#594139",
+                        "on-tertiary": "#003543",
+                        "surface-variant": "#41312c",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "surface-container-high": "#352722",
+                        "on-primary-fixed": "#390c00",
+                        "inverse-on-surface": "#3c2d28",
+                        "surface-dim": "#1d100c",
+                        "tertiary-fixed": "#b5ebff",
+                        "error-container": "#93000a",
+                        "surface-tint": "#ffb59d",
+                        "tertiary-container": "#00a7cb",
+                        "on-background": "#f7ddd5",
+                        "secondary-fixed": "#ffd9dc",
+                        "error": "#ffb4ab",
+                        "on-primary": "#5d1900",
+                        "on-secondary-container": "#ffe6e8",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "on-surface": "#f7ddd5",
+                        "tertiary": "#59d5fb",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#400011",
+                        "outline": "#a98a80",
+                        "secondary-container": "#d4004b",
+                        "inverse-surface": "#f7ddd5",
+                        "inverse-primary": "#ab3500",
+                        "surface-container": "#2a1c18",
+                        "surface-bright": "#463630",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#670020",
+                        "secondary": "#ffb2ba",
+                        "surface-container-lowest": "#170b08",
+                        "secondary-fixed-dim": "#ffb2ba",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-highest": "#41312c",
+                        "surface-container-low": "#261814",
+                        "on-secondary-fixed-variant": "#910030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "40px",
+                        "container-max": "1200px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-stats": ["Inter"],
+                        "headline-h1-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-h3": ["Inter"],
+                        "headline-h2": ["Inter"],
+                        "headline-h1": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        body {
+            background-color: #1d100c;
+            color: #f7ddd5;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(42, 28, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(89, 65, 57, 0.5);
+        }
+        .vs-gradient {
+            background: linear-gradient(180deg, #ff6b35 0%, #d4004b 100%);
+        }
+        .stat-bar-container {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .winner-glow {
+            box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-24 overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md w-full">
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">arrow_back</button>
+<h1 class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">bookmark</button>
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform">share</button>
+</div>
+</header>
+<main class="pt-20 px-md max-w-container-max mx-auto">
+<!-- Input Section -->
+<section class="mb-lg mt-md">
+<div class="flex flex-col md:flex-row items-center gap-sm md:gap-md relative">
+<div class="w-full relative group">
+<input class="w-full bg-surface-container border border-outline-variant rounded-xl px-md py-4 font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Enter UID Player 1" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm">Player A</span>
+</div>
+<div class="flex-shrink-0 z-10 w-12 h-12 rounded-full vs-gradient flex items-center justify-center shadow-lg border-2 border-surface">
+<span class="font-bold italic text-white text-sm">VS</span>
+</div>
+<div class="w-full relative group">
+<input class="w-full bg-surface-container border border-outline-variant rounded-xl px-md py-4 font-body-md text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" placeholder="Enter UID Player 2" type="text"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm">Player B</span>
+</div>
+</div>
+<button class="w-full mt-md py-3 bg-primary-container text-on-primary-container font-bold rounded-xl active:scale-[0.98] transition-transform shadow-lg shadow-primary-container/20">
+                Compare Now
+            </button>
+</section>
+<!-- Stats Comparison Canvas -->
+<section class="space-y-sm">
+<!-- Comparison Grid Header -->
+<div class="grid grid-cols-2 gap-sm mb-base">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A gritty close-up portrait of a cinematic video game character wearing tactical gear and a glowing futuristic visor, set against a dark, ember-filled background. High-contrast lighting with orange and deep red tones emphasizes a competitive and intense atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaw1beuRe6TJ2T6KgVrduyNUUIW5PvW923YJPXzVqlFdqKC1Hqaoq764c4b4dAoola6vymTYozyN6EAukvSeN_K68WYEljcFVU8LXFdf0usbInHunEPPPQVrBt5mMda0E-vB6o9bNP1aj-51qzL_x8bODyUeu_rJMrluFlKY4LDMUivE49wxS05XBkevewah_4DGz7VbVfUahnbuDovg4iDtvM9aya23o9am8YuiWVcX7_AlXxSD2URcXF1bzLObA31hzybsYyM2A"/>
+</div>
+<div class="hidden md:block">
+<p class="font-headline-h3 text-on-surface leading-none">Ryu_Slayer</p>
+<p class="font-label-sm text-on-surface-variant">ID: 82739485</p>
+</div>
+</div>
+<div class="flex items-center justify-end gap-sm text-right">
+<div class="hidden md:block text-right">
+<p class="font-headline-h3 text-on-surface leading-none">Venom_X</p>
+<p class="font-label-sm text-on-surface-variant">ID: 91028374</p>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-secondary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional e-sports profile avatar of a character with neon cybernetic enhancements and a dark hood. The lighting is dominated by sharp magenta and deep blue hues, creating a sharp gaming aesthetic. The focus is tight on the facial expression, radiating confidence and skill." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGDVwqZoCgJDm4V4jgm4WHRvihnPxJG-sRtSFXTe2UaWKqwf23_jZxeeBsjgQVefGdocyS7WR_gj4zUjktWsv_1tn7GkCZi4cRq5f-pJX4KzlF7mvsiAn3dAaZy86Hf_aspCHF9aRNOF3kkKKGjo2rzNbotU-QzK_0zi2yImjYn1MVo_eK5qAs_7juJpOmYRk70uUt9jGdeghLYNK_1s-nUzZLssc-j3LJfkpXQUVOXBoceU47PXJ82nfPjAz2_7h83qmtGq3AXJI"/>
+</div>
+</div>
+</div>
+<!-- Stats Rows -->
+<div class="glass-card rounded-xl p-md space-y-lg">
+<!-- K/D Ratio -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-primary">3.45</span>
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest">K/D RATIO</p>
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-on-surface">2.10</span>
+</div>
+</div>
+<div class="flex gap-xs">
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-primary-container w-[85%] rounded-r-full"></div>
+</div>
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-surface-variant w-[55%] rounded-l-full ml-auto"></div>
+</div>
+</div>
+</div>
+<!-- Win Rate -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-on-surface">45%</span>
+</div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest">WIN RATE</p>
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+<span class="font-display-stats text-primary">62%</span>
+</div>
+</div>
+<div class="flex gap-xs">
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-surface-variant w-[60%] rounded-r-full"></div>
+</div>
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-primary-container w-[90%] rounded-l-full ml-auto"></div>
+</div>
+</div>
+</div>
+<!-- Headshot % -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-primary">28.4%</span>
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest">HEADSHOT %</p>
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-on-surface">19.2%</span>
+</div>
+</div>
+<div class="flex gap-xs">
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-primary-container w-[75%] rounded-r-full"></div>
+</div>
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-surface-variant w-[45%] rounded-l-full ml-auto"></div>
+</div>
+</div>
+</div>
+<!-- Level -->
+<div>
+<div class="flex justify-between items-end mb-xs">
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-primary">72</span>
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest">LEVEL</p>
+<div class="flex items-center gap-xs">
+<span class="font-display-stats text-on-surface">65</span>
+</div>
+</div>
+<div class="flex gap-xs">
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-primary-container w-[100%] rounded-r-full"></div>
+</div>
+<div class="flex-1 stat-bar-container">
+<div class="h-full bg-surface-variant w-[90%] rounded-l-full ml-auto"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="mt-lg p-md rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<p class="font-headline-h3 text-on-surface leading-tight">Ryu_Slayer unggul di 3 kategori</p>
+<p class="font-label-sm text-on-surface-variant">Performa keseluruhan lebih stabil.</p>
+</div>
+</div>
+<div class="text-primary-container">
+<span class="material-symbols-outlined text-3xl">trending_up</span>
+</div>
+</div>
+</section>
+<!-- Comparison History / Quick Select (Bento style) -->
+<section class="mt-xl grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="glass-card p-md rounded-xl">
+<h3 class="font-headline-h3 text-on-surface mb-sm">Recent Comparisons</h3>
+<div class="space-y-sm">
+<div class="flex items-center justify-between p-sm bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="font-body-md">PlayerA vs PlayerZ</span>
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container rounded-lg border border-outline-variant/30">
+<span class="font-body-md">Slayer vs King</span>
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+</div>
+</div>
+</div>
+<div class="bg-gradient-to-br from-primary-container/20 to-transparent border border-primary-container/30 p-md rounded-xl">
+<h3 class="font-headline-h3 text-on-surface mb-sm">Pro Insights</h3>
+<p class="font-body-md text-on-surface-variant">Ryu_Slayer has a 20% higher headshot rate than average players in Platinum rank. Consider focusing on long-range engagements.</p>
+<div class="mt-md flex gap-xs">
+<div class="bg-primary/10 px-3 py-1 rounded-full text-xs font-bold text-primary">SNIPER</div>
+<div class="bg-primary/10 px-3 py-1 rounded-full text-xs font-bold text-primary">AGGRESSIVE</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary-container font-bold bg-primary/10 rounded-full px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for the "VS" badge
+        const vsBadge = document.querySelector('.vs-gradient');
+        if (vsBadge) {
+            setInterval(() => {
+                vsBadge.style.transform = `scale(${1 + Math.random() * 0.05})`;
+            }, 2000);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FF Checker - Share Stats</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#400011",
+                    "secondary-fixed": "#ffd9dc",
+                    "primary-container": "#ff6b35",
+                    "on-primary-container": "#5f1900",
+                    "secondary-container": "#d4004b",
+                    "on-surface": "#f7ddd5",
+                    "surface-container-lowest": "#170b08",
+                    "surface": "#1d100c",
+                    "tertiary": "#59d5fb",
+                    "outline": "#a98a80",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "surface-bright": "#463630",
+                    "on-secondary": "#670020",
+                    "surface-container-low": "#261814",
+                    "on-error": "#690005",
+                    "on-primary-fixed-variant": "#832600",
+                    "background": "#1d100c",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-tertiary": "#003543",
+                    "on-surface-variant": "#e1bfb5",
+                    "inverse-on-surface": "#3c2d28",
+                    "tertiary-container": "#00a7cb",
+                    "secondary-fixed-dim": "#ffb2ba",
+                    "error": "#ffb4ab",
+                    "primary-fixed-dim": "#ffb59d",
+                    "surface-container": "#2a1c18",
+                    "error-container": "#93000a",
+                    "primary-fixed": "#ffdbd0",
+                    "secondary": "#ffb2ba",
+                    "on-primary": "#5d1900",
+                    "primary": "#ffb59d",
+                    "on-secondary-fixed-variant": "#910030",
+                    "surface-variant": "#41312c",
+                    "surface-tint": "#ffb59d",
+                    "surface-container-highest": "#41312c",
+                    "outline-variant": "#594139",
+                    "surface-dim": "#1d100c",
+                    "on-secondary-container": "#ffe6e8",
+                    "surface-container-high": "#352722",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "inverse-surface": "#f7ddd5",
+                    "inverse-primary": "#ab3500",
+                    "on-tertiary-container": "#003744",
+                    "on-primary-fixed": "#390c00",
+                    "on-error-container": "#ffdad6",
+                    "on-background": "#f7ddd5",
+                    "tertiary-fixed": "#b5ebff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "container-max": "1200px",
+                    "base": "4px",
+                    "xl": "40px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "headline-h2": ["Inter"],
+                    "headline-h1": ["Inter"],
+                    "headline-h1-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-h3": ["Inter"],
+                    "display-stats": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(42, 28, 24, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 181, 157, 0.1);
+        }
+        .stats-glow {
+            text-shadow: 0 0 12px rgba(255, 107, 53, 0.4);
+        }
+        .card-perspective {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transform: rotateY(-2deg) rotateX(1deg);
+            transition: transform 0.5s ease;
+        }
+        .card-inner:hover {
+            transform: rotateY(0deg) rotateX(0deg);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #1d100c;
+            color: #f7ddd5;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Top App Bar (Shared Component Logic) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md w-full">
+<div class="flex items-center gap-sm">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity text-on-surface">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="active:scale-95 transition-transform hover:opacity-80 transition-opacity text-on-surface">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</header>
+<main class="flex-grow pt-24 pb-32 px-md flex flex-col items-center max-w-container-max mx-auto w-full">
+<!-- Preview Instruction -->
+<div class="text-center mb-lg">
+<h2 class="font-headline-h1-mobile text-headline-h1-mobile text-primary mb-xs">Preview Share Card</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Tap the card to adjust viewing angle</p>
+</div>
+<!-- The Share Card (High Impact Bento-inspired Layout) -->
+<div class="card-perspective w-full max-w-[400px]" id="capture-area">
+<div class="card-inner relative w-full aspect-[4/5] rounded-xl overflow-hidden shadow-2xl bg-surface-container-highest border border-outline-variant">
+<!-- Background Dynamic Layer -->
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-secondary/10"></div>
+<div class="absolute inset-0 opacity-40 mix-blend-overlay bg-cover bg-center" data-alt="A cinematic, high-detail background for a gaming profile card. It features abstract digital particles and neon orange light trails reminiscent of futuristic warfare games. The atmosphere is dark and intense, with deep blacks and rich mahogany tones, punctuated by glowing hexagonal patterns in the far distance, creating a sense of depth and competitive energy." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCH2i6VTeq4J_htl5wGA1-TOOHVVQopXnbAgw4TyU49tRkAPLezCkxhfaeCQC6Vm7N64Z1f9ulgScBHvbXDgzpg1YLqScq08wrBkWFUIymvldl8iuDAb4oonCv7vHNyd9mahA6cO9fp3tUmWxQBpM3kWELzx9R_9-4qjTXyYjZpDngWn4DkdFH_HEOgrtZb9nAq0f_AZUHjrqZdBEAbzjLR37QDgEPc8ft7F6B4dPUlyKnPw4nIsRweKE6iyUboG1yi_ezxGqu7Cdo')"></div>
+</div>
+<!-- Card Content -->
+<div class="relative z-10 h-full flex flex-col p-lg">
+<!-- Header: Rank & Platform -->
+<div class="flex justify-between items-start mb-md">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">GarenaPro Verified</span>
+<div class="flex items-center gap-xs mt-1">
+<span class="material-symbols-outlined text-tertiary text-[18px]">verified</span>
+<span class="font-headline-h3 text-headline-h3 text-on-surface">Global Elite</span>
+</div>
+</div>
+<div class="w-14 h-14 bg-surface-container-low rounded-full border border-primary/30 flex items-center justify-center overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="A stylized, high-contrast rank icon for a top-tier gamer, featuring a golden eagle with spread wings and glowing orange eyes. The icon is rendered in a sharp, vector-art style with metallic textures and a subtle outer glow that signifies prestige and high achievement. The design is set against a dark, minimalist background to make the gold and orange pop." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBRmKTaLVqforM94_tLmCt4WAiC72oEmmkXoHLwRXAbcHX3Fbxei0CNpLuTIv8xNQVPJ4ATKqWbU8SS02_3t99q_9oQ-9GIVpV1Cr2gW6s5JMU-qJYO4oJ9S3d2rTxoXGsAJqZbAlZmIVzAvCllcKieIz3NIgfjL3aRFoWx7MscKsnPrBQK40WEnJJeAZCQ96CfIRnLwbctHfp2E6jOhMdK5qmKaIHHn3qhbSE3dI3aY11H_3o76xDxue9qBwqo8xTkv6kvb1fwzbU')"></div>
+</div>
+</div>
+<!-- Player Identity -->
+<div class="flex flex-col items-center mb-lg">
+<div class="relative mb-md">
+<div class="absolute inset-0 bg-primary rounded-full blur-xl opacity-20"></div>
+<div class="w-24 h-24 rounded-full border-2 border-primary p-1 bg-surface relative z-10">
+<div class="w-full h-full rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A high-quality 3D rendered avatar of a futuristic soldier with glowing orange visor and matte black tactical armor. The lighting is dramatic, high-contrast 'Rembrandt' style, casting deep shadows and sharp highlights on the character's metallic gear. The style is hyper-realistic yet clearly within a high-budget gaming aesthetic, set against a dark, moody background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXGXwQVHN1bkC40FAg-QSnqB521KZzFIhs7xj5P8TEyMrG5zSlISoqru_QSHhApRKzgJj4c4WR8WXNVZjsKwQGaKDRKnSwR5iCcWj2RMpbeiz9HqJaIwVbjs9yAyAe5gKwYUFe2tM2j1D46fiC_tGLMsh-Uc7k5LgPI3EZ_ravJG64gY7uLSkNnEolDWaVktcl-tYX1trl9577iSyGyY3wil25BNAL8wZXEB7JjKPgUCJRxuti9mMgRZQ78Zvw6ueM95TEgFOdkU0"/>
+</div>
+</div>
+</div>
+<h3 class="font-headline-h1-mobile text-headline-h1-mobile text-on-surface stats-glow">VORTEX_SNIPER</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">UID: 8291048821</p>
+</div>
+<!-- Stats Grid (Bento Style) -->
+<div class="grid grid-cols-2 gap-sm flex-grow">
+<!-- K/D Ratio -->
+<div class="glass-card rounded-lg p-md flex flex-col justify-center items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">K/D Ratio</span>
+<span class="font-display-stats text-display-stats text-primary stats-glow">4.82</span>
+</div>
+<!-- Win Rate -->
+<div class="glass-card rounded-lg p-md flex flex-col justify-center items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">Win Rate</span>
+<span class="font-display-stats text-display-stats text-on-surface">68.5%</span>
+</div>
+<!-- Headshot % -->
+<div class="glass-card rounded-lg p-md flex flex-col justify-center items-center col-span-2">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">target</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-tighter">Headshot Percentage</span>
+</div>
+<span class="font-display-stats text-display-stats text-secondary stats-glow">52.1%</span>
+</div>
+</div>
+<!-- Footer Branding -->
+<div class="mt-lg pt-md border-t border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-primary text-[16px]">bolt</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">FF CHECKER</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/50">ffchecker.app/vortex</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="w-full max-w-[400px] mt-xl space-y-md">
+<button class="w-full bg-primary-container text-on-primary-container font-headline-h3 text-headline-h3 py-md rounded-xl flex items-center justify-center gap-sm active:scale-95 transition-transform shadow-[0_0_20px_rgba(255,107,53,0.3)]">
+<span class="material-symbols-outlined">download</span>
+                Download Image
+            </button>
+<button class="w-full bg-surface-container-highest text-on-surface font-headline-h3 text-headline-h3 py-md rounded-xl flex items-center justify-center gap-sm active:scale-95 transition-transform border border-outline-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">share</span>
+                Share to Social
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Logic) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe w-full">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<!-- Compare -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</a>
+<!-- Bookmarks -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</a>
+<!-- History (Active State Logic applied based on context: Share/History context) -->
+<a class="flex flex-col items-center justify-center text-primary-container font-bold bg-primary/10 rounded-full px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for the card tilting on mouse move (desktop) or touch
+        const cardArea = document.getElementById('capture-area');
+        const cardInner = cardArea.querySelector('.card-inner');
+
+        cardArea.addEventListener('mousemove', (e) => {
+            const rect = cardArea.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateY = ((x - centerX) / centerX) * 8;
+            const rotateX = ((centerY - y) / centerY) * 8;
+            
+            cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+        });
+
+        cardArea.addEventListener('mouseleave', () => {
+            cardInner.style.transform = `rotateY(-2deg) rotateX(1deg)`;
+        });
+
+        // Touch handling for mobile
+        cardArea.addEventListener('touchstart', (e) => {
+            cardInner.style.transform = `rotateY(0deg) rotateX(0deg) scale(1.02)`;
+        }, {passive: true});
+
+        cardArea.addEventListener('touchend', () => {
+            cardInner.style.transform = `rotateY(-2deg) rotateX(1deg) scale(1)`;
+        }, {passive: true});
+    </script>
+</body></html>

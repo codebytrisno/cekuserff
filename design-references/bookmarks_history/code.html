@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1d100c;
+            color: #f7ddd5;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(42, 28, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(89, 65, 57, 0.4);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1d100c;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #594139;
+            border-radius: 10px;
+        }
+        .tab-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .status-pulse {
+            position: relative;
+        }
+        .status-pulse::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: inherit;
+            animation: pulse 2s infinite;
+            opacity: 0.5;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#e1bfb5",
+                    "primary-container": "#ff6b35",
+                    "on-primary-container": "#5f1900",
+                    "on-tertiary-container": "#003744",
+                    "primary": "#ffb59d",
+                    "primary-fixed-dim": "#ffb59d",
+                    "surface": "#1d100c",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-primary-fixed-variant": "#832600",
+                    "background": "#1d100c",
+                    "outline-variant": "#594139",
+                    "on-tertiary": "#003543",
+                    "surface-variant": "#41312c",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "surface-container-high": "#352722",
+                    "on-primary-fixed": "#390c00",
+                    "inverse-on-surface": "#3c2d28",
+                    "surface-dim": "#1d100c",
+                    "tertiary-fixed": "#b5ebff",
+                    "error-container": "#93000a",
+                    "surface-tint": "#ffb59d",
+                    "tertiary-container": "#00a7cb",
+                    "on-background": "#f7ddd5",
+                    "secondary-fixed": "#ffd9dc",
+                    "error": "#ffb4ab",
+                    "on-primary": "#5d1900",
+                    "on-secondary-container": "#ffe6e8",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "on-surface": "#f7ddd5",
+                    "tertiary": "#59d5fb",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#400011",
+                    "outline": "#a98a80",
+                    "secondary-container": "#d4004b",
+                    "inverse-surface": "#f7ddd5",
+                    "inverse-primary": "#ab3500",
+                    "surface-container": "#2a1c18",
+                    "surface-bright": "#463630",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#670020",
+                    "secondary": "#ffb2ba",
+                    "surface-container-lowest": "#170b08",
+                    "secondary-fixed-dim": "#ffb2ba",
+                    "primary-fixed": "#ffdbd0",
+                    "surface-container-highest": "#41312c",
+                    "surface-container-low": "#261814",
+                    "on-secondary-fixed-variant": "#910030"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "40px",
+                    "container-max": "1200px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-stats": ["Inter"],
+                    "headline-h1-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-h3": ["Inter"],
+                    "headline-h2": ["Inter"],
+                    "headline-h1": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-surface custom-scrollbar">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md w-full">
+<div class="flex items-center gap-sm">
+<button class="active:scale-95 transition-transform p-base text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</h1>
+</div>
+<div class="flex items-center gap-md">
+<button class="active:scale-95 transition-transform text-on-surface-variant hover:opacity-80">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="active:scale-95 transition-transform text-on-surface-variant hover:opacity-80">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</header>
+<main class="pt-20 pb-24 px-md max-w-container-max mx-auto min-h-screen">
+<!-- Tab Navigation (Custom Component for Bookmarks/History) -->
+<div class="flex mb-lg bg-surface-container-low p-xs rounded-full border border-outline-variant">
+<button class="flex-1 py-sm rounded-full font-headline-h3 text-headline-h3 text-primary-container bg-primary/10 tab-transition" id="tab-bookmarks" onclick="switchTab('bookmarks')">
+                Bookmarks
+            </button>
+<button class="flex-1 py-sm rounded-full font-headline-h3 text-headline-h3 text-on-surface-variant tab-transition" id="tab-history" onclick="switchTab('history')">
+                History
+            </button>
+</div>
+<!-- Bookmarks Section -->
+<section class="space-y-md" id="section-bookmarks">
+<!-- Search within bookmarks -->
+<div class="relative w-full mb-lg group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary-container transition-colors">search</span>
+<input class="w-full bg-surface-container border border-outline-variant rounded-xl py-sm pl-12 pr-md font-body-md text-on-surface focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container outline-none transition-all placeholder:text-on-surface-variant/50" placeholder="Cari pemain tersimpan..." type="text"/>
+</div>
+<!-- Bookmark List (Empty state logic handled via JS for demo) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md" id="bookmark-list">
+<!-- Player Card 1 -->
+<div class="glass-card p-md rounded-xl flex items-center justify-between hover:border-primary-container/50 transition-all cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A professional high-contrast portrait of a gaming character with stylized neon lighting, sharp facial features, and a dark tactical background. The aesthetic is clean, modern, and high-performance, utilizing the FF Checker brand colors of deep brown and vibrant orange accents. The lighting creates a sense of authority and competitive edge." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMnYxfp6rePPx_UHyPIQlGWkydMZJ7Mr8e5JMnMRxB62Ayhaz7hRpWoAwgyVlArogKoMzxH8g1DlMRtm0ry2UKOvFXMHU0yk7VrWPFnDH_pV9807LFzoFt19-SRPNNAYDMCWfAv2ejqMZjDRsIn6ITgpCKnxtJCihj6LmfMesBSpX3t6pzdDvHHLq2M-zetbgOlpBmWXDYFoiBX2004hYfIfM69WqcVC5_wM50CFfJHX_LgJFLAt5DDT2ZQfy0tjDlSn6jF5VoPbw"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-[#00D68F] rounded-full border-2 border-surface status-pulse"></div>
+</div>
+<div>
+<h3 class="font-headline-h3 text-headline-h3 text-on-surface">Viper_Striker</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-label-sm font-label-sm rounded uppercase tracking-wider">Grandmaster</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end text-[#00D68F] gap-xs">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="font-display-stats text-label-sm">4.82</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">K/D Ratio</span>
+</div>
+</div>
+<!-- Player Card 2 -->
+<div class="glass-card p-md rounded-xl flex items-center justify-between hover:border-primary-container/50 transition-all cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-12 h-12 rounded-full border-2 border-outline-variant overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Close up of a futuristic esports avatar with a metallic mask and orange glowing eyes, set against a dark architectural background. The image has a moody, professional gaming atmosphere with subtle glassmorphism effects and deep shadows, emphasizing the technical precision and competitive spirit of the brand." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxg0B_qjYqa771M5qXtRI74ftXIAe_Gzh9w0ZXPJHhI5kxkdCxf5f8Qq3u_dmJJAj17w9PqvaOb4RxrgHrAr4J3n1yxw0HQRFsmIc8w709HRCZ5LJEPYYZGVVxJDRQrkHW2WFHUCuXeyEyxJU5xHVX-V6y8HS3oNbrCQPl-SNUR5rm_c76OEI-Gu57o0TeD09d5lAgPKJ5hP7l-SSeRlfEUa3eh92FNKbptQETZxrHiXIjtb8sATbf5djfJugbiXtzXA0qHhJLFxY"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-on-surface-variant/40 rounded-full border-2 border-surface"></div>
+</div>
+<div>
+<h3 class="font-headline-h3 text-headline-h3 text-on-surface">Silent_Wraith</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 bg-secondary-container/20 text-secondary text-label-sm font-label-sm rounded uppercase tracking-wider">Heroic</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end text-error gap-xs">
+<span class="material-symbols-outlined text-[18px]">trending_down</span>
+<span class="font-display-stats text-label-sm">2.15</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">K/D Ratio</span>
+</div>
+</div>
+<!-- Player Card 3 -->
+<div class="glass-card p-md rounded-xl flex items-center justify-between hover:border-primary-container/50 transition-all cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Stylized vector illustration of a high-tier gaming player icon, featuring sharp geometric lines and a sleek, modern aesthetic. The color palette is dominated by deep obsidian and burnt orange, creating a premium gaming vibe. The lighting is focused and dramatic, highlighting the player's elite rank and legendary status." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcMvLB9UqEAhIAxl_xJgGWn9t38UGIL4SnnBueprQC1nbd7fPC9wwOZybeuoVCvHU4hXAah_TRY25Xn86y1zuqY-Kfe9QaSbY97irNzWJ_cIFB1afc_XFv0Y0qaW2phunlDgUrkLGv3H_K-G6o9Q_PUZLM9Ij1OT8XjNN5YLLvlFKT8qz_m6DbvybPPRCXMJnE_-FxRxEzwFp_LaE8aW-r-WVlYsYRWa1GuU0-fIdq4vfM6poYMp5pgrPzFg2MeA2j3gFX0PzXyck"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-[#00D68F] rounded-full border-2 border-surface status-pulse"></div>
+</div>
+<div>
+<h3 class="font-headline-h3 text-headline-h3 text-on-surface">Aura_Legend</h3>
+<div class="flex items-center gap-sm">
+<span class="px-2 py-0.5 bg-tertiary-container/20 text-tertiary text-label-sm font-label-sm rounded uppercase tracking-wider">Master</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end text-[#00D68F] gap-xs">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="font-display-stats text-label-sm">3.40</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">K/D Ratio</span>
+</div>
+</div>
+</div>
+<!-- Empty State (Initially Hidden) -->
+<div class="hidden flex-col items-center justify-center py-20 text-center" id="bookmarks-empty">
+<div class="w-48 h-48 mb-lg opacity-40">
+
+</div>
+<h2 class="font-headline-h2 text-headline-h2 text-on-surface">Belum ada bookmark</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm max-w-xs mx-auto">Cari pemain dan tekan ikon bookmark untuk menyimpannya di sini.</p>
+</div>
+</section>
+<!-- History Section (Hidden by Default) -->
+<section class="hidden space-y-lg" id="section-history">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-h2 text-headline-h2 text-on-surface">Riwayat Pencarian</h2>
+<button class="text-error font-label-sm text-label-sm flex items-center gap-xs hover:bg-error/10 px-md py-sm rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+                    Clear All
+                </button>
+</div>
+<div class="space-y-lg">
+<!-- Today Group -->
+<div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-md px-base uppercase tracking-widest">Hari ini</h3>
+<div class="space-y-sm">
+<!-- History Item -->
+<div class="glass-card p-sm rounded-xl flex items-center gap-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Detailed esports team logo or avatar featuring a sharp predator motif, using a sophisticated dark color palette with vivid orange highlights. The design reflects a high-performance gaming ecosystem with clean lines and technical precision, fitting for a premium mobile application interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6U-j_lzpAYXvFmBqcON1vImCETqqNP8Bubi3pnsMgPWO34LaAtipY8H39VaBIQRyJVQ36TgwklGhduO1-r-UGPfsGhtaZDq3aeKv4wdVKvI6D_Yf9YHz3X2_eSPTOFi6uXq2iSHjmTbo7CClN1fV5Q0szwYWDBnmFr12EBlAKTzDb0vu2qbXQXfXVCzhjwiKzAzrpolW5nlREE1OfsaidWZTBXWUuPmjJuAXrKpz32hoYsTyrzuoBm4-HbTgLf6vDr5NnCy_Bg8g"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-h3 text-headline-h3 text-on-surface truncate">King_Slayer.id</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">UID: 8291047281</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60 pr-md">10:45 AM</span>
+</div>
+<div class="glass-card p-sm rounded-xl flex items-center gap-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Professional profile icon for a tactical gamer, styled with deep shadow effects and a high-contrast orange glow. The mood is focused and authoritative, set in a clean gaming environment that emphasizes reliability and speed of information. The lighting is cinematic and dark." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJaKDzWBExBcUV_roY4hgc4q_VYomoZByB3XWOhaZocQCGvMSZNI8-8cE_GFMX4vCaQGC3Dn3cxXO1YpGDvfmA1VWl2g7WggBV2T-P3Eij81i9z2_m34aPlqH33DofiZRu3ArcNP1kMKpFzFhnYRJ1tk5pPuSMFHAPRPHwNEAJcnQBCGJndn03oV5ewvvjMQshmsBlFq1_RMEpmWoefH7inUb1Ja6nwGDD0Rg6-iXEQbXQ4xBZmC_x33UMcicPRBiZLWgupvZuwHs"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-h3 text-headline-h3 text-on-surface truncate">DarkKnight_99</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">UID: 1102938475</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60 pr-md">08:12 AM</span>
+</div>
+</div>
+</div>
+<!-- Yesterday Group -->
+<div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-md px-base uppercase tracking-widest">Kemarin</h3>
+<div class="space-y-sm">
+<!-- History Item -->
+<div class="glass-card p-sm rounded-xl flex items-center gap-md hover:bg-surface-container-high transition-all cursor-pointer">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Cyberpunk-inspired gaming avatar with a sleek helmet and glowing neon elements in a primary orange hue. The background is a minimalist tech pattern in deep browns and blacks, reflecting a sophisticated professional player profile. High-contrast lighting and sharp detailing define the image." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBrX3QSxr2ukd6tUwOB8AfjfnuJ-AW4kamUKyo4pqcyy6zb7w9xUMyt5wHVgHaTlNbaDc3wRmn5HTNRALrOwUkSbSWhXOKa3BeXKzJ5WkX_3A3MxyV92MCsOtGC2H2JEDmnpXmGom8hxw95v8-3URWQ_aicoL68D0pIrk9JXxe5pQeqMjsYrsjculN2cy9cuNGlJUcLmPF2CrCgrTffZJybO3YqlN0-nJJzgZhY-hNk096v4X2OyNsznJWPM7lCk1u1iEUXxAYjik"/>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="font-headline-h3 text-headline-h3 text-on-surface truncate">Phantom_Gamer</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">UID: 4492031122</p>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60 pr-md">Yesterday</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom NavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe w-full">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary-container font-bold bg-primary/10 rounded-full px-4 py-1 active:scale-90 transition-transform duration-200" href="#" onclick="switchTab('bookmarks')">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200" href="#" onclick="switchTab('history')">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        function switchTab(tabId) {
+            const sections = {
+                bookmarks: document.getElementById('section-bookmarks'),
+                history: document.getElementById('section-history')
+            };
+            const buttons = {
+                bookmarks: document.getElementById('tab-bookmarks'),
+                history: document.getElementById('tab-history')
+            };
+
+            // Toggle visibility
+            Object.keys(sections).forEach(key => {
+                if(key === tabId) {
+                    sections[key].classList.remove('hidden');
+                    buttons[key].classList.add('bg-primary/10', 'text-primary-container');
+                    buttons[key].classList.remove('text-on-surface-variant');
+                } else {
+                    sections[key].classList.add('hidden');
+                    buttons[key].classList.remove('bg-primary/10', 'text-primary-container');
+                    buttons[key].classList.add('text-on-surface-variant');
+                }
+            });
+
+            // Re-sync bottom nav classes (Simplified for demo)
+            const navItems = document.querySelectorAll('nav a');
+            navItems.forEach(item => {
+                const label = item.querySelector('span:last-child').textContent.toLowerCase();
+                if(label === tabId) {
+                    item.classList.add('text-primary-container', 'font-bold', 'bg-primary/10', 'rounded-full', 'px-4', 'py-1');
+                    item.classList.remove('text-on-surface-variant');
+                } else if (label === 'bookmarks' || label === 'history') {
+                    item.classList.remove('text-primary-container', 'font-bold', 'bg-primary/10', 'rounded-full', 'px-4', 'py-1');
+                    item.classList.add('text-on-surface-variant');
+                }
+            });
+        }
+
+        // Logic to simulate empty state
+        function checkEmptyState() {
+            const list = document.getElementById('bookmark-list');
+            const empty = document.getElementById('bookmarks-empty');
+            // If list had no children, show empty state
+            if (list.children.length === 0) {
+                list.classList.add('hidden');
+                empty.classList.remove('hidden');
+            }
+        }
+    </script>
+</body></html>

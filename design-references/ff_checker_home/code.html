@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FF Checker - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#e1bfb5",
+                    "primary-container": "#ff6b35",
+                    "on-primary-container": "#5f1900",
+                    "on-tertiary-container": "#003744",
+                    "primary": "#ffb59d",
+                    "primary-fixed-dim": "#ffb59d",
+                    "surface": "#1d100c",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-primary-fixed-variant": "#832600",
+                    "background": "#1d100c",
+                    "outline-variant": "#594139",
+                    "on-tertiary": "#003543",
+                    "surface-variant": "#41312c",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "surface-container-high": "#352722",
+                    "on-primary-fixed": "#390c00",
+                    "inverse-on-surface": "#3c2d28",
+                    "surface-dim": "#1d100c",
+                    "tertiary-fixed": "#b5ebff",
+                    "error-container": "#93000a",
+                    "surface-tint": "#ffb59d",
+                    "tertiary-container": "#00a7cb",
+                    "on-background": "#f7ddd5",
+                    "secondary-fixed": "#ffd9dc",
+                    "error": "#ffb4ab",
+                    "on-primary": "#5d1900",
+                    "on-secondary-container": "#ffe6e8",
+                    "tertiary-fixed-dim": "#59d5fb",
+                    "on-surface": "#f7ddd5",
+                    "tertiary": "#59d5fb",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#400011",
+                    "outline": "#a98a80",
+                    "secondary-container": "#d4004b",
+                    "inverse-surface": "#f7ddd5",
+                    "inverse-primary": "#ab3500",
+                    "surface-container": "#2a1c18",
+                    "surface-bright": "#463630",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#670020",
+                    "secondary": "#ffb2ba",
+                    "surface-container-lowest": "#170b08",
+                    "secondary-fixed-dim": "#ffb2ba",
+                    "primary-fixed": "#ffdbd0",
+                    "surface-container-highest": "#41312c",
+                    "surface-container-low": "#261814",
+                    "on-secondary-fixed-variant": "#910030"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "xl": "40px",
+                    "container-max": "1200px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px",
+                    "gutter": "16px",
+                    "base": "4px",
+                    "xs": "4px"
+            },
+            "fontFamily": {
+                    "display-stats": ["Inter"],
+                    "headline-h1-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-h3": ["Inter"],
+                    "headline-h2": ["Inter"],
+                    "headline-h1": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1d100c;
+            color: #f7ddd5;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(42, 28, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(89, 65, 57, 0.3);
+        }
+        .primary-glow {
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen pb-24">
+<!-- Header Navigation Shell (Shared Component: TopAppBar) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+<span class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</span>
+</div>
+<div class="flex gap-md">
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="bookmark">bookmark</span>
+</button>
+<button class="hover:opacity-80 transition-opacity active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="share">share</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-md max-w-container-max mx-auto space-y-lg">
+<!-- Hero Section -->
+<section class="relative overflow-hidden rounded-xl p-lg bg-surface-container-high border border-outline-variant">
+<!-- Background Animation Placeholder -->
+
+<div class="relative z-10 text-center space-y-sm">
+<h1 class="font-headline-h1 text-headline-h1-mobile text-primary-container">Instant Player Stats</h1>
+<p class="font-body-md text-on-surface-variant opacity-80">Track rankings, K/D ratios, and seasonal progress.</p>
+</div>
+<!-- Search Area -->
+<div class="mt-lg relative z-10 max-w-md mx-auto">
+<form class="flex flex-col gap-sm" onsubmit="return false;">
+<div class="relative group">
+<span class="absolute left-md top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="w-full h-14 pl-12 pr-4 rounded-xl bg-surface-container-lowest border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all outline-none text-on-surface font-body-md" placeholder="Enter Player ID..." type="number"/>
+</div>
+<button class="w-full h-12 bg-primary-container text-on-primary-container font-headline-h3 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-xs shadow-lg shadow-primary-container/20">
+                        Cari
+                    </button>
+</form>
+</div>
+</section>
+<!-- Quick Actions Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Compare -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between group cursor-pointer hover:border-primary/50 transition-colors active:scale-95 transition-transform">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="compare_arrows">compare_arrows</span>
+</div>
+<div>
+<h3 class="font-headline-h3 text-on-surface">Compare</h3>
+<p class="font-label-sm text-on-surface-variant">Analyze 1v1 data</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Bookmarks -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between group cursor-pointer hover:border-primary/50 transition-colors active:scale-95 transition-transform">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div>
+<h3 class="font-headline-h3 text-on-surface">Bookmarks</h3>
+<p class="font-label-sm text-on-surface-variant">Followed players</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- History -->
+<div class="glass-card rounded-xl p-md flex items-center justify-between group cursor-pointer hover:border-primary/50 transition-colors active:scale-95 transition-transform">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="history">history</span>
+</div>
+<div>
+<h3 class="font-headline-h3 text-on-surface">History</h3>
+<p class="font-label-sm text-on-surface-variant">Recently viewed</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</section>
+<!-- Recent Searches (History) -->
+<section class="space-y-md">
+<div class="flex justify-between items-end">
+<h2 class="font-headline-h2 text-on-surface">Recent Searches</h2>
+<button class="font-label-sm text-primary hover:underline">Clear all</button>
+</div>
+<div class="space-y-sm">
+<!-- User Item 1 -->
+<div class="flex items-center justify-between p-sm glass-card rounded-xl border-l-4 border-l-primary-container transition-all hover:bg-surface-container-high cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A stylized gaming avatar of a cybernetic warrior with glowing orange details, set against a dark, tech-inspired background. The artwork is high-contrast with sharp edges and cinematic lighting, reflecting a professional esports aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwlIWfWs4lLPSdD_nI4KDC_hKgW6SoH9J90hcREJmIIHMtU9LtjrwtTLDJX-Qwt0aOi9Bbhs47bQL2i5PR1yQGwf9eq7Fv9GrVVau7gC875Gyqix2EV9PXFWn0OxdHzKj4lPs8F7jbechXpciMdQ7dN8av2O6BQG5NvhB9m2bicSSS45GwpswnLbls3OpWJZgoaCTlXAoNJ_1r2RSsMVEGhzjkL2SyC2cNfFt8HTk6D_Ol4Axo1PvIWNnWAIyZxsttgp9fpANTN1M"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#00D68F] rounded-full border-2 border-surface primary-glow"></div>
+</div>
+<div>
+<p class="font-headline-h3 text-on-surface">GamerX_88</p>
+<div class="flex items-center gap-xs">
+<span class="px-2 py-0.5 rounded bg-secondary-container/30 text-secondary text-[10px] font-bold uppercase">Heroic</span>
+<span class="font-label-sm text-on-surface-variant opacity-60">ID: 109283746</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="font-display-stats text-primary-container">2.45</p>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-wider">K/D Rate</p>
+</div>
+</div>
+<!-- User Item 2 -->
+<div class="flex items-center justify-between p-sm glass-card rounded-xl transition-all hover:bg-surface-container-high cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional gamer profile picture featuring a tactical futuristic helmet with blue visor highlights. The style is minimal but detailed, with a dark background that matches a sleek gaming dashboard. The character looks powerful and elite." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATFMWlSPnwIiRU7QmI_PpcPoRH___0t4kOrDB9-WUYsw3jJvv01TNHuyq9Cg8hkI2_bsML76jpjQ06tdgK0cdo93MFpyKeeRPDGV1w6SlCcKda7HxTXoGu6QBhB8GLpAHxm6pSP1CFGU0MrS8r4m5hp-ZqKbKif8SmHhdlSlQNSyIgfngt4xossfvSAjP_Lyr1ioGealutNDjwwKHXupWXXG96Xs8zCX-ZPwj-DXzFOjPhBn2qCrJvDXh2yZ8PQzdS534mVqGG6RE"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-outline-variant rounded-full border-2 border-surface"></div>
+</div>
+<div>
+<p class="font-headline-h3 text-on-surface">SilentStriker</p>
+<div class="flex items-center gap-xs">
+<span class="px-2 py-0.5 rounded bg-tertiary-container/30 text-tertiary text-[10px] font-bold uppercase">Grandmaster</span>
+<span class="font-label-sm text-on-surface-variant opacity-60">ID: 554312987</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="font-display-stats text-on-surface opacity-70">1.89</p>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-wider">K/D Rate</p>
+</div>
+</div>
+<!-- User Item 3 -->
+<div class="flex items-center justify-between p-sm glass-card rounded-xl transition-all hover:bg-surface-container-high cursor-pointer">
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-14 h-14 rounded-full overflow-hidden border-2 border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A vibrant digital portrait of a female character with neon-streaked hair and techwear accessories. The background features abstract geometric patterns in deep orange and charcoal. The lighting is moody and focused on the character's fierce expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCHz3ziU56Uye3C7CwBCcRptJtLC9efuBYSeEesbu95uwKhUPGGl9mV8Zp-rRAXxp_ZdoYz2NlMY5sSuI1YZa0nd3IQTk_qJDNP5InjDLy_td4zewJRiCi-4fZtkmv7gz0n5hYuNH5aiU1Xv8XCHQf95oD-a437Hk4uDTEMrmH-Qk09WBDpiAELBDYuBad_Mauf4reIrZvv3t6YoNk3NgQujgvqBTVSUkj-aqmtoQjF-iAOV2WU9Vjk65z4ufQ9wEDS4vNkcTPUhA"/>
+</div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#00D68F] rounded-full border-2 border-surface primary-glow"></div>
+</div>
+<div>
+<p class="font-headline-h3 text-on-surface">Luna_Void</p>
+<div class="flex items-center gap-xs">
+<span class="px-2 py-0.5 rounded bg-outline-variant/30 text-on-surface-variant text-[10px] font-bold uppercase">Diamond III</span>
+<span class="font-label-sm text-on-surface-variant opacity-60">ID: 887234510</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="font-display-stats text-on-surface opacity-70">3.12</p>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-wider">K/D Rate</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Overview Banner -->
+<section class="bg-surface-container rounded-2xl p-lg border border-primary/20 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-lg opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[120px]" data-icon="query_stats">query_stats</span>
+</div>
+<div class="relative z-10 space-y-md">
+<div class="inline-flex items-center gap-sm px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span>
+                    Trending Players
+                </div>
+<p class="font-headline-h2 text-on-surface max-w-[70%]">Discover top-ranked players and study their loadouts.</p>
+<button class="flex items-center gap-sm font-headline-h3 text-primary hover:gap-md transition-all">
+                    View Leaderboard <span class="material-symbols-outlined" data-icon="trending_flat">trending_flat</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell (Shared Component: BottomNavBar) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe">
+<!-- Home (Active) -->
+<button class="flex flex-col items-center justify-center text-primary-container font-bold bg-primary/10 rounded-full px-4 py-1 active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<!-- Compare -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="compare_arrows">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</button>
+<!-- Bookmarks -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</button>
+<!-- History -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</button>
+</nav>
+<!-- Contextual FAB (Suppressed on Home Search as per Shell rules - but could be "Add Custom Track" if needed) -->
+<script>
+        // Micro-interactions
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('primary-glow');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('primary-glow');
+            });
+        });
+
+        // Animation for cards appearing
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+    </script>
+</body></html>

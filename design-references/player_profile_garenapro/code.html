@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FF Checker - Player Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(42, 28, 24, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(89, 65, 57, 0.3);
+        }
+        .rank-glow {
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
+        }
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        body {
+            background-color: #1d100c;
+            color: #f7ddd5;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#e1bfb5",
+                        "primary-container": "#ff6b35",
+                        "on-primary-container": "#5f1900",
+                        "on-tertiary-container": "#003744",
+                        "primary": "#ffb59d",
+                        "primary-fixed-dim": "#ffb59d",
+                        "surface": "#1d100c",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-primary-fixed-variant": "#832600",
+                        "background": "#1d100c",
+                        "outline-variant": "#594139",
+                        "on-tertiary": "#003543",
+                        "surface-variant": "#41312c",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "surface-container-high": "#352722",
+                        "on-primary-fixed": "#390c00",
+                        "inverse-on-surface": "#3c2d28",
+                        "surface-dim": "#1d100c",
+                        "tertiary-fixed": "#b5ebff",
+                        "error-container": "#93000a",
+                        "surface-tint": "#ffb59d",
+                        "tertiary-container": "#00a7cb",
+                        "on-background": "#f7ddd5",
+                        "secondary-fixed": "#ffd9dc",
+                        "error": "#ffb4ab",
+                        "on-primary": "#5d1900",
+                        "on-secondary-container": "#ffe6e8",
+                        "tertiary-fixed-dim": "#59d5fb",
+                        "on-surface": "#f7ddd5",
+                        "tertiary": "#59d5fb",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#400011",
+                        "outline": "#a98a80",
+                        "secondary-container": "#d4004b",
+                        "inverse-surface": "#f7ddd5",
+                        "inverse-primary": "#ab3500",
+                        "surface-container": "#2a1c18",
+                        "surface-bright": "#463630",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#670020",
+                        "secondary": "#ffb2ba",
+                        "surface-container-lowest": "#170b08",
+                        "secondary-fixed-dim": "#ffb2ba",
+                        "primary-fixed": "#ffdbd0",
+                        "surface-container-highest": "#41312c",
+                        "surface-container-low": "#261814",
+                        "on-secondary-fixed-variant": "#910030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xl": "40px",
+                        "container-max": "1200px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "base": "4px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "display-stats": ["Inter"],
+                        "headline-h1-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-h3": ["Inter"],
+                        "headline-h2": ["Inter"],
+                        "headline-h1": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-stats": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-h1-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-h3": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-h2": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-h1": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant flex justify-between items-center h-16 px-md">
+<button class="active:scale-95 transition-transform text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<span class="font-headline-h2 text-headline-h2-mobile font-bold text-on-surface">FF Checker</span>
+<div class="flex gap-4">
+<button class="active:scale-95 transition-transform text-on-surface">
+<span class="material-symbols-outlined">bookmark</span>
+</button>
+<button class="active:scale-95 transition-transform text-on-surface">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-md max-w-container-max mx-auto space-y-lg">
+<!-- Hero Section -->
+<section class="relative overflow-hidden rounded-xl glass-card p-lg">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10"></div>
+<div class="flex items-center gap-md">
+<div class="relative">
+<div class="w-20 h-20 rounded-full border-2 border-primary-container p-1 bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="A cinematic portrait of a stylized gaming avatar, wearing high-tech tactical gear with neon orange accents. The background is a dark, atmospheric sci-fi hangar with subtle steam and lens flares. The lighting is dramatic and moody, focusing on the character's mysterious mask and sharp, professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDH10RXh1yBaZLSHjAQ7R50lhtoAJsQx2TxsfIngyZdxQzuU655eYZNed4xRK2nb5VZTbtvQ4CcyANBdZZMjIxrzDNxteCuG5kOJWl8l9f_rxQ_UjMcoUWGwq0LbpWgGQwjzX08-SjIjZrCVHbY2TRe02a3IwAd_xQa_lf4vW1vo4fvapvR3qMfeVFfnEvYq2GfuOxWd_yrNWib7yOfY1BnoZ3ZbC0bfT_tN2pou-Qo36liXrSFZz72W5GwSgJRA79nVSJF1dMoOpE"/>
+</div>
+<div class="absolute bottom-1 right-1 w-4 h-4 bg-[#00D68F] border-2 border-surface rounded-full status-pulse shadow-[0_0_8px_rgba(0,214,143,0.6)]"></div>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-sm">
+<h1 class="font-headline-h1-mobile text-headline-h1-mobile text-on-surface">GarenaPro</h1>
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded uppercase font-bold tracking-wider">Online</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">UID: 12345678</p>
+<div class="flex items-center gap-sm mt-1">
+<span class="font-label-sm text-label-sm bg-surface-container-highest px-2 py-0.5 rounded text-primary">ID Server</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Guild: LegendS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Grid (Bento) -->
+<section class="grid grid-cols-2 md:grid-cols-3 gap-md">
+<div class="glass-card p-md rounded-xl flex flex-col justify-center border-l-4 border-l-primary-container">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-tight">K/D Ratio</span>
+<span class="font-display-stats text-display-stats text-on-surface">4.5</span>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col justify-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-tight">Total Wins</span>
+<span class="font-display-stats text-display-stats text-on-surface">1,200</span>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col justify-center col-span-2 md:col-span-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-tight">Headshot %</span>
+<span class="font-display-stats text-display-stats text-primary-container">45%</span>
+</div>
+</section>
+<!-- Rank Card -->
+<section class="glass-card p-lg rounded-xl rank-glow border border-primary/20">
+<div class="flex items-center justify-between mb-lg">
+<div class="flex items-center gap-md">
+<div class="w-16 h-16 flex items-center justify-center bg-surface-container-high rounded-lg p-2">
+<img class="w-full h-full object-contain" data-alt="A highly detailed 3D gold and crimson gaming rank emblem for Heroic Tier. The icon features sharp metallic edges, glowing energy cores, and intricate filigree. It is presented against a deep navy blue background with floating digital particles. The visual style is premium and high-fidelity, typical of elite competitive gaming icons." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnENd5u_LelMlys3ErOOYn5cnd_79uyCEi6RhdULdvzn4hfMZjNCW55Z_yjR5aEyihYNtsIhBIICuC5lO6bdP2QHj7zi_rqH0hW3dcqa-6YvDCuLDdiC9pI8Y9oXl2krD0QO-epYVUAjYK22pTOppT8N5TxzONa5BrSKr5AT-Yx0_kooXpYSMKI5YvYEfTdhAl3JMf_-IM0v9mXzfPAsC3EJZ2EpMd81e1bRzUabptBxkuYOYBr-7Hk8IWi4I4PhBbVi994HxsiZ0"/>
+</div>
+<div>
+<h3 class="font-headline-h2 text-headline-h2-mobile text-on-surface">Heroic Tier</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Rank Score: 3,450</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Next Tier</p>
+<p class="font-headline-h3 text-headline-h3 text-primary">Grandmaster</p>
+</div>
+</div>
+<div class="space-y-sm">
+<div class="flex justify-between text-xs text-on-surface-variant px-1">
+<span>Progress to Grandmaster</span>
+<span>85%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary-container to-primary-fixed-dim" style="width: 85%"></div>
+</div>
+</div>
+</section>
+<!-- Detailed Stats Table -->
+<section class="glass-card rounded-xl overflow-hidden">
+<div class="p-md bg-surface-container-high border-b border-outline-variant">
+<h4 class="font-headline-h3 text-headline-h3 text-on-surface">Profile Details</h4>
+</div>
+<div class="divide-y divide-outline-variant">
+<div class="p-md flex justify-between items-center">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">sports_esports</span>
+<span class="font-body-md text-body-md">Matches Played</span>
+</div>
+<span class="font-body-md text-body-md font-bold text-on-surface">5,000</span>
+</div>
+<div class="p-md flex justify-between items-center">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">leaderboard</span>
+<span class="font-body-md text-body-md">Win Rate</span>
+</div>
+<span class="font-body-md text-body-md font-bold text-on-surface">24.0%</span>
+</div>
+<div class="p-md flex justify-between items-center">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+<span class="font-body-md text-body-md">Account Age</span>
+</div>
+<span class="font-body-md text-body-md font-bold text-on-surface">3 Years</span>
+</div>
+<div class="p-md flex justify-between items-center">
+<div class="flex items-center gap-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="font-body-md text-body-md">Last Active</span>
+</div>
+<span class="font-body-md text-body-md font-bold text-[#00D68F]">5m ago</span>
+</div>
+</div>
+</section>
+<!-- Action Buttons -->
+<section class="grid grid-cols-1 gap-md">
+<button class="bg-primary-container text-on-primary-container h-12 rounded-xl font-headline-h3 flex items-center justify-center gap-sm active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">compare_arrows</span>
+                Compare with My Stats
+            </button>
+<button class="bg-surface-variant text-on-surface h-12 rounded-xl font-headline-h3 flex items-center justify-center gap-sm border border-outline-variant active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined">share_reviews</span>
+                Share Profile Card
+            </button>
+</section>
+</main>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface-container/90 backdrop-blur-xl border-t border-outline-variant shadow-[0_-4px_12px_rgba(255,107,53,0.1)] flex justify-around items-center h-20 px-sm pb-safe">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-label-sm text-label-sm">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-sm text-label-sm">Bookmarks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-sm text-label-sm">History</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for rank progress bar
+        document.addEventListener('DOMContentLoaded', () => {
+            const bar = document.querySelector('.bg-gradient-to-r');
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                bar.style.width = '85%';
+            }, 300);
+        });
+    </script>
+</body></html>
