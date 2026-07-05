@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { usePlayer } from "@/hooks/usePlayer";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { UID_MIN_LENGTH, UID_MAX_LENGTH } from "@/lib/constants";
 import type { PlayerData } from "@/types";
 
 export default function ComparePage() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const { search: fetchA, loading: loadingA, error: errorA } = usePlayer();
   const { search: fetchB, loading: loadingB, error: errorB } = usePlayer();
@@ -19,8 +21,10 @@ export default function ComparePage() {
   const [playerB, setPlayerB] = useState<PlayerData | null>(null);
 
   const handleCompare = useCallback(async () => {
-    const [a, b] = await Promise.all([fetchA(uidA), fetchB(uidB)]);
+    const a = await fetchA(uidA);
     setPlayerA(a);
+    if (!a) return;
+    const b = await fetchB(uidB);
     setPlayerB(b);
   }, [uidA, uidB, fetchA, fetchB]);
 
@@ -35,6 +39,8 @@ export default function ComparePage() {
   const isValidB = uidB.trim().length >= UID_MIN_LENGTH && uidB.trim().length <= UID_MAX_LENGTH;
 
   const winner = playerA && playerB ? getWinner(playerA, playerB) : null;
+
+  if (!authed) return null;
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -114,39 +120,94 @@ export default function ComparePage() {
             </div>
 
             {/* Stat Rows */}
-            <div className="glass-card space-y-6 rounded-xl p-4">
-              <StatCompareRow
-                label="K/D RATIO"
-                valueA={String(playerA.kd)}
-                valueB={String(playerB.kd)}
-                pctA={(playerA.kd / 10) * 100}
-                pctB={(playerB.kd / 10) * 100}
-                aWins={playerA.kd > playerB.kd}
-              />
-              <StatCompareRow
-                label="WIN RATE"
-                valueA={`${playerA.brWinRate}%`}
-                valueB={`${playerB.brWinRate}%`}
-                pctA={playerA.brWinRate}
-                pctB={playerB.brWinRate}
-                aWins={playerA.brWinRate > playerB.brWinRate}
-              />
-              <StatCompareRow
-                label="HEADSHOT %"
-                valueA={`${playerA.headshots}%`}
-                valueB={`${playerB.headshots}%`}
-                pctA={playerA.headshots}
-                pctB={playerB.headshots}
-                aWins={playerA.headshots > playerB.headshots}
-              />
-              <StatCompareRow
-                label="LEVEL"
-                valueA={String(playerA.level)}
-                valueB={String(playerB.level)}
-                pctA={(playerA.level / 100) * 100}
-                pctB={(playerB.level / 100) * 100}
-                aWins={playerA.level > playerB.level}
-              />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="glass-card space-y-5 rounded-xl p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60">Pertempuran</p>
+                <StatCompareRow
+                  label="K/D RATIO"
+                  valueA={String(playerA.kd)}
+                  valueB={String(playerB.kd)}
+                  pctA={Math.min((playerA.kd / 10) * 100, 100)}
+                  pctB={Math.min((playerB.kd / 10) * 100, 100)}
+                  aWins={playerA.kd > playerB.kd}
+                />
+                <StatCompareRow
+                  label="TOTAL KILLS"
+                  valueA={playerA.kills.toLocaleString()}
+                  valueB={playerB.kills.toLocaleString()}
+                  pctA={Math.min((playerA.kills / Math.max(playerA.kills, playerB.kills)) * 100, 100)}
+                  pctB={Math.min((playerB.kills / Math.max(playerA.kills, playerB.kills)) * 100, 100)}
+                  aWins={playerA.kills > playerB.kills}
+                />
+                <StatCompareRow
+                  label="TOTAL MATCHES"
+                  valueA={playerA.totalMatches.toLocaleString()}
+                  valueB={playerB.totalMatches.toLocaleString()}
+                  pctA={Math.min((playerA.totalMatches / Math.max(playerA.totalMatches, playerB.totalMatches)) * 100, 100)}
+                  pctB={Math.min((playerB.totalMatches / Math.max(playerA.totalMatches, playerB.totalMatches)) * 100, 100)}
+                  aWins={playerA.totalMatches > playerB.totalMatches}
+                />
+                <StatCompareRow
+                  label="DAMAGE"
+                  valueA={playerA.brDamage.toLocaleString()}
+                  valueB={playerB.brDamage.toLocaleString()}
+                  pctA={Math.min((playerA.brDamage / Math.max(playerA.brDamage, playerB.brDamage)) * 100, 100)}
+                  pctB={Math.min((playerB.brDamage / Math.max(playerA.brDamage, playerB.brDamage)) * 100, 100)}
+                  aWins={playerA.brDamage > playerB.brDamage}
+                />
+                <StatCompareRow
+                  label="HIGHEST KILLS"
+                  valueA={String(playerA.brHighestKills)}
+                  valueB={String(playerB.brHighestKills)}
+                  pctA={Math.min((playerA.brHighestKills / Math.max(playerA.brHighestKills, playerB.brHighestKills)) * 100, 100)}
+                  pctB={Math.min((playerB.brHighestKills / Math.max(playerA.brHighestKills, playerB.brHighestKills)) * 100, 100)}
+                  aWins={playerA.brHighestKills > playerB.brHighestKills}
+                />
+              </div>
+
+              <div className="glass-card space-y-5 rounded-xl p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60">Akurasi & Rank</p>
+                <StatCompareRow
+                  label="WIN RATE"
+                  valueA={`${playerA.brWinRate}%`}
+                  valueB={`${playerB.brWinRate}%`}
+                  pctA={playerA.brWinRate}
+                  pctB={playerB.brWinRate}
+                  aWins={playerA.brWinRate > playerB.brWinRate}
+                />
+                <StatCompareRow
+                  label="HEADSHOT %"
+                  valueA={`${playerA.kills > 0 ? ((playerA.headshots / playerA.kills) * 100).toFixed(1) : 0}%`}
+                  valueB={`${playerB.kills > 0 ? ((playerB.headshots / playerB.kills) * 100).toFixed(1) : 0}%`}
+                  pctA={Math.min(playerA.kills > 0 ? (playerA.headshots / playerA.kills) * 100 : 0, 100)}
+                  pctB={Math.min(playerB.kills > 0 ? (playerB.headshots / playerB.kills) * 100 : 0, 100)}
+                  aWins={playerA.kills > 0 && playerB.kills > 0 ? (playerA.headshots / playerA.kills) > (playerB.headshots / playerB.kills) : playerA.headshots > playerB.headshots}
+                />
+                <StatCompareRow
+                  label="LEVEL"
+                  valueA={String(playerA.level)}
+                  valueB={String(playerB.level)}
+                  pctA={Math.min((playerA.level / 100) * 100, 100)}
+                  pctB={Math.min((playerB.level / 100) * 100, 100)}
+                  aWins={playerA.level > playerB.level}
+                />
+                <StatCompareRow
+                  label="RANK POINTS"
+                  valueA={String(playerA.rankPoints)}
+                  valueB={String(playerB.rankPoints)}
+                  pctA={Math.min((playerA.rankPoints / Math.max(playerA.rankPoints, playerB.rankPoints)) * 100, 100)}
+                  pctB={Math.min((playerB.rankPoints / Math.max(playerA.rankPoints, playerB.rankPoints)) * 100, 100)}
+                  aWins={playerA.rankPoints > playerB.rankPoints}
+                />
+                <StatCompareRow
+                  label="CS RANK"
+                  valueA={`#${playerA.csRank}`}
+                  valueB={`#${playerB.csRank}`}
+                  pctA={Math.min(((playerA.csMaxRank - playerA.csRank) / Math.max(playerA.csMaxRank, 1)) * 100, 100)}
+                  pctB={Math.min(((playerB.csMaxRank - playerB.csRank) / Math.max(playerB.csMaxRank, 1)) * 100, 100)}
+                  aWins={playerA.csRank > 0 && playerB.csRank > 0 ? playerA.csRank < playerB.csRank : playerA.csRankPoints > playerB.csRankPoints}
+                />
+              </div>
             </div>
 
             {/* Winner Summary */}
@@ -260,38 +321,44 @@ function StatCompareRow({
 }
 
 function getWinner(a: PlayerData, b: PlayerData): { text: string; subtext: string; insight: string } | null {
-  let scoreA = 0;
-  let scoreB = 0;
+  const aHsPct = a.kills > 0 ? a.headshots / a.kills : 0;
+  const bHsPct = b.kills > 0 ? b.headshots / b.kills : 0;
 
-  if (a.kd > b.kd) scoreA++;
-  else if (b.kd > a.kd) scoreB++;
+  const cats: Array<{ a: number; b: number; label: string }> = [
+    { a: a.kd, b: b.kd, label: "K/D" },
+    { a: a.kills, b: b.kills, label: "Kills" },
+    { a: a.brWinRate, b: b.brWinRate, label: "Win Rate" },
+    { a: aHsPct, b: bHsPct, label: "Headshot %" },
+    { a: a.level, b: b.level, label: "Level" },
+    { a: a.rankPoints, b: b.rankPoints, label: "Rank Points" },
+    { a: a.brDamage, b: b.brDamage, label: "Damage" },
+    { a: a.brHighestKills, b: b.brHighestKills, label: "Highest Kills" },
+  ];
 
-  if (a.headshots > b.headshots) scoreA++;
-  else if (b.headshots > a.headshots) scoreB++;
-
-  if (a.brWinRate > b.brWinRate) scoreA++;
-  else if (b.brWinRate > a.brWinRate) scoreB++;
-
-  if (a.level > b.level) scoreA++;
-  else if (b.level > a.level) scoreB++;
+  let scoreA = 0, scoreB = 0;
+  const diffs: string[] = [];
+  for (const c of cats) {
+    if (c.a > c.b) { scoreA++; diffs.push(`${c.label}: ${c.a > c.b ? c.a : c.b}`); }
+    else if (c.b > c.a) { scoreB++; }
+  }
 
   if (scoreA > scoreB) {
     return {
-      text: `${a.name} unggul di ${scoreA} kategori`,
-      subtext: "Performa keseluruhan lebih stabil.",
-      insight: `${a.name} memiliki rasio K/D ${Math.round(Math.abs(a.kd - b.kd) * 100) / 100} lebih tinggi dari rata-rata. Fokus pada pertempuran jarak menengah.`,
+      text: `${a.name} unggul ${scoreA}-${scoreB}`,
+      subtext: `${a.name} menang di ${scoreA} dari ${cats.length} kategori.`,
+      insight: `${a.name} unggul dalam ${diffs.slice(0, 3).join(", ")}.`,
     };
   }
   if (scoreB > scoreA) {
     return {
-      text: `${b.name} unggul di ${scoreB} kategori`,
-      subtext: "Performa keseluruhan lebih stabil.",
-      insight: `${b.name} memiliki rasio K/D ${Math.round(Math.abs(b.kd - a.kd) * 100) / 100} lebih tinggi dari rata-rata. Fokus pada pertempuran jarak menengah.`,
+      text: `${b.name} unggul ${scoreB}-${scoreA}`,
+      subtext: `${b.name} menang di ${scoreB} dari ${cats.length} kategori.`,
+      insight: `Analisis menunjukkan ${b.name} memiliki performa lebih konsisten secara keseluruhan.`,
     };
   }
   return {
     text: "Hasil imbang!",
-    subtext: "Kedua player memiliki performa yang setara.",
-    insight: "Kedua player memiliki statistik yang sebanding. Fokus pada pelatihan situasional.",
+    subtext: `${scoreA}-${scoreA} dari ${cats.length} kategori.`,
+    insight: "Kedua player memiliki performa yang sebanding. Fokus pada pelatihan situasional.",
   };
 }

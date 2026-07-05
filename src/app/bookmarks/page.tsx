@@ -6,6 +6,7 @@ import { useState, useCallback } from "react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 export default function BookmarksPage() {
   return (
@@ -16,6 +17,7 @@ export default function BookmarksPage() {
 }
 
 function BookmarksContent() {
+  const authed = useAuthGuard();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"bookmarks" | "history">(
@@ -39,6 +41,8 @@ function BookmarksContent() {
     setActiveTab(tab);
     setQuery("");
   }, []);
+
+  if (!authed) return null;
 
   return (
     <div className="min-h-screen bg-background pb-24">

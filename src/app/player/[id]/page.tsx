@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { usePlayer } from "@/hooks/usePlayer";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useStore } from "@/lib/store";
 
 export default function PlayerProfilePage() {
+  const authed = useAuthGuard();
   const params = useParams();
   const router = useRouter();
   const uid = params.id as string;
@@ -246,12 +248,14 @@ export default function PlayerProfilePage() {
     setShared(false);
   };
 
+  if (!authed) return null;
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background pb-24">
         <TopAppBar showBookmark showShare />
-        <main className="mx-auto max-w-container-max space-y-6 px-4 pt-20">
-          <Skeleton />
+        <main className="mx-auto max-w-container-max px-4 pt-20">
+          <LoadingAnimation />
         </main>
         <BottomNav />
       </div>
@@ -506,15 +510,95 @@ function getNextRank(rank: string): string {
   return ranks[idx + 1];
 }
 
-function Skeleton() {
+function LoadingAnimation() {
   return (
-    <div className="animate-pulse space-y-4">
-      <div className="h-24 w-full rounded-xl bg-surface-container-high" />
-      <div className="grid grid-cols-2 gap-4">
-        {[1, 2, 3, 4].map(i => <div key={i} className="h-20 rounded-xl bg-surface-container-high" />)}
+    <div className="flex flex-col items-center justify-center py-24">
+      {/* Animated fire icon */}
+      <div className="relative mb-8">
+        <div className="absolute inset-0 animate-ping rounded-full bg-primary-container/20" />
+        <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-container/30 to-secondary-container/30 border border-primary-container/20">
+          <span className="material-symbols-outlined text-4xl text-primary-container animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
+            local_fire_department
+          </span>
+        </div>
       </div>
-      <div className="h-32 rounded-xl bg-surface-container-high" />
-      <div className="h-48 rounded-xl bg-surface-container-high" />
+
+      {/* Loading text */}
+      <h3 className="text-lg font-semibold text-on-surface">Mencari Pemain</h3>
+      <p className="mt-1 text-sm text-on-surface-variant/70">Menghubungi server Garena...</p>
+
+      {/* Animated dots */}
+      <div className="mt-6 flex items-center gap-1.5">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-2.5 w-2.5 rounded-full bg-primary-container"
+            style={{
+              animation: `loadingDot 1.4s ease-in-out ${i * 0.2}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Animated progress bar */}
+      <div className="mt-8 h-1 w-48 overflow-hidden rounded-full bg-outline-variant/30">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary-container via-secondary-container to-tertiary"
+          style={{
+            animation: "loadingBar 2s ease-in-out infinite",
+            width: "40%",
+          }}
+        />
+      </div>
+
+      {/* Loading stages */}
+      <div className="mt-8 space-y-3 text-left">
+        {[
+          { label: "Memvalidasi UID", done: true },
+          { label: "Menghubungi server Garena", done: false, active: true },
+          { label: "Mengambil data player", done: false },
+          { label: "Memproses statistik", done: false },
+        ].map((step, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+              step.done
+                ? "bg-[#00D68F]/20 text-[#00D68F]"
+                : step.active
+                  ? "bg-primary-container/20 text-primary-container"
+                  : "bg-outline-variant/20 text-outline-variant"
+            }`}>
+              {step.done ? (
+                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+              ) : step.active ? (
+                <div className="h-2 w-2 animate-pulse rounded-full bg-current" />
+              ) : (
+                <span className="text-xs">{i + 1}</span>
+              )}
+            </div>
+            <span className={`text-sm ${
+              step.done
+                ? "text-[#00D68F]"
+                : step.active
+                  ? "text-on-surface"
+                  : "text-on-surface-variant/50"
+            }`}>
+              {step.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes loadingDot {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes loadingBar {
+          0% { transform: translateX(-100%); }
+          50% { transform: translateX(250%); }
+          100% { transform: translateX(-100%); }
+        }
+      `}</style>
     </div>
   );
 }

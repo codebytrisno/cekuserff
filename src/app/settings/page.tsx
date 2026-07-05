@@ -3,10 +3,12 @@
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { SERVERS } from "@/lib/constants";
 import type { Settings } from "@/types";
 
 export default function SettingsPage() {
+  const authed = useAuthGuard();
   const settings = useStore((s) => s.settings);
   const updateSettings = useStore((s) => s.updateSettings);
   const clearHistory = useStore((s) => s.clearHistory);
@@ -26,6 +28,8 @@ export default function SettingsPage() {
     clearHistory();
     bookmarks.forEach((b) => removeBookmark(b.uid));
   };
+
+  if (!authed) return null;
 
   return (
     <div className="min-h-screen bg-background pb-24">
