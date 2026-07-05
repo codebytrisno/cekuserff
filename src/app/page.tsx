@@ -37,6 +37,15 @@ function isOnline(uid: string): boolean {
 
 function LandingPage() {
   const router = useRouter();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user?.username === "codebytrisno") {
+      router.replace("/admin");
+    }
+  }, [user, router]);
+
+  if (user?.username === "codebytrisno") return null;
 
   return (
     <div className="min-h-screen bg-background">
