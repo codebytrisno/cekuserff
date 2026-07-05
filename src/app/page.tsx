@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { LogIn, LogOut, Search, TrendingUp, Users, BarChart3, Bookmark, GitCompare, History, Zap, ShieldCheck, ChevronRight } from "lucide-react";
+import { LogIn, LogOut, Search, TrendingUp, Users, BarChart3, Bookmark, GitCompare, History, Zap, ShieldCheck, ChevronRight, Crown } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
@@ -55,6 +55,13 @@ function LandingPage() {
             <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             <span className="hidden sm:inline">Donasi</span>
           </a>
+          <button
+            onClick={() => router.push("/premium")}
+            className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
+          >
+            <Crown className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Premium</span>
+          </button>
           <button
             onClick={() => router.push("/auth")}
             className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
@@ -252,6 +259,13 @@ function AppHome() {
             <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             <span className="hidden sm:inline">Donasi</span>
           </a>
+          <button
+            onClick={() => router.push("/premium")}
+            className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
+          >
+            <Crown className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Premium</span>
+          </button>
 
           <div ref={authRef} className="relative">
             {isAuthenticated && user ? (

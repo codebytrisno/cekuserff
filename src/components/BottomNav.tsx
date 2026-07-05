@@ -2,12 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Crown } from "lucide-react";
 
 const tabs = [
   { href: "/", label: "Beranda", icon: "home" },
   { href: "/compare", label: "Bandingkan", icon: "compare_arrows" },
-  { href: "/premium", label: "Premium", icon: "premium" },
   { href: "/bookmarks", label: "Bookmark", icon: "bookmark" },
   { href: "/history", label: "Riwayat", icon: "history" },
 ];
@@ -34,16 +32,12 @@ export function BottomNav() {
                   : "text-on-surface-variant hover:text-primary"
               }`}
             >
-              {tab.icon === "premium" ? (
-                <Crown className={`h-6 w-6 ${isActive ? "text-primary-container" : "text-primary-container/70"}`} />
-              ) : (
-                <span
-                  className="material-symbols-outlined"
-                  style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
-                >
-                  {tab.icon}
-                </span>
-              )}
+              <span
+                className="material-symbols-outlined"
+                style={isActive ? { fontVariationSettings: "'FILL' 1" } : undefined}
+              >
+                {tab.icon}
+              </span>
               <span className="font-label-sm text-[12px]">{tab.label}</span>
             </Link>
           );
