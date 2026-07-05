@@ -423,7 +423,7 @@ function AppHome() {
                     </div>
                     <div className="text-right">
                       <p className={`font-display-stats text-[28px] font-bold ${idx === 0 ? "text-primary-container" : "text-on-surface opacity-70"}`}>
-                        {kd}
+                        {kd.toFixed(2)}
                       </p>
                       <p className="font-label-sm text-[12px] uppercase tracking-wider text-on-surface-variant">K/D Rate</p>
                     </div>
