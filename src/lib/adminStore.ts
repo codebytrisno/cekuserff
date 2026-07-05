@@ -1,9 +1,10 @@
 "use client";
 
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 import type { PremiumTier } from "./premium";
 import { usePremium } from "./premium";
+
+const STORAGE_KEY = "ff-checker-admin-users";
 
 export interface ManagedUser {
   username: string;
@@ -20,35 +21,55 @@ interface AdminStore {
   findByCredentials: (username: string, password: string) => ManagedUser | null;
 }
 
-export const useAdminStore = create<AdminStore>()(
-  persist(
-    (set, get) => ({
-      users: [],
+function loadUsers(): ManagedUser[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
 
-      addUser: (user) => {
-        const existing = get().users.find((u) => u.username === user.username);
-        if (existing) return false;
-        set({ users: [...get().users, user] });
-        return true;
-      },
+function saveUsers(users: ManagedUser[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+  } catch {}
+}
 
-      removeUser: (username) => {
-        set({ users: get().users.filter((u) => u.username !== username) });
-      },
+export const useAdminStore = create<AdminStore>((set, get) => ({
+  users: loadUsers(),
 
-      findByCredentials: (username, password) => {
-        const user = get().users.find(
-          (u) => u.username === username.toLowerCase().trim() && u.password === password
-        );
-        return user ?? null;
-      },
-    }),
-    {
-      name: "ff-checker-admin-users",
-      storage: createJSONStorage(() => localStorage),
+  addUser: (user) => {
+    const users = get().users;
+    if (users.find((u) => u.username === user.username)) return false;
+    const updated = [...users, user];
+    saveUsers(updated);
+    set({ users: updated });
+    return true;
+  },
+
+  removeUser: (username) => {
+    const updated = get().users.filter((u) => u.username !== username);
+    saveUsers(updated);
+    set({ users: updated });
+  },
+
+  findByCredentials: (username, password) => {
+    const key = username.toLowerCase().trim();
+
+    // Always read fresh from localStorage to avoid stale state
+    const users = loadUsers();
+    if (users.length > 0) {
+      set({ users });
     }
-  )
-);
+
+    const user = users.find(
+      (u) => u.username === key && u.password === password
+    );
+    return user ?? null;
+  },
+}));
 
 export function activateManagedUser(managedUser: ManagedUser) {
   const plan = managedUser.plan;
