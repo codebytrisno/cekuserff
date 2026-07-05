@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
+import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useStore } from "@/lib/store";
@@ -35,6 +36,10 @@ export default function PlayerProfilePage() {
       search(uid).then((d) => { if (d) setPlayerCache(uid, d); });
     }
   }, [uid]);
+
+  useEffect(() => {
+    if (error) toast("error", error);
+  }, [error]);
 
   const handleRefresh = async () => {
     setCached(false);

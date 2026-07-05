@@ -100,21 +100,23 @@ function isQuotaExceeded(res: Response): boolean {
   return res.status === 429;
 }
 
-async function tryKey(uid: string, path: string, region: string, key: string): Promise<{ ok: boolean; quotaExceeded: boolean; data?: any }> {
+async function tryKey(uid: string, path: string, region: string, key: string): Promise<{ ok: boolean; quotaExceeded: boolean; notFound: boolean; data?: any }> {
   // header auth
   const hdr = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}`;
   const r1 = await fetch(hdr, { headers: { "User-Agent": UA, Accept: "application/json", "x-api-key": key } }).catch(() => null);
-  if (r1?.ok) return { ok: true, quotaExceeded: false, data: await r1.json() };
-  if (r1 && isQuotaExceeded(r1)) return { ok: false, quotaExceeded: true };
+  if (r1?.ok) return { ok: true, quotaExceeded: false, notFound: false, data: await r1.json() };
+  if (r1 && isQuotaExceeded(r1)) return { ok: false, quotaExceeded: true, notFound: false };
+  if (r1?.status === 404) return { ok: false, quotaExceeded: false, notFound: true };
 
   // query param fallback (kalo header auth gak didukung)
   if (r1?.status === 403) {
     const qry = `https://developers.freefirecommunity.com/api/v1/${path}?uid=${uid}&region=${region}&key=${key}`;
     const r2 = await fetch(qry, { headers: { "User-Agent": UA, Accept: "application/json" } }).catch(() => null);
-    if (r2?.ok) return { ok: true, quotaExceeded: false, data: await r2.json() };
-    if (r2 && isQuotaExceeded(r2)) return { ok: false, quotaExceeded: true };
+    if (r2?.ok) return { ok: true, quotaExceeded: false, notFound: false, data: await r2.json() };
+    if (r2 && isQuotaExceeded(r2)) return { ok: false, quotaExceeded: true, notFound: false };
+    if (r2?.status === 404) return { ok: false, quotaExceeded: false, notFound: true };
   }
-  return { ok: false, quotaExceeded: false };
+  return { ok: false, quotaExceeded: false, notFound: false };
 }
 
 // ── GET ─────────────────────────────────────────────────────
@@ -133,14 +135,18 @@ export async function GET(
     let infoData: any = null;
     let usedKey = "";
 
+    let notFound = false;
     for (const key of apiKeys) {
       for (const region of REGIONS) {
         const r = await tryKey(uid, "info", region, key);
         if (r.ok) { infoData = r.data; usedKey = key; break; }
+        if (r.notFound) { notFound = true; break; }
         if (r.quotaExceeded) break;
       }
-      if (infoData) break;
+      if (infoData || notFound) break;
     }
+
+    if (notFound) return NextResponse.json({ error: "Player tidak ditemukan" }, { status: 404 });
 
     if (infoData?.basicInfo) {
       const info = infoData.basicInfo;

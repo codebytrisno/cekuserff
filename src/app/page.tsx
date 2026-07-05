@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LogIn, LogOut, Search, TrendingUp, Users, BarChart3, Bookmark, GitCompare, History, Zap, ShieldCheck, ChevronRight } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
+import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
 import { useStore } from "@/lib/store";
 import { useAuth } from "@/lib/auth";
@@ -179,6 +180,8 @@ function AppHome() {
       useStore.getState().addHistory(data);
       setUid("");
       router.push(`/player/${uid}`);
+    } else if (error) {
+      toast("error", error);
     }
   };
 
