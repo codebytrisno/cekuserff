@@ -15,7 +15,8 @@ const ALL_TABS = [
 export function BottomNav() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const tabs = ALL_TABS.filter((t) => t.href !== "/admin" || user?.username === "codebytrisno");
+  const isAdmin = user?.username === "codebytrisno";
+  const tabs = isAdmin ? ALL_TABS.filter((t) => t.href === "/admin") : ALL_TABS.filter((t) => t.href !== "/admin");
 
   return (
     <nav className="fixed bottom-0 z-50 w-full rounded-t-xl border-t border-outline-variant bg-surface-container/90 px-2 pb-2 shadow-[0_-4px_12px_rgba(255,107,53,0.1)] backdrop-blur-xl">

@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 export default function AuthPage() {
   const router = useRouter();
   const login = useAuth((s) => s.login);
+  const user = useAuth((s) => s.user);
   const isAuthenticated = useAuth((s) => s.isAuthenticated);
   const [ready, setReady] = useState(false);
 
@@ -28,9 +29,13 @@ export default function AuthPage() {
   useEffect(() => {
     if (!ready) return;
     if (isAuthenticated) {
-      router.replace("/");
+      if (user?.username === "codebytrisno") {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     }
-  }, [isAuthenticated, ready, router]);
+  }, [isAuthenticated, ready, router, user]);
 
   if (!ready) return null;
 
@@ -45,7 +50,11 @@ export default function AuthPage() {
 
     const ok = login(username, password);
     if (ok) {
-      router.replace("/");
+      if (username === "codebytrisno") {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
+      }
     } else {
       setError("Username atau password salah");
     }
