@@ -35,7 +35,7 @@ export function BottomNav() {
               }`}
             >
               {tab.icon === "premium" ? (
-                <Crown className={`h-6 w-6 ${isActive ? "text-primary-container" : ""}`} />
+                <Crown className={`h-6 w-6 ${isActive ? "text-primary-container" : "text-primary-container/70"}`} />
               ) : (
                 <span
                   className="material-symbols-outlined"
