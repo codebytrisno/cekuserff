@@ -5,6 +5,7 @@ import { Plus, Trash2, ShieldCheck, Crown, UserCog, Pen } from "lucide-react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useAuth } from "@/lib/auth-client";
+import { toast } from "@/components/Toast";
 
 type ManagedUser = {
   id: string;
@@ -42,7 +43,8 @@ export default function AdminPage() {
   const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/users");
-      if (res.ok) setUsers(await res.json());
+      if (!res.ok) return;
+      setUsers(await res.json());
     } catch {}
   }, []);
 
@@ -73,6 +75,17 @@ export default function AdminPage() {
     });
 
     setLoading(false);
+
+    if (!res.ok) {
+      const text = await res.text();
+      try {
+        const data = JSON.parse(text);
+        setError(data.error || "Gagal membuat user");
+      } catch {
+        setError(text || "Gagal membuat user");
+      }
+      return;
+    }
 
     const data = await res.json();
     if (data.error) {
@@ -106,18 +119,40 @@ export default function AdminPage() {
     setEditLoading(true);
     setEditError("");
 
+    const body: Record<string, any> = { id: editingUser.id };
+
+    const newUsername = editUsername.trim().toLowerCase();
+    if (newUsername !== editingUser.username) {
+      body.username = newUsername;
+    }
+
+    const newLabel = editLabel.trim() || newUsername;
+    if (newLabel !== editingUser.label) {
+      body.label = newLabel;
+    }
+
+    if (editPassword) {
+      body.password = editPassword;
+    }
+
     const res = await fetch("/api/admin/users", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: editingUser.id,
-        username: editUsername.trim().toLowerCase(),
-        label: editLabel.trim() || editUsername.trim(),
-        password: editPassword || undefined,
-      }),
+      body: JSON.stringify(body),
     });
 
     setEditLoading(false);
+
+    if (!res.ok) {
+      const text = await res.text();
+      try {
+        const data = JSON.parse(text);
+        setEditError(data.error || "Gagal menyimpan perubahan");
+      } catch {
+        setEditError(text || "Gagal menyimpan perubahan");
+      }
+      return;
+    }
 
     const data = await res.json();
     if (data.error) {
@@ -127,6 +162,10 @@ export default function AdminPage() {
 
     setEditingUser(null);
     fetchUsers();
+
+    if (editPassword) {
+      toast("success", `Password ${newUsername} berhasil diubah`);
+    }
   };
 
   const handleDelete = async (id: string) => {
