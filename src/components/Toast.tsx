@@ -18,17 +18,24 @@ export function toast(type: ToastType, message: string) {
 }
 
 const ICONS: Record<ToastType, React.ReactNode> = {
-  error: <ShieldOff className="h-5 w-5 text-error" />,
-  success: <CheckCircle className="h-5 w-5 text-[#00D68F]" />,
-  warning: <AlertTriangle className="h-5 w-5 text-[#FFB300]" />,
-  info: <Info className="h-5 w-5 text-primary-container" />,
+  error: <ShieldOff className="h-5 w-5 text-accent" />,
+  success: <CheckCircle className="h-5 w-5 text-secondary" />,
+  warning: <AlertTriangle className="h-5 w-5 text-tertiary" />,
+  info: <Info className="h-5 w-5 text-quinary" />,
 };
 
 const BG: Record<ToastType, string> = {
-  error: "border-error/30 bg-error/10",
-  success: "border-[#00D68F]/30 bg-[#00D68F]/10",
-  warning: "border-[#FFB300]/30 bg-[#FFB300]/10",
-  info: "border-primary-container/30 bg-primary-container/10",
+  error: "border-accent bg-accent/10",
+  success: "border-secondary bg-secondary/10",
+  warning: "border-tertiary bg-tertiary/10",
+  info: "border-quinary bg-quinary/10",
+};
+
+const SHADOW: Record<ToastType, string> = {
+  error: "shadow-[4px_4px_0_#FF3AF2]",
+  success: "shadow-[4px_4px_0_#00F5D4]",
+  warning: "shadow-[4px_4px_0_#FFE600]",
+  info: "shadow-[4px_4px_0_#7B2FFF]",
 };
 
 export function ToastContainer() {
@@ -51,21 +58,20 @@ export function ToastContainer() {
   };
 
   return (
-    <div className="fixed bottom-24 left-1/2 z-[200] flex -translate-x-1/2 flex-col gap-2">
+    <div className="fixed bottom-24 left-1/2 z-[200] flex -translate-x-1/2 flex-col gap-3">
       {items.map((item) => (
         <div
           key={item.id}
-          className={`flex min-w-[300px] max-w-[90vw] items-center gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur-xl ${BG[item.type]} animate-in slide-in-from-bottom-4`}
+          className={`flex min-w-[320px] max-w-[90vw] items-center gap-3 border-4 rounded-2xl px-4 py-3 backdrop-blur-xl ${BG[item.type]} ${SHADOW[item.type]}`}
           style={{ animation: "toastIn 0.3s ease-out" }}
         >
           {ICONS[item.type]}
-          <p className="flex-1 text-sm font-medium text-on-surface">{item.message}</p>
-          <button onClick={() => remove(item.id)} className="text-on-surface-variant/50 hover:text-on-surface">
+          <p className="flex-1 text-sm font-bold text-foreground">{item.message}</p>
+          <button onClick={() => remove(item.id)} className="text-white/40 hover:text-accent transition-colors">
             <X className="h-4 w-4" />
           </button>
         </div>
       ))}
-      <style>{`@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}`}</style>
     </div>
   );
 }

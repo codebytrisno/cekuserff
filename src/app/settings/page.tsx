@@ -3,12 +3,12 @@
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
-import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { SERVERS } from "@/lib/constants";
 import type { Settings } from "@/types";
 
+const ACCENT_COLORS = ["#FF3AF2", "#00F5D4", "#FFE600", "#FF6B35", "#7B2FFF"];
+
 export default function SettingsPage() {
-  const authed = useAuthGuard();
   const settings = useStore((s) => s.settings);
   const updateSettings = useStore((s) => s.updateSettings);
   const clearHistory = useStore((s) => s.clearHistory);
@@ -29,28 +29,33 @@ export default function SettingsPage() {
     bookmarks.forEach((b) => removeBookmark(b.uid));
   };
 
-  if (!authed) return null;
-
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-[#0D0D1A] pb-24 pattern-dots">
       <TopAppBar />
 
       <main className="mx-auto max-w-container-max space-y-6 px-4 pt-20">
         {/* Header */}
-        <section className="mb-8">
-          <h2 className="font-headline-h1-mobile mb-2 text-[20px] font-bold text-primary">Pengaturan</h2>
-          <p className="font-body-md text-[14px] text-on-surface-variant">Sesuaikan pengalaman gaming kompetitif kamu.</p>
+        <section className="mb-8 text-center animate-slide-up">
+          <h2 className="font-heading text-[28px] font-black uppercase tracking-wider text-white text-shadow-double">
+            Pengaturan
+          </h2>
+          <p className="mt-2 font-body-md text-[14px] text-white/60">
+            Sesuaikan pengalaman gaming kompetitif kamu.
+          </p>
         </section>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
           {/* Theme Toggle */}
-          <div className="glass-panel flex flex-col gap-4 rounded-xl p-4 orange-glow md:col-span-12">
+          <div
+            className="glass-card pattern-stripes flex flex-col gap-4 rounded-3xl border-4 p-6 md:col-span-12 rotate-1 animate-card-entrance shimmer-border"
+            style={{ borderColor: ACCENT_COLORS[0], boxShadow: `8px 8px 0 ${ACCENT_COLORS[0]}, 16px 16px 0 ${ACCENT_COLORS[3]}`, animationDelay: "0.1s" }}
+          >
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>palette</span>
-              <h3 className="font-headline-h3 text-[16px] font-semibold">Tema Visual</h3>
+              <span className="material-symbols-outlined text-[#FF3AF2] text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>palette</span>
+              <h3 className="font-heading text-[18px] font-black uppercase tracking-wider text-white text-shadow-single">Tema Visual</h3>
             </div>
-            <div className="grid grid-cols-3 gap-2 rounded-full border border-outline-variant bg-surface-container-lowest p-1">
+            <div className="grid grid-cols-3 gap-2 rounded-full border-4 border-[#FF3AF2] bg-[#1a1a2e] p-1">
               {[
                 { value: "light" as const, label: "Terang", icon: "light_mode" },
                 { value: "dark" as const, label: "Gelap", icon: "dark_mode" },
@@ -59,10 +64,10 @@ export default function SettingsPage() {
                 <button
                   key={value}
                   onClick={() => handleTheme(value)}
-                  className={`flex items-center justify-center gap-2 rounded-full px-4 py-2 font-label-sm text-[12px] transition-all ${
+                  className={`flex items-center justify-center gap-2 rounded-full px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all ${
                     settings.theme === value
-                      ? "bg-primary-container font-bold text-on-primary-container"
-                      : "text-on-surface-variant hover:bg-surface-variant/20"
+                      ? "btn-primary bg-[#FF3AF2] text-[#0D0D1A] shadow-[4px_4px_0_#FFE600]"
+                      : "text-white/60 hover:bg-white/10"
                   }`}
                 >
                   <span className="material-symbols-outlined text-[18px]">{icon}</span>
@@ -73,13 +78,16 @@ export default function SettingsPage() {
           </div>
 
           {/* Server Selector */}
-          <div className="glass-panel flex flex-col justify-between rounded-xl p-4 orange-glow md:col-span-7">
+          <div
+            className="glass-card flex flex-col justify-between rounded-3xl border-4 p-6 md:col-span-7 -rotate-1 animate-card-entrance"
+            style={{ borderColor: ACCENT_COLORS[1], boxShadow: `8px 8px 0 ${ACCENT_COLORS[1]}, 16px 16px 0 ${ACCENT_COLORS[2]}`, animationDelay: "0.2s" }}
+          >
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>public</span>
-                <h3 className="font-headline-h3 text-[16px] font-semibold">Server Bawaan</h3>
+                <span className="material-symbols-outlined text-[#00F5D4] text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>public</span>
+                <h3 className="font-heading text-[18px] font-black uppercase tracking-wider text-white text-shadow-single">Server Bawaan</h3>
               </div>
-              <span className="rounded bg-tertiary/10 px-2 py-1 font-label-sm text-[10px] uppercase tracking-wider text-tertiary">
+              <span className="rounded-full bg-[#00F5D4]/10 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-[#00F5D4]">
                 Koneksi Tercepat
               </span>
             </div>
@@ -87,15 +95,15 @@ export default function SettingsPage() {
               {SERVERS.slice(0, 3).map((server) => (
                 <label
                   key={server}
-                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 transition-colors hover:border-primary ${
+                  className={`flex cursor-pointer items-center justify-between rounded-2xl border-4 p-3 transition-colors ${
                     settings.defaultServer === server
-                      ? "border-primary bg-surface-container-high"
-                      : "border-outline-variant bg-surface-container-high"
+                      ? "border-[#00F5D4] bg-[#00F5D4]/10"
+                      : "border-white/10 bg-[#1a1a2e] hover:border-[#00F5D4]/50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-on-surface-variant">location_on</span>
-                    <span className="font-body-md text-[14px]">{server}</span>
+                    <span className="material-symbols-outlined text-white/60">location_on</span>
+                    <span className="text-[14px] text-white">{server}</span>
                   </div>
                   <input
                     type="radio"
@@ -103,7 +111,7 @@ export default function SettingsPage() {
                     value={server}
                     checked={settings.defaultServer === server}
                     onChange={() => handleServer(server)}
-                    className="text-primary focus:ring-primary border-outline bg-transparent"
+                    className="accent-[#00F5D4]"
                   />
                 </label>
               ))}
@@ -111,67 +119,74 @@ export default function SettingsPage() {
           </div>
 
           {/* Clear Cache */}
-          <div className="glass-panel flex flex-col rounded-xl p-4 orange-glow md:col-span-5">
+          <div
+            className="glass-card flex flex-col rounded-3xl border-4 p-6 md:col-span-5 rotate-1 animate-card-entrance"
+            style={{ borderColor: ACCENT_COLORS[2], boxShadow: `8px 8px 0 ${ACCENT_COLORS[2]}, 16px 16px 0 ${ACCENT_COLORS[4]}`, animationDelay: "0.3s" }}
+          >
             <div className="mb-4 flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>cleaning_services</span>
-              <h3 className="font-headline-h3 text-[16px] font-semibold">Penyimpanan</h3>
+              <span className="material-symbols-outlined text-[#FFE600] text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>cleaning_services</span>
+              <h3 className="font-heading text-[18px] font-black uppercase tracking-wider text-white text-shadow-single">Penyimpanan</h3>
             </div>
             <div className="flex flex-grow flex-col items-center justify-center py-6 text-center">
-              <div className="font-display-stats mb-1 text-[28px] font-bold text-primary">
+              <div className="font-display text-[36px] font-black text-[#FFE600] text-shadow-double">
                 {((bookmarks.length + history.length) * 0.5).toFixed(0)} MB
               </div>
-              <div className="mb-6 font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">
+              <div className="mb-6 text-[12px] font-black uppercase tracking-widest text-white/40">
                 Cache Terpakai
               </div>
               <button
                 onClick={handleClearCache}
-                className="w-full rounded-lg bg-secondary-container py-3 font-headline-h3 text-[16px] font-semibold text-on-secondary-container transition-all hover:opacity-90 active:scale-95"
+                className="btn-secondary w-full rounded-full border-4 border-[#FFE600] bg-[#FFE600]/10 py-3 text-[16px] font-black uppercase tracking-wider text-[#FFE600] transition-all hover:bg-[#FFE600]/20 active:scale-95"
+                style={{ boxShadow: `4px 4px 0 ${ACCENT_COLORS[2]}` }}
               >
                 Hapus Cache
               </button>
             </div>
-            <p className="text-center font-label-sm text-[12px] italic text-on-surface-variant/60">
+            <p className="text-center text-[12px] italic text-white/40">
               Termasuk aset game sementara dan avatar pemain.
             </p>
           </div>
 
           {/* About App */}
-          <div className="glass-panel relative overflow-hidden rounded-xl p-4 orange-glow md:col-span-12">
+          <div
+            className="glass-card pattern-checker relative overflow-hidden rounded-3xl border-4 p-6 md:col-span-12 -rotate-1 animate-card-entrance"
+            style={{ borderColor: ACCENT_COLORS[3], boxShadow: `8px 8px 0 ${ACCENT_COLORS[3]}, 16px 16px 0 ${ACCENT_COLORS[0]}`, animationDelay: "0.4s" }}
+          >
             <div className="pointer-events-none absolute -right-12 -top-12 opacity-10">
-              <span className="material-symbols-outlined text-[200px]" style={{ fontVariationSettings: "'wght' 700" }}>info</span>
+              <span className="material-symbols-outlined text-[200px] text-[#FF6B35]" style={{ fontVariationSettings: "'wght' 700" }}>info</span>
             </div>
             <div className="relative z-10 mb-6 flex items-center gap-3">
-              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
-              <h3 className="font-headline-h3 text-[16px] font-semibold">Tentang CEKUSERFF</h3>
+              <span className="material-symbols-outlined text-[#FF6B35] text-[28px]" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
+              <h3 className="font-heading text-[18px] font-black uppercase tracking-wider text-white text-shadow-single">Tentang CEKUSERFF</h3>
             </div>
-            <div className="grid grid-cols-1 gap-lg md:grid-cols-3">
-              <div className="space-y-2">
-                <div className="font-label-sm text-[12px] uppercase text-primary">Versi</div>
-                <div className="font-body-md text-[14px]">v1.0.0 (Stable Build)</div>
+            <div className="relative z-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="space-y-2 rounded-2xl border-2 border-[#FF6B35]/30 bg-[#FF6B35]/5 p-4">
+                <div className="text-[12px] font-black uppercase text-[#FF6B35]">Versi</div>
+                <div className="text-[14px] text-white">v1.0.0 (Stable Build)</div>
               </div>
-              <div className="space-y-2">
-                <div className="font-label-sm text-[12px] uppercase text-primary">Pengembang</div>
-                <div className="font-body-md text-[14px]">Apex Systems Interactive</div>
+              <div className="space-y-2 rounded-2xl border-2 border-[#FF6B35]/30 bg-[#FF6B35]/5 p-4">
+                <div className="text-[12px] font-black uppercase text-[#FF6B35]">Pengembang</div>
+                <div className="text-[14px] text-white">Apex Systems Interactive</div>
               </div>
-              <div className="space-y-2">
-                <div className="font-label-sm text-[12px] uppercase text-primary">Status</div>
+              <div className="space-y-2 rounded-2xl border-2 border-[#FF6B35]/30 bg-[#FF6B35]/5 p-4">
+                <div className="text-[12px] font-black uppercase text-[#FF6B35]">Status</div>
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-[#00D68F] shadow-[0_0_8px_#00D68F]" />
-                  <span className="font-body-md text-[14px] text-[#00D68F]">Server Aktif</span>
+                  <span className="text-[14px] text-[#00D68F]">Server Aktif</span>
                 </div>
               </div>
             </div>
-            <hr className="my-6 border-outline-variant" />
-            <div className="flex flex-wrap items-center justify-between gap-4">
+            <hr className="my-6 border-2 border-[#FF6B35]/20" />
+            <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
               <div className="flex gap-4">
-                <a className="font-label-sm text-[12px] text-on-surface-variant underline underline-offset-4 hover:text-primary transition-colors" href="#">
+                <a className="text-[12px] text-white/60 underline underline-offset-4 transition-colors hover:text-[#FF6B35]" href="#">
                   Kebijakan Privasi
                 </a>
-                <a className="font-label-sm text-[12px] text-on-surface-variant underline underline-offset-4 hover:text-primary transition-colors" href="#">
+                <a className="text-[12px] text-white/60 underline underline-offset-4 transition-colors hover:text-[#FF6B35]" href="#">
                   Ketentuan Layanan
                 </a>
               </div>
-              <button className="flex items-center gap-2 font-label-sm text-[12px] text-on-surface-variant transition-colors hover:text-tertiary">
+              <button className="flex items-center gap-2 text-[12px] text-white/60 transition-colors hover:text-[#FF6B35]">
                 Periksa Pembaruan <span className="material-symbols-outlined text-sm">open_in_new</span>
               </button>
             </div>
@@ -185,42 +200,48 @@ export default function SettingsPage() {
           rel="noopener noreferrer"
           className="block w-full"
         >
-          <div className="relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-secondary-container to-primary-container p-4 text-on-primary-container transition-transform active:scale-[0.98]">
+          <div
+            className="glass-card relative w-full overflow-hidden rounded-3xl border-4 border-[#7B2FFF] p-6 transition-transform active:scale-[0.98] rotate-1 animate-card-entrance shimmer-border"
+            style={{ boxShadow: `8px 8px 0 ${ACCENT_COLORS[4]}, 16px 16px 0 ${ACCENT_COLORS[0]}`, animationDelay: "0.5s" }}
+          >
             <div className="relative z-10 flex flex-col items-center justify-between gap-4 md:flex-row">
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10">
-                  <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#7B2FFF]/20 border-2 border-[#7B2FFF]">
+                  <span className="material-symbols-outlined text-[28px] text-[#7B2FFF]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
                 </div>
                 <div>
-                  <h3 className="font-headline-h2 mb-1 text-[20px] font-semibold">Dukung Kami</h3>
-                  <p className="font-body-md text-[14px] opacity-90">
+                  <h3 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-double mb-1">Dukung Kami</h3>
+                  <p className="text-[14px] text-white/60">
                     Donasi untuk mendukung pengembangan aplikasi ini.
                   </p>
                 </div>
               </div>
-              <span className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2 font-headline-h3 text-[16px] font-semibold backdrop-blur-md transition-all hover:bg-white/20">
+              <span className="btn-primary flex items-center gap-2 rounded-full border-4 border-[#7B2FFF] bg-[#7B2FFF] px-8 py-3 text-[16px] font-black uppercase tracking-wider text-[#0D0D1A] backdrop-blur-md transition-all hover:bg-[#9B4FFF]">
                 <span className="material-symbols-outlined text-lg">coffee</span>
                 Traktir Kopi
               </span>
             </div>
-            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/3 rounded-full bg-white/5" />
+            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/3 rounded-full bg-[#7B2FFF]/10" />
           </div>
         </a>
 
         {/* Bug Report Banner */}
-        <div className="mt-6 relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-primary-container to-secondary-container p-4 text-on-primary-container">
+        <div
+          className="glass-card mt-6 relative w-full overflow-hidden rounded-3xl border-4 border-[#FF3AF2] p-6 -rotate-1 animate-card-entrance"
+          style={{ boxShadow: `8px 8px 0 ${ACCENT_COLORS[0]}, 16px 16px 0 ${ACCENT_COLORS[1]}`, animationDelay: "0.6s" }}
+        >
           <div className="relative z-10 flex flex-col items-center justify-between gap-4 md:flex-row">
             <div>
-              <h3 className="font-headline-h2 mb-1 text-[20px] font-semibold">Menemukan Bug?</h3>
-              <p className="font-body-md text-[14px] opacity-90">
+              <h3 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-double mb-1">Menemukan Bug?</h3>
+              <p className="text-[14px] text-white/60">
                 Laporkan masalah langsung ke tim teknis kami.
               </p>
             </div>
-            <button className="relative z-10 rounded-full border border-white/20 bg-white/10 px-8 py-3 font-headline-h3 text-[16px] font-semibold backdrop-blur-md transition-all hover:bg-white/20">
+            <button className="btn-secondary relative z-10 rounded-full border-4 border-[#FF3AF2] bg-[#FF3AF2]/10 px-8 py-3 text-[16px] font-black uppercase tracking-wider text-[#FF3AF2] backdrop-blur-md transition-all hover:bg-[#FF3AF2]/20">
               Kirim Laporan
             </button>
           </div>
-          <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/3 rounded-full bg-white/5" />
+          <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/3 rounded-full bg-[#FF3AF2]/10" />
         </div>
       </main>
 
@@ -228,5 +249,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
-// Empty

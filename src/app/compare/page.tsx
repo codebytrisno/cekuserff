@@ -4,12 +4,12 @@ import { useState, useCallback } from "react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { usePlayer } from "@/hooks/usePlayer";
-import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { UID_MIN_LENGTH, UID_MAX_LENGTH } from "@/lib/constants";
 import type { PlayerData } from "@/types";
 
+const ACCENT_COLORS = ["#FF3AF2", "#00F5D4", "#FFE600", "#FF6B35", "#7B2FFF"];
+
 export default function ComparePage() {
-  const authed = useAuthGuard();
   const { search: fetchA, loading: loadingA, error: errorA } = usePlayer();
   const { search: fetchB, loading: loadingB, error: errorB } = usePlayer();
 
@@ -46,13 +46,11 @@ export default function ComparePage() {
 
   const winner = playerA && playerB ? getWinner(playerA, playerB) : null;
 
-  if (!authed) return null;
-
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-[#0D0D1A] pb-24 pattern-mesh">
       <TopAppBar />
 
-      <main className="mx-auto max-w-container-max px-4 pt-20">
+      <main className="mx-auto max-w-container-max px-4 pt-20" style={{ background: "linear-gradient(180deg, #0D0D1A 0%, #1a1033 50%, #0D0D1A 100%)" }}>
         {/* Input Section */}
         {showInput && <section className="mb-6 mt-4">
           <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
@@ -63,14 +61,15 @@ export default function ComparePage() {
                 placeholder="Masukkan UID Player 1"
                 value={uidA}
                 onChange={(e) => setUidA(e.target.value.replace(/\D/g, "").slice(0, UID_MAX_LENGTH))}
-                className="w-full rounded-xl border border-outline-variant bg-surface-container px-4 py-4 font-body-md text-[14px] text-on-surface outline-none transition-all focus:border-primary-container focus:ring-1 focus:ring-primary-container"
+                className="input-maximal w-full rounded-3xl border-4 border-[#FF3AF2] bg-[#1a1033]/80 px-4 py-4 font-body-md text-[14px] text-white outline-none transition-all focus:border-[#00F5D4] focus:ring-2 focus:ring-[#00F5D4]/50 placeholder:text-white/40"
+                style={{ boxShadow: "4px 4px 0 #FF3AF2" }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-sm text-[12px] text-on-surface-variant">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-sm text-[12px] text-[#FF3AF2] font-bold uppercase tracking-wider">
                 Player A
               </span>
             </div>
-            <div className="vs-gradient flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 border-surface shadow-lg z-10">
-              <span className="text-sm font-bold italic text-white">VS</span>
+            <div className="vs-gradient flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 border-[#FFE600] z-10" style={{ boxShadow: "4px 4px 0 #FFE600, 8px 8px 0 #FF3AF2" }}>
+              <span className="font-heading text-sm font-black italic uppercase text-white tracking-wider text-shadow-double">VS</span>
             </div>
             <div className="relative w-full group">
               <input
@@ -79,32 +78,35 @@ export default function ComparePage() {
                 placeholder="Masukkan UID Player 2"
                 value={uidB}
                 onChange={(e) => setUidB(e.target.value.replace(/\D/g, "").slice(0, UID_MAX_LENGTH))}
-                className="w-full rounded-xl border border-outline-variant bg-surface-container px-4 py-4 font-body-md text-[14px] text-on-surface outline-none transition-all focus:border-primary-container focus:ring-1 focus:ring-primary-container"
+                className="input-maximal w-full rounded-3xl border-4 border-[#00F5D4] bg-[#1a1033]/80 px-4 py-4 font-body-md text-[14px] text-white outline-none transition-all focus:border-[#FF3AF2] focus:ring-2 focus:ring-[#FF3AF2]/50 placeholder:text-white/40"
+                style={{ boxShadow: "4px 4px 0 #00F5D4" }}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-sm text-[12px] text-on-surface-variant">
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 font-label-sm text-[12px] text-[#00F5D4] font-bold uppercase tracking-wider">
                 Player B
               </span>
             </div>
           </div>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-4 flex gap-2">
             <button
               disabled={!isValidA || !isValidB || loadingA || loadingB}
               onClick={handleCompare}
-              className="flex-1 rounded-xl bg-primary-container py-3 font-bold text-on-primary-container shadow-lg shadow-primary-container/20 transition-transform active:scale-[0.98] disabled:opacity-50"
+              className="btn-primary flex-1 rounded-full bg-gradient-to-r from-[#FF3AF2] via-[#7B2FFF] to-[#00F5D4] py-4 font-black text-white uppercase tracking-wider shadow-lg transition-transform active:scale-[0.98] disabled:opacity-50"
+              style={{ boxShadow: "4px 4px 0 #FFE600, 8px 8px 0 #FF3AF2" }}
             >
               {loadingA || loadingB ? "Memuat..." : "Bandingkan Sekarang"}
             </button>
             {playerA && playerB && (
               <button
                 onClick={handleSwap}
-                className="flex h-12 w-12 items-center justify-center rounded-xl border border-outline-variant bg-surface-container transition-transform active:scale-[0.98]"
+                className="btn-outline flex h-14 w-14 items-center justify-center rounded-full border-4 border-[#FFE600] bg-[#1a1033] transition-transform active:scale-[0.98]"
+                style={{ boxShadow: "4px 4px 0 #FFE600" }}
               >
-                <span className="material-symbols-outlined text-on-surface-variant">swap_horiz</span>
+                <span className="material-symbols-outlined text-[#FFE600]">swap_horiz</span>
               </button>
             )}
           </div>
           {(errorA || errorB) && (
-            <p className="mt-2 text-center text-[14px] text-error">
+            <p className="mt-2 text-center text-[14px] text-[#FF3AF2] font-bold" style={{ textShadow: "0 0 10px #FF3AF2" }}>
               {errorA || errorB}
             </p>
           )}
@@ -112,12 +114,13 @@ export default function ComparePage() {
 
         {/* Stats Comparison */}
         {playerA && playerB && (
-          <section className="space-y-2">
+          <section className="space-y-4">
             {/* Bandingkan Baru */}
             {!showInput && (
               <button
                 onClick={handleNewCompare}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-outline-variant bg-surface-container py-3 text-sm font-semibold text-on-surface-variant transition-colors hover:border-primary-container hover:text-primary-container"
+                className="btn-secondary flex w-full items-center justify-center gap-2 rounded-full border-4 border-dashed border-[#7B2FFF] bg-[#1a1033]/60 py-4 text-sm font-black uppercase tracking-wider text-[#7B2FFF] transition-all hover:border-[#FF3AF2] hover:text-[#FF3AF2] animate-slide-up"
+                style={{ boxShadow: "4px 4px 0 #7B2FFF" }}
               >
                 <span className="material-symbols-outlined text-lg">add</span>
                 Bandingkan Baru
@@ -125,33 +128,33 @@ export default function ComparePage() {
             )}
 
             {/* Player Header */}
-            <div className="mb-base grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-surface-container-highest text-sm font-bold text-primary">
+            <div className="mb-base grid grid-cols-2 gap-3">
+              <div className="glass-card flex items-center gap-3 rounded-3xl border-4 border-[#FF3AF2] p-3 rotate-[-1deg] animate-card-entrance shimmer-border" style={{ boxShadow: "6px 6px 0 #FF3AF2, 12px 12px 0 #7B2FFF", animationDelay: "0.1s" }}>
+                <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-4 border-[#FF3AF2] bg-[#FF3AF2]/20 text-lg font-black text-[#FF3AF2]">
                   {playerA.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-headline-h3 text-[16px] font-semibold text-on-surface leading-none">{playerA.name}</p>
-                  <p className="font-label-sm text-[12px] text-on-surface-variant">ID: {playerA.uid}</p>
+                  <p className="font-heading text-[15px] font-black uppercase tracking-wider text-white leading-none text-shadow-single">{playerA.name}</p>
+                  <p className="font-label-sm text-[11px] text-[#FF3AF2] font-bold">ID: {playerA.uid}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-end gap-2 text-right">
+              <div className="glass-card flex items-center justify-end gap-3 rounded-3xl border-4 border-[#00F5D4] p-3 rotate-[1deg] text-right animate-card-entrance shimmer-border" style={{ boxShadow: "6px 6px 0 #00F5D4, 12px 12px 0 #FFE600", animationDelay: "0.2s" }}>
                 <div className="text-right">
-                  <p className="font-headline-h3 text-[16px] font-semibold text-on-surface leading-none">{playerB.name}</p>
-                  <p className="font-label-sm text-[12px] text-on-surface-variant">ID: {playerB.uid}</p>
+                  <p className="font-heading text-[15px] font-black uppercase tracking-wider text-white leading-none text-shadow-single">{playerB.name}</p>
+                  <p className="font-label-sm text-[11px] text-[#00F5D4] font-bold">ID: {playerB.uid}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-secondary-container bg-surface-container-highest text-sm font-bold text-secondary">
+                <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-4 border-[#00F5D4] bg-[#00F5D4]/20 text-lg font-black text-[#00F5D4]">
                   {playerB.name.charAt(0)}
                 </div>
               </div>
             </div>
 
             {/* All Stat Sections */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
 
               {/* Section: Akurasi & Rank */}
-              <SectionCard title="Akurasi & Rank">
+              <SectionCard title="Akurasi & Rank" color="#FF3AF2" rotate="-rotate-1" pattern="pattern-dots" index={0}>
                 <StatCompareRow
                   label="WIN RATE"
                   valueA={`${playerA.brWinRate}%`}
@@ -228,7 +231,7 @@ export default function ComparePage() {
 
               {/* Section: Clash Squad */}
               {(playerA.csMatches > 0 || playerB.csMatches > 0) && (
-                <SectionCard title="Clash Squad">
+                <SectionCard title="Clash Squad" color="#00F5D4" rotate="rotate-1" pattern="pattern-stripes" index={1}>
                   <StatCompareRow
                     label="MATCHES"
                     valueA={playerA.csMatches.toLocaleString()}
@@ -265,7 +268,7 @@ export default function ComparePage() {
               )}
 
               {/* Section: Profil */}
-              <SectionCard title="Profil">
+              <SectionCard title="Profil" color="#FFE600" rotate="-rotate-1" pattern="pattern-checker" index={2}>
                 <StatCompareRow
                   label="LEVEL"
                   valueA={fmt(playerA.level)}
@@ -364,7 +367,7 @@ export default function ComparePage() {
 
               {/* Section: Guild */}
               {(playerA.guild || playerB.guild) && (
-                <SectionCard title="Guild">
+                <SectionCard title="Guild" color="#FF6B35" rotate="rotate-1" pattern="pattern-dots" index={3}>
                   <TextCompareRow
                     label="NAMA"
                     valueA={playerA.guild || "-"}
@@ -396,7 +399,7 @@ export default function ComparePage() {
               )}
 
               {/* Section: Status & Equipment */}
-              <SectionCard title="Status & Equipment">
+              <SectionCard title="Status & Equipment" color="#7B2FFF" rotate="-rotate-1" pattern="pattern-mesh" index={4}>
                 <BoolCompareRow
                   label="ONLINE"
                   aTrue={playerA.online}
@@ -452,20 +455,20 @@ export default function ComparePage() {
 
             {/* Winner Summary */}
             {winner && (
-              <div className="mt-6 flex items-center justify-between rounded-xl border border-primary/20 bg-primary/10 p-4">
+              <div className="glass-card mt-6 flex items-center justify-between rounded-3xl border-4 border-[#FFE600] p-5 rotate-[-1deg] animate-elastic shimmer-border" style={{ boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2, 24px 24px 0 #00F5D4" }}>
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/20 text-primary-container">
-                    <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#FFE600]/20" style={{ boxShadow: "0 0 20px #FFE60040" }}>
+                    <span className="material-symbols-outlined text-3xl text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
                   </div>
                   <div>
-                    <p className="font-headline-h3 text-[16px] font-semibold text-on-surface leading-tight">
+                    <p className="font-heading text-[16px] font-black uppercase tracking-wider text-white leading-tight text-shadow-double">
                       {winner.text}
                     </p>
-                    <p className="font-label-sm text-[12px] text-on-surface-variant">{winner.subtext}</p>
+                    <p className="font-label-sm text-[12px] text-white/60">{winner.subtext}</p>
                   </div>
                 </div>
-                <div className="text-primary-container">
-                  <span className="material-symbols-outlined text-3xl">trending_up</span>
+                <div className="text-[#FFE600]">
+                  <span className="material-symbols-outlined text-4xl" style={{ textShadow: "0 0 20px #FFE600" }}>trending_up</span>
                 </div>
               </div>
             )}
@@ -475,33 +478,33 @@ export default function ComparePage() {
         {/* Insights */}
         {playerA && playerB && (
           <section className="mt-xl grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="glass-card rounded-xl p-4">
-              <h3 className="font-headline-h3 mb-2 text-[16px] font-semibold text-on-surface">Perbandingan Terbaru</h3>
+            <div className="glass-card rounded-3xl border-4 border-[#FF3AF2] p-5 rotate-[1deg] pattern-stripes animate-card-entrance" style={{ boxShadow: "6px 6px 0 #FF3AF2, 12px 12px 0 #FFE600", animationDelay: "0.5s" }}>
+              <h3 className="font-heading mb-3 text-[16px] font-black uppercase tracking-wider text-[#FF3AF2] text-shadow-single">Perbandingan Terbaru</h3>
               <div className="space-y-2">
                 {[`${playerA.name} vs ${playerB.name}`, `${playerB.name} vs ${playerA.name}`].map((pair, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between rounded-lg border border-outline-variant/30 bg-surface-container p-2"
+                    className="flex items-center justify-between rounded-2xl border-2 border-[#FF3AF2]/30 bg-[#1a1033] p-3"
                   >
-                    <span className="font-body-md text-[14px]">{pair}</span>
-                    <span className="material-symbols-outlined text-on-surface-variant">history</span>
+                    <span className="font-body-md text-[14px] text-white font-semibold">{pair}</span>
+                    <span className="material-symbols-outlined text-[#FF3AF2]">history</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-xl border border-primary-container/30 bg-gradient-to-br from-primary-container/20 to-transparent p-4">
-              <h3 className="font-headline-h3 mb-2 text-[16px] font-semibold text-on-surface">Wawasan Pro</h3>
-              <p className="font-body-md text-[14px] text-on-surface-variant">
+            <div className="glass-card rounded-3xl border-4 border-[#00F5D4] p-5 -rotate-[1deg] pattern-dots animate-card-entrance" style={{ boxShadow: "6px 6px 0 #00F5D4, 12px 12px 0 #7B2FFF", animationDelay: "0.6s" }}>
+              <h3 className="font-heading mb-3 text-[16px] font-black uppercase tracking-wider text-[#00F5D4] text-shadow-single">Wawasan Pro</h3>
+              <p className="font-body-md text-[14px] text-white/60">
                 {winner?.insight || "Bandingkan dua player untuk mendapatkan wawasan."}
               </p>
-              <div className="mt-4 flex flex-wrap gap-1">
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+              <div className="mt-4 flex flex-wrap gap-2">
+                <span className="rounded-full border-2 border-[#FF3AF2] bg-[#FF3AF2]/10 px-4 py-1 text-xs font-black uppercase tracking-wider text-[#FF3AF2]">
                   {playerA.kd > playerB.kd ? "AGGRESSIVE" : "TACTICAL"}
                 </span>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                <span className="rounded-full border-2 border-[#00F5D4] bg-[#00F5D4]/10 px-4 py-1 text-xs font-black uppercase tracking-wider text-[#00F5D4]">
                   {hsPctRaw(playerA) > hsPctRaw(playerB) ? "SNIPER" : "SUPPORT"}
                 </span>
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                <span className="rounded-full border-2 border-[#FFE600] bg-[#FFE600]/10 px-4 py-1 text-xs font-black uppercase tracking-wider text-[#FFE600]">
                   {playerA.online && !playerB.online ? "AKTIF" : playerB.online && !playerA.online ? "AKTIF" : "SEIMBANG"}
                 </span>
               </div>
@@ -517,10 +520,10 @@ export default function ComparePage() {
 
 /* ─── Components ─── */
 
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+function SectionCard({ title, children, color = "#FF3AF2", rotate, pattern, index = 0 }: { title: string; children: React.ReactNode; color?: string; rotate?: string; pattern?: string; index?: number }) {
   return (
-    <div className="glass-card space-y-5 rounded-xl p-4">
-      <p className="text-xs font-semibold uppercase tracking-wider text-on-surface-variant/60">{title}</p>
+    <div className={`glass-card space-y-5 rounded-3xl border-4 p-5 ${rotate || ""} ${pattern || ""} animate-card-entrance tilt-3d`} style={{ borderColor: color, boxShadow: `8px 8px 0 ${color}, 16px 16px 0 ${color}30`, animationDelay: `${0.15 + index * 0.1}s` }}>
+      <p className="font-heading text-xs font-black uppercase tracking-wider" style={{ color, textShadow: `0 0 20px ${color}40` }}>{title}</p>
       {children}
     </div>
   );
@@ -542,32 +545,32 @@ function StatCompareRow({
   aWins: boolean;
 }) {
   return (
-    <div>
-      <div className="mb-xs flex items-end justify-between">
+    <div className="py-1">
+      <div className="mb-1 flex items-end justify-between">
         <div className="flex items-center gap-1">
-          <span className="font-display-stats text-[28px] font-bold text-primary">{valueA}</span>
+          <span className="font-display text-[32px] font-black text-[#FF3AF2] text-shadow-single">{valueA}</span>
           {aWins && (
-            <span className="material-symbols-outlined text-xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-xl text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
         </div>
-        <p className="font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">{label}</p>
+        <p className="font-heading text-[11px] font-black uppercase tracking-widest text-white/60">{label}</p>
         <div className="flex items-center gap-1">
           {!aWins && valueA !== valueB && (
-            <span className="material-symbols-outlined text-xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-xl text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
-          <span className="font-display-stats text-[28px] font-bold text-on-surface">{valueB}</span>
+          <span className="font-display text-[32px] font-black text-white text-shadow-single">{valueB}</span>
         </div>
       </div>
       <div className="flex gap-1">
         <div className="stat-bar-container flex-1">
-          <div className="h-full rounded-r-full bg-primary-container" style={{ width: `${Math.min(pctA, 100)}%` }} />
+          <div className="h-full rounded-r-full bg-gradient-to-r from-[#FF3AF2] to-[#FF3AF2]/60" style={{ width: `${Math.min(pctA, 100)}%` }} />
         </div>
         <div className="stat-bar-container flex-1">
-          <div className="ml-auto h-full rounded-l-full bg-surface-variant" style={{ width: `${Math.min(pctB, 100)}%` }} />
+          <div className="ml-auto h-full rounded-l-full bg-gradient-to-l from-[#00F5D4] to-[#00F5D4]/60" style={{ width: `${Math.min(pctB, 100)}%` }} />
         </div>
       </div>
     </div>
@@ -586,28 +589,28 @@ function BoolCompareRow({
   bad?: boolean;
 }) {
   return (
-    <div>
-      <div className="mb-xs flex items-end justify-between">
+    <div className="py-1">
+      <div className="mb-1 flex items-end justify-between">
         <div className="flex items-center gap-1">
-          <span className={`material-symbols-outlined text-xl ${aTrue ? (bad ? "text-error" : "text-[#00D68F]") : "text-on-surface-variant/40"}`}
-            style={{ fontVariationSettings: "'FILL' 1" }}>
+          <span className={`material-symbols-outlined text-xl ${aTrue ? (bad ? "text-[#FF3AF2]" : "text-[#00F5D4]") : "text-white/30"}`}
+            style={{ fontVariationSettings: "'FILL' 1", textShadow: aTrue ? (bad ? "0 0 10px #FF3AF2" : "0 0 10px #00F5D4") : "none" }}>
             {aTrue ? (bad ? "gpp_bad" : "check_circle") : "cancel"}
           </span>
           {!bad && aTrue && !bTrue && (
-            <span className="material-symbols-outlined text-lg text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-lg text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
         </div>
-        <p className="font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">{label}</p>
+        <p className="font-heading text-[11px] font-black uppercase tracking-widest text-white/60">{label}</p>
         <div className="flex items-center gap-1">
           {!bad && bTrue && !aTrue && (
-            <span className="material-symbols-outlined text-lg text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-lg text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
-          <span className={`material-symbols-outlined text-xl ${bTrue ? (bad ? "text-error" : "text-[#00D68F]") : "text-on-surface-variant/40"}`}
-            style={{ fontVariationSettings: "'FILL' 1" }}>
+          <span className={`material-symbols-outlined text-xl ${bTrue ? (bad ? "text-[#FF3AF2]" : "text-[#00F5D4]") : "text-white/30"}`}
+            style={{ fontVariationSettings: "'FILL' 1", textShadow: bTrue ? (bad ? "0 0 10px #FF3AF2" : "0 0 10px #00F5D4") : "none" }}>
             {bTrue ? (bad ? "gpp_bad" : "check_circle") : "cancel"}
           </span>
         </div>
@@ -626,11 +629,11 @@ function TextCompareRow({
   valueB: string;
 }) {
   return (
-    <div>
-      <div className="mb-xs flex items-end justify-between">
-        <span className="font-body-md text-[14px] font-semibold text-primary truncate max-w-[40%]">{valueA}</span>
-        <p className="font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">{label}</p>
-        <span className="font-body-md text-[14px] font-semibold text-on-surface truncate max-w-[40%]">{valueB}</span>
+    <div className="py-1">
+      <div className="mb-1 flex items-end justify-between">
+        <span className="font-body-md text-[14px] font-bold text-[#FF3AF2] truncate max-w-[40%]">{valueA}</span>
+        <p className="font-heading text-[11px] font-black uppercase tracking-widest text-white/60">{label}</p>
+        <span className="font-body-md text-[14px] font-bold text-white truncate max-w-[40%]">{valueB}</span>
       </div>
     </div>
   );
@@ -654,32 +657,32 @@ function StatBarCompare({
   aWins: boolean;
 }) {
   return (
-    <div>
-      <div className="mb-xs flex items-end justify-between">
+    <div className="py-1">
+      <div className="mb-1 flex items-end justify-between">
         <div className="flex items-center gap-1">
-          <span className="font-display-stats text-[28px] font-bold text-primary">{displayA}</span>
+          <span className="font-display text-[32px] font-black text-[#FF6B35] text-shadow-single">{displayA}</span>
           {aWins && (
-            <span className="material-symbols-outlined text-xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-xl text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
         </div>
-        <p className="font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">{label}</p>
+        <p className="font-heading text-[11px] font-black uppercase tracking-widest text-white/60">{label}</p>
         <div className="flex items-center gap-1">
           {!aWins && valueA !== valueB && (
-            <span className="material-symbols-outlined text-xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-xl text-[#FFE600]" style={{ fontVariationSettings: "'FILL' 1", textShadow: "0 0 10px #FFE600" }}>
               emoji_events
             </span>
           )}
-          <span className="font-display-stats text-[28px] font-bold text-on-surface">{displayB}</span>
+          <span className="font-display text-[32px] font-black text-white text-shadow-single">{displayB}</span>
         </div>
       </div>
       <div className="flex gap-1">
         <div className="stat-bar-container flex-1">
-          <div className="h-full rounded-r-full bg-primary-container" style={{ width: `${Math.min(pct(valueA, max), 100)}%` }} />
+          <div className="h-full rounded-r-full bg-gradient-to-r from-[#FF6B35] to-[#FF6B35]/60" style={{ width: `${Math.min(pct(valueA, max), 100)}%` }} />
         </div>
         <div className="stat-bar-container flex-1">
-          <div className="ml-auto h-full rounded-l-full bg-surface-variant" style={{ width: `${Math.min(pct(valueB, max), 100)}%` }} />
+          <div className="ml-auto h-full rounded-l-full bg-gradient-to-l from-[#7B2FFF] to-[#7B2FFF]/60" style={{ width: `${Math.min(pct(valueB, max), 100)}%` }} />
         </div>
       </div>
     </div>

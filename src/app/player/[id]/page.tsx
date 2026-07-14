@@ -7,11 +7,11 @@ import { BottomNav } from "@/components/BottomNav";
 import { PlayerProfileView } from "@/components/PlayerProfileView";
 import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
-import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useStore } from "@/lib/store";
 
+const ACCENT_COLORS = ["#FF3AF2", "#00F5D4", "#FFE600", "#FF6B35", "#7B2FFF"];
+
 export default function PlayerProfilePage() {
-  const authed = useAuthGuard();
   const params = useParams();
   const router = useRouter();
   const uid = params.id as string;
@@ -66,11 +66,9 @@ export default function PlayerProfilePage() {
       canvas.height = H;
       const ctx = canvas.getContext("2d")!;
 
-      // Background
       ctx.fillStyle = "#1d100c";
       ctx.fillRect(0, 0, W, H);
 
-      // Helper
       const roundRect = (x: number, y: number, w: number, h: number, r: number) => {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -85,7 +83,6 @@ export default function PlayerProfilePage() {
         ctx.closePath();
       };
 
-      // Avatar circle
       const avatarX = 80, avatarY = 100, avatarR = 90;
       ctx.beginPath();
       ctx.arc(avatarX + avatarR, avatarY + avatarR, avatarR, 0, Math.PI * 2);
@@ -101,7 +98,6 @@ export default function PlayerProfilePage() {
       ctx.textBaseline = "middle";
       ctx.fillText(displayData.name.charAt(0), avatarX + avatarR, avatarY + avatarR);
 
-      // Name & Status
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillStyle = "#f7ddd5";
@@ -109,7 +105,6 @@ export default function PlayerProfilePage() {
       const nameW = ctx.measureText(displayData.name).width;
       ctx.fillText(displayData.name, 260, 110);
 
-      // Status badge
       const statusBg = displayData.isBanned ? "rgba(147,0,10,0.2)" : "rgba(255,107,53,0.1)";
       const statusColor = displayData.isBanned ? "#ffb4ab" : "#ff6b35";
       const statusText = displayData.isBanned ? "Banned" : "Active";
@@ -122,13 +117,11 @@ export default function PlayerProfilePage() {
       ctx.textBaseline = "middle";
       ctx.fillText(statusText, 260 + nameW + 36, 133);
 
-      // UID
       ctx.textBaseline = "top";
       ctx.fillStyle = "#e1bfb5";
       ctx.font = "28px Inter, sans-serif";
       ctx.fillText(`UID: ${displayData.uid}`, 260, 175);
 
-      // Server & Guild
       ctx.font = 'bold 24px Inter, sans-serif';
       const serverW = ctx.measureText(displayData.server).width;
       roundRect(260, 220, serverW + 24, 34, 6);
@@ -145,7 +138,6 @@ export default function PlayerProfilePage() {
         ctx.fillText(`Guild: ${displayData.guild}`, 260 + serverW + 44, 237);
       }
 
-      // Divider
       ctx.strokeStyle = "rgba(89,65,57,0.5)";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -153,7 +145,6 @@ export default function PlayerProfilePage() {
       ctx.lineTo(W - 80, 310);
       ctx.stroke();
 
-      // Stats grid
       const stats = [
         { label: "Level", value: String(displayData.level) },
         { label: "Rank", value: displayData.rank, highlight: true },
@@ -191,7 +182,6 @@ export default function PlayerProfilePage() {
         ctx.fillText(s.value, x + cellW / 2, y + 110);
       });
 
-      // Extra info
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.fillStyle = "#e1bfb5";
@@ -214,7 +204,6 @@ export default function PlayerProfilePage() {
         extraX += ctx.measureText(e).width + 16;
       });
 
-      // Footer divider
       ctx.strokeStyle = "rgba(89,65,57,0.5)";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -222,7 +211,6 @@ export default function PlayerProfilePage() {
       ctx.lineTo(W - 80, 740);
       ctx.stroke();
 
-      // Footer
       ctx.fillStyle = "#ff6b35";
       ctx.font = "bold 32px Inter, sans-serif";
       ctx.textAlign = "left";
@@ -234,7 +222,6 @@ export default function PlayerProfilePage() {
       ctx.textAlign = "right";
       ctx.fillText("codebytrisno.vercel.app", W - 80, 800);
 
-      // Convert to blob
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob((b) => resolve(b), "image/jpeg", 0.9));
       if (blob) {
         const file = new File([blob], `${displayData.uid}-profile.jpg`, { type: "image/jpeg" });
@@ -254,11 +241,9 @@ export default function PlayerProfilePage() {
     setShared(false);
   };
 
-  if (!authed) return null;
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-[#0D0D1A] pb-24 pattern-dots">
         <TopAppBar showBookmark showShare />
         <main className="mx-auto max-w-container-max px-4 pt-20">
           <LoadingAnimation />
@@ -270,14 +255,17 @@ export default function PlayerProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen bg-[#0D0D1A] pb-24 pattern-dots">
         <TopAppBar showBookmark showShare />
         <main className="mx-auto max-w-container-max space-y-6 px-4 pt-20">
           <div className="mt-16 text-center">
-            <p className="text-[16px] font-semibold text-error">{error}</p>
-            <button onClick={() => search(uid)} className="mt-4 rounded-xl bg-primary-container px-6 py-3 text-[16px] font-semibold text-on-primary-container">
-              Coba Lagi
-            </button>
+            <div className="glass-card rounded-3xl border-4 border-[#FF3AF2] p-8 text-center" style={{ boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2" }}>
+              <span className="material-symbols-outlined mb-4 text-6xl text-[#FF3AF2]">error</span>
+              <p className="font-heading text-lg font-black uppercase tracking-wider text-white text-shadow-single">{error}</p>
+              <button onClick={() => search(uid)} className="btn-primary mt-6 rounded-full border-4 border-[#00F5D4] bg-[#00F5D4] px-8 py-3 font-black uppercase tracking-wider text-[#0D0D1A] transition-all hover:scale-105 active:scale-95" style={{ boxShadow: "4px 4px 0 #7B2FFF, 8px 8px 0 #FF3AF2" }}>
+                Coba Lagi
+              </button>
+            </div>
           </div>
         </main>
         <BottomNav />
@@ -288,24 +276,25 @@ export default function PlayerProfilePage() {
   if (!displayData) return null;
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-[#0D0D1A] pb-32 pattern-dots">
       <TopAppBar showBookmark showShare isBookmarked={isBookmarked} onBookmark={handleBookmark} onShare={handleShare} />
 
       <main className="mx-auto max-w-container-max space-y-6 px-4 pt-20">
         <PlayerProfileView data={displayData} uid={uid} />
 
-        {/* Action Buttons */}
         <section className="grid grid-cols-1 gap-4">
           <button onClick={() => router.push(`/compare?uid=${uid}`)}
-            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary-container text-[16px] font-semibold text-on-primary-container transition-transform active:scale-[0.98]"
+            className="btn-primary flex h-14 items-center justify-center gap-3 rounded-full border-4 border-[#FFE600] bg-[#FFE600] font-black uppercase tracking-wider text-[#0D0D1A] transition-all hover:scale-105 active:scale-95"
+            style={{ boxShadow: "4px 4px 0 #FF6B35, 8px 8px 0 #FF3AF2" }}
           >
-            <span className="material-symbols-outlined">compare_arrows</span>
+            <span className="material-symbols-outlined text-xl">compare_arrows</span>
             Bandingkan dengan Stat Saya
           </button>
           <button onClick={handleShare} disabled={shared}
-            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-outline-variant bg-surface-variant text-[16px] font-semibold text-on-surface transition-transform active:scale-[0.98]"
+            className="btn-secondary flex h-14 items-center justify-center gap-3 rounded-full border-4 border-[#7B2FFF] bg-transparent font-black uppercase tracking-wider text-white transition-all hover:scale-105 active:scale-95"
+            style={{ boxShadow: "4px 4px 0 #FF3AF2, 8px 8px 0 #00F5D4" }}
           >
-            <span className="material-symbols-outlined">share_reviews</span>
+            <span className="material-symbols-outlined text-xl">share_reviews</span>
             Bagikan Kartu Profil
           </button>
         </section>
@@ -317,78 +306,94 @@ export default function PlayerProfilePage() {
 }
 
 
-
 function LoadingAnimation() {
   return (
     <div className="flex flex-col items-center justify-center py-24">
-      {/* Animated fire icon */}
-      <div className="relative mb-8">
-        <div className="absolute inset-0 animate-ping rounded-full bg-primary-container/20" />
-        <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-container/30 to-secondary-container/30 border border-primary-container/20">
-          <span className="material-symbols-outlined text-4xl text-primary-container animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
-            local_fire_department
-          </span>
-        </div>
-      </div>
-
-      {/* Loading text */}
-      <h3 className="text-lg font-semibold text-on-surface">Mencari Pemain</h3>
-      <p className="mt-1 text-sm text-on-surface-variant/70">Menghubungi server Garena...</p>
-
-      {/* Animated dots */}
-      <div className="mt-6 flex items-center gap-1.5">
-        {[0, 1, 2].map((i) => (
+      {/* Background particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(10)].map((_, i) => (
           <div
             key={i}
-            className="h-2.5 w-2.5 rounded-full bg-primary-container"
+            className="absolute h-1.5 w-1.5 rounded-full"
             style={{
-              animation: `loadingDot 1.4s ease-in-out ${i * 0.2}s infinite`,
+              left: `${10 + Math.random() * 80}%`,
+              top: `${10 + Math.random() * 80}%`,
+              background: ACCENT_COLORS[i % ACCENT_COLORS.length],
+              animation: `particle-float ${2 + Math.random() * 3}s ease-in-out ${Math.random() * 2}s infinite`,
+              opacity: 0.3,
             }}
           />
         ))}
       </div>
 
-      {/* Animated progress bar */}
-      <div className="mt-8 h-1 w-48 overflow-hidden rounded-full bg-outline-variant/30">
+      <div className="relative mb-8">
+        <div className="absolute inset-0 animate-ping rounded-full bg-[#FF3AF2]/20" />
+        <div className="absolute inset-[-8px] rounded-3xl border-2 border-[#FF3AF2]/30 animate-pulse-ring" />
+        <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl border-4 border-[#FF3AF2] bg-gradient-to-br from-[#FF3AF2]/30 to-[#7B2FFF]/30 animate-glow-breath" style={{ boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2" }}>
+          <span className="material-symbols-outlined text-5xl text-[#FF3AF2] animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
+            local_fire_department
+          </span>
+        </div>
+      </div>
+
+      <h3 className="font-heading text-xl font-black uppercase tracking-wider text-white text-shadow-double animate-neon-flicker">Mencari Pemain</h3>
+      <p className="mt-2 text-sm text-white/60 animate-pulse">Menghubungi server Garena...</p>
+
+      <div className="mt-8 flex items-center gap-3">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-3.5 w-3.5 rounded-full"
+            style={{
+              backgroundColor: ACCENT_COLORS[i % ACCENT_COLORS.length],
+              animation: `loadingDot 1.4s ease-in-out ${i * 0.2}s infinite`,
+              boxShadow: `0 0 8px ${ACCENT_COLORS[i % ACCENT_COLORS.length]}60`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="mt-8 h-2 w-60 overflow-hidden rounded-full border border-white/10 bg-white/5">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-primary-container via-secondary-container to-tertiary"
+          className="h-full rounded-full"
           style={{
+            background: `linear-gradient(90deg, ${ACCENT_COLORS[0]}, ${ACCENT_COLORS[1]}, ${ACCENT_COLORS[2]}, ${ACCENT_COLORS[3]}, ${ACCENT_COLORS[4]})`,
             animation: "loadingBar 2s ease-in-out infinite",
             width: "40%",
+            boxShadow: "0 0 12px rgba(255,58,242,0.5)",
           }}
         />
       </div>
 
-      {/* Loading stages */}
-      <div className="mt-8 space-y-3 text-left">
+      <div className="mt-8 space-y-4 text-left w-full max-w-sm">
         {[
           { label: "Memvalidasi UID", done: true },
           { label: "Menghubungi server Garena", done: false, active: true },
           { label: "Mengambil data player", done: false },
           { label: "Memproses statistik", done: false },
         ].map((step, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+          <div key={i} className="glass-card flex items-center gap-4 rounded-2xl border-2 border-white/10 p-4 animate-stagger transition-all" style={{ borderColor: step.done ? "#00F5D4" : step.active ? "#FF3AF2" : "rgba(255,255,255,0.1)", animationDelay: `${i * 0.12}s` }}>
+            <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-black transition-all ${
               step.done
-                ? "bg-[#00D68F]/20 text-[#00D68F]"
+                ? "border-2 border-[#00F5D4] bg-[#00F5D4]/20 text-[#00F5D4]"
                 : step.active
-                  ? "bg-primary-container/20 text-primary-container"
-                  : "bg-outline-variant/20 text-outline-variant"
+                  ? "border-2 border-[#FF3AF2] bg-[#FF3AF2]/20 text-[#FF3AF2] animate-pulse-ring"
+                  : "border-2 border-white/20 bg-white/5 text-white/40"
             }`}>
               {step.done ? (
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                <span className="material-symbols-outlined text-base" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
               ) : step.active ? (
-                <div className="h-2 w-2 animate-pulse rounded-full bg-current" />
+                <div className="h-2 w-2 animate-pulse rounded-full bg-[#FF3AF2]" />
               ) : (
                 <span className="text-xs">{i + 1}</span>
               )}
             </div>
-            <span className={`text-sm ${
+            <span className={`text-sm font-semibold ${
               step.done
-                ? "text-[#00D68F]"
+                ? "text-[#00F5D4]"
                 : step.active
-                  ? "text-on-surface"
-                  : "text-on-surface-variant/50"
+                  ? "text-white"
+                  : "text-white/40"
             }`}>
               {step.label}
             </span>
@@ -399,7 +404,7 @@ function LoadingAnimation() {
       <style>{`
         @keyframes loadingDot {
           0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-          40% { transform: scale(1); opacity: 1; }
+          40% { transform: scale(1.2); opacity: 1; }
         }
         @keyframes loadingBar {
           0% { transform: translateX(-100%); }

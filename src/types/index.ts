@@ -113,16 +113,3 @@ export interface PlayerState {
   loading: boolean;
   error: string | null;
 }
-
-export interface AuthUser {
-  username: string;
-  label: string;
-  avatar?: string;
-}
-
-export interface AuthStore {
-  user: AuthUser | null;
-  isAuthenticated: boolean;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
-}

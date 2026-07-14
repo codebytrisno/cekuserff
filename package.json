@@ -6,19 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@better-auth/prisma-adapter": "^1.6.23",
-    "@prisma/client": "^6.19.3",
-    "better-auth": "^1.6.23",
+    "@arbakti_store/freefire-api": "^7.1.5",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.23.0",
     "next": "16.2.10",
-    "prisma": "^6.19.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zustand": "^5.0.14"

@@ -6,7 +6,8 @@ import { useState, useCallback } from "react";
 import { TopAppBar } from "@/components/TopAppBar";
 import { BottomNav } from "@/components/BottomNav";
 import { useStore } from "@/lib/store";
-import { useAuthGuard } from "@/hooks/useAuthGuard";
+
+const ACCENT_COLORS = ["#FF3AF2", "#00F5D4", "#FFE600", "#FF6B35", "#7B2FFF"];
 
 export default function BookmarksPage() {
   return (
@@ -17,7 +18,6 @@ export default function BookmarksPage() {
 }
 
 function BookmarksContent() {
-  const authed = useAuthGuard();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<"bookmarks" | "history">(
@@ -42,31 +42,29 @@ function BookmarksContent() {
     setQuery("");
   }, []);
 
-  if (!authed) return null;
-
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-[#0D0D1A] pb-24">
       <TopAppBar />
 
       <main className="mx-auto max-w-container-max min-h-screen px-4 pt-20">
         {/* Tab Navigation */}
-        <div className="mb-6 flex rounded-full border border-outline-variant bg-surface-container-low p-1">
+        <div className="mb-8 flex gap-3 p-1 animate-slide-up">
           <button
             onClick={() => handleTabChange("bookmarks")}
-            className={`flex-1 rounded-full py-2 font-headline-h3 text-[16px] font-semibold transition-all ${
+            className={`flex-1 rounded-full py-3 font-heading text-[16px] font-black uppercase tracking-wider transition-all border-4 ${
               activeTab === "bookmarks"
-                ? "bg-primary/10 text-primary-container"
-                : "text-on-surface-variant"
+                ? "border-[#FF3AF2] bg-[#FF3AF2]/15 text-[#FF3AF2] shadow-[4px_4px_0_#00F5D4]"
+                : "border-[#FFE600]/30 text-white/60 hover:border-[#FFE600] hover:text-[#FFE600]"
             }`}
           >
             Bookmark
           </button>
           <button
             onClick={() => handleTabChange("history")}
-            className={`flex-1 rounded-full py-2 font-headline-h3 text-[16px] font-semibold transition-all ${
+            className={`flex-1 rounded-full py-3 font-heading text-[16px] font-black uppercase tracking-wider transition-all border-4 ${
               activeTab === "history"
-                ? "bg-primary/10 text-primary-container"
-                : "text-on-surface-variant"
+                ? "border-[#00F5D4] bg-[#00F5D4]/15 text-[#00F5D4] shadow-[4px_4px_0_#FF3AF2]"
+                : "border-[#FFE600]/30 text-white/60 hover:border-[#FFE600] hover:text-[#FFE600]"
             }`}
           >
             Riwayat
@@ -75,84 +73,100 @@ function BookmarksContent() {
 
         {/* Bookmarks Tab */}
         {activeTab === "bookmarks" && (
-          <section className="space-y-4">
+          <section className="space-y-4 pattern-dots">
             {bookmarks.length > 0 && (
               <div className="relative mb-6 w-full group">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant transition-colors group-focus-within:text-primary-container">
-                  search
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF3AF2] transition-colors group-focus-within:text-[#00F5D4] text-xl">
+                  🔍
                 </span>
                 <input
                   type="text"
                   placeholder="Cari pemain tersimpan..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full rounded-xl border border-outline-variant bg-surface-container py-2 pl-12 pr-4 font-body-md text-[14px] text-on-surface outline-none transition-all placeholder:text-on-surface-variant/50 focus:border-primary-container focus:ring-2 focus:ring-primary-container/20"
+                  className="input-maximal w-full rounded-full border-4 border-[#FFE600]/40 bg-[#1A1A2E] py-3 pl-14 pr-6 font-body text-[14px] text-white outline-none transition-all placeholder:text-white/40 focus:border-[#FF3AF2] focus:shadow-[4px_4px_0_#FFE600]"
                 />
               </div>
             )}
 
             {filtered.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {filtered.map((b) => {
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {filtered.map((b, idx) => {
                   const trend = getTrend(b);
+                  const accent = ACCENT_COLORS[idx % ACCENT_COLORS.length];
                   return (
                     <div
                       key={b.uid}
                       onClick={() => router.push(`/player/${b.uid}`)}
-                      className="glass-card flex cursor-pointer items-center justify-between rounded-xl p-4 transition-all hover:border-primary-container/50"
+                      className="glass-card flex cursor-pointer items-center justify-between rounded-3xl border-4 p-5 transition-all hover:scale-[1.02] active:scale-[0.98] animate-card-entrance tilt-3d"
+                      style={{
+                        borderColor: accent,
+                        boxShadow: `8px 8px 0 ${ACCENT_COLORS[(idx + 1) % ACCENT_COLORS.length]}, 16px 16px 0 ${ACCENT_COLORS[(idx + 2) % ACCENT_COLORS.length]}`,
+                        animationDelay: `${0.05 + idx * 0.08}s`,
+                      }}
                     >
                       <div className="flex items-center gap-4">
                         <div className="relative">
-                          <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container bg-surface-container-highest text-base font-bold text-primary">
+                          <div
+                            className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-4 bg-[#1A1A2E] text-lg font-black font-heading uppercase"
+                            style={{ borderColor: accent, color: accent }}
+                          >
                             {b.name.charAt(0)}
                           </div>
                           <div
-                            className={`absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-surface ${
+                            className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#0D0D1A] ${
                               Math.random() > 0.5
-                                ? "bg-[#00D68F]"
-                                : "bg-on-surface-variant/40"
+                                ? "bg-[#00F5D4]"
+                                : "bg-white/20"
                             }`}
                           />
                         </div>
                         <div>
-                          <h3 className="font-headline-h3 text-[16px] font-semibold text-on-surface">{b.name}</h3>
-                          <span className="rounded bg-primary/10 px-2 py-0.5 font-label-sm text-[12px] uppercase tracking-wider text-primary">
+                          <h3 className="font-heading text-[16px] font-black uppercase tracking-wider text-white">{b.name}</h3>
+                          <span
+                            className="inline-block rounded-full px-3 py-1 font-heading text-[11px] font-black uppercase tracking-wider border-2 mt-1"
+                            style={{ borderColor: accent, color: accent, backgroundColor: `${accent}15` }}
+                          >
                             {b.rank}
                           </span>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className={`flex items-center justify-end gap-1 ${trend === "up" ? "text-[#00D68F]" : trend === "down" ? "text-error" : "text-on-surface-variant"}`}>
+                        <div className={`flex items-center justify-end gap-1 ${trend === "up" ? "text-[#00F5D4]" : trend === "down" ? "text-[#FF3AF2]" : "text-white/40"}`}>
                           {trend === "up" && (
-                            <span className="material-symbols-outlined text-[18px]">trending_up</span>
+                            <span className="text-lg">▲</span>
                           )}
                           {trend === "down" && (
-                            <span className="material-symbols-outlined text-[18px]">trending_down</span>
+                            <span className="text-lg">▼</span>
                           )}
-                          <span className="font-display-stats text-[12px] font-bold">{b.kd}</span>
+                          <span className="font-display text-[14px] font-black" style={{ color: trend === "up" ? "#00F5D4" : trend === "down" ? "#FF3AF2" : "white" }}>
+                            {b.kd}
+                          </span>
                         </div>
-                        <span className="font-label-sm text-[12px] text-on-surface-variant">K/D Ratio</span>
+                        <span className="font-heading text-[11px] font-black uppercase tracking-wider text-white/40">K/D Ratio</span>
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : bookmarks.length > 0 ? (
-              <div className="py-20 text-center">
-                <p className="text-on-surface-variant">Bookmark tidak ditemukan</p>
+              <div className="flex flex-col items-center justify-center py-24 text-center pattern-mesh">
+                <span className="text-7xl mb-4">🔍</span>
+                <h2 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-double">Bookmark tidak ditemukan</h2>
+                <p className="mt-3 max-w-xs font-body text-[14px] text-white/60">
+                  Tidak ada hasil yang cocok dengan pencarianmu.
+                </p>
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-6 h-48 w-48 opacity-40">
-                  <span className="material-symbols-outlined text-[120px] text-on-surface-variant">bookmark</span>
-                </div>
-                <h2 className="font-headline-h2 text-[20px] font-semibold text-on-surface">Belum ada bookmark</h2>
-                <p className="mt-sm max-w-xs font-body-md text-[14px] text-on-surface-variant">
+              <div className="flex flex-col items-center justify-center py-24 text-center pattern-dots">
+                <span className="text-8xl mb-6">🔖</span>
+                <h2 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-triple">Belum ada bookmark</h2>
+                <p className="mt-3 max-w-xs font-body text-[14px] text-white/60">
                   Cari pemain dan tekan ikon bookmark untuk menyimpannya di sini.
                 </p>
                 <button
                   onClick={() => router.push("/")}
-                  className="mt-4 rounded-xl bg-primary-container px-6 py-3 font-semibold text-on-primary-container"
+                  className="btn-primary mt-6 rounded-full border-4 border-[#FF3AF2] bg-[#FF3AF2]/20 px-8 py-3 font-heading text-[14px] font-black uppercase tracking-wider text-[#FF3AF2] shadow-[4px_4px_0_#00F5D4] transition-all hover:bg-[#FF3AF2]/30 hover:shadow-[6px_6px_0_#00F5D4] active:translate-x-1 active:translate-y-1 active:shadow-none"
                 >
                   Cari Player
                 </button>
@@ -163,61 +177,70 @@ function BookmarksContent() {
 
         {/* History Tab */}
         {activeTab === "history" && (
-          <section className="space-y-6">
+          <section className="space-y-6 pattern-stripes">
             {history.length > 0 ? (
               <>
                 <div className="flex items-center justify-between">
-                  <h2 className="font-headline-h2 text-[20px] font-semibold text-on-surface">Riwayat Pencarian</h2>
+                  <h2 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-double animate-slide-up">Riwayat Pencarian</h2>
                   <button
                     onClick={clearHistory}
-                    className="flex items-center gap-1 rounded-lg px-4 py-2 font-label-sm text-[12px] text-error transition-colors hover:bg-error/10"
+                    className="flex items-center gap-2 rounded-full border-4 border-[#FF3AF2]/40 bg-[#FF3AF2]/10 px-5 py-2 font-heading text-[12px] font-black uppercase tracking-wider text-[#FF3AF2] transition-all hover:bg-[#FF3AF2]/20 hover:border-[#FF3AF2] shadow-[3px_3px_0_#FFE600] hover:shadow-[4px_4px_0_#FFE600]"
                   >
-                    <span className="material-symbols-outlined text-[20px]">delete_sweep</span>
+                    <span className="text-base">🗑️</span>
                     Hapus Semua
                   </button>
                 </div>
                 <div className="space-y-6">
-                  {historyGroups.map((group) => (
+                  {historyGroups.map((group, gIdx) => (
                     <div key={group.label}>
-                      <h3 className="mb-4 px-base font-label-sm text-[12px] uppercase tracking-widest text-on-surface-variant">
+                      <h3 className="mb-4 px-2 font-heading text-[12px] font-black uppercase tracking-[0.2em] text-white/40">
                         {group.label}
                       </h3>
-                      <div className="space-y-2">
-                        {group.items.map((item) => (
-                          <div
-                            key={`${item.uid}-${item.checkedAt}`}
-                            onClick={() => router.push(`/player/${item.uid}`)}
-                            className="glass-card flex cursor-pointer items-center gap-4 rounded-xl p-2 transition-all hover:bg-surface-container-high"
-                          >
-                            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-surface-container-highest text-sm font-bold text-primary">
-                              {item.name.charAt(0)}
+                      <div className="space-y-3">
+                        {group.items.map((item, iIdx) => {
+                          const accent = ACCENT_COLORS[(gIdx + iIdx) % ACCENT_COLORS.length];
+                          return (
+                            <div
+                              key={`${item.uid}-${item.checkedAt}`}
+                              onClick={() => router.push(`/player/${item.uid}`)}
+                              className="glass-card flex cursor-pointer items-center gap-4 rounded-3xl border-4 p-3 transition-all hover:scale-[1.01] active:scale-[0.99] animate-card-entrance"
+                              style={{
+                                borderColor: accent,
+                                boxShadow: `4px 4px 0 ${ACCENT_COLORS[(gIdx + iIdx + 1) % ACCENT_COLORS.length]}`,
+                                animationDelay: `${0.05 + iIdx * 0.06}s`,
+                              }}
+                            >
+                              <div
+                                className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border-2 bg-[#1A1A2E] text-base font-black font-heading uppercase"
+                                style={{ borderColor: accent, color: accent }}
+                              >
+                                {item.name.charAt(0)}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <h4 className="truncate font-heading text-[15px] font-black uppercase tracking-wider text-white">{item.name}</h4>
+                                <p className="font-heading text-[11px] font-black uppercase tracking-wider text-white/40 mt-0.5">UID: {item.uid}</p>
+                              </div>
+                              <span className="pr-3 font-display text-[12px] font-black text-white/40">
+                                {formatTime(item.checkedAt)}
+                              </span>
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <h4 className="truncate font-headline-h3 text-[16px] font-semibold text-on-surface">{item.name}</h4>
-                              <p className="font-label-sm text-[12px] text-on-surface-variant">UID: {item.uid}</p>
-                            </div>
-                            <span className="pr-4 font-label-sm text-[12px] text-on-surface-variant/60">
-                              {formatTime(item.checkedAt)}
-                            </span>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="mb-6 h-48 w-48 opacity-40">
-                  <span className="material-symbols-outlined text-[120px] text-on-surface-variant">history</span>
-                </div>
-                <h2 className="font-headline-h2 text-[20px] font-semibold text-on-surface">Belum ada riwayat</h2>
-                <p className="mt-sm max-w-xs font-body-md text-[14px] text-on-surface-variant">
+              <div className="flex flex-col items-center justify-center py-24 text-center pattern-checker">
+                <span className="text-8xl mb-6">⏳</span>
+                <h2 className="font-heading text-[22px] font-black uppercase tracking-wider text-white text-shadow-triple">Belum ada riwayat</h2>
+                <p className="mt-3 max-w-xs font-body text-[14px] text-white/60">
                   Setiap UID yang dicari akan muncul di sini.
                 </p>
                 <button
                   onClick={() => router.push("/")}
-                  className="mt-4 rounded-xl bg-primary-container px-6 py-3 font-semibold text-on-primary-container"
+                  className="btn-secondary mt-6 rounded-full border-4 border-[#00F5D4] bg-[#00F5D4]/20 px-8 py-3 font-heading text-[14px] font-black uppercase tracking-wider text-[#00F5D4] shadow-[4px_4px_0_#FFE600] transition-all hover:bg-[#00F5D4]/30 hover:shadow-[6px_6px_0_#FFE600] active:translate-x-1 active:translate-y-1 active:shadow-none"
                 >
                   Cari Player
                 </button>

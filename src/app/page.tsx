@@ -2,29 +2,30 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { LogIn, LogOut, Search, TrendingUp, Users, Bookmark, GitCompare, History, ShieldCheck, ChevronRight, Crown } from "lucide-react";
+import { Search, TrendingUp, Bookmark, GitCompare, History, ChevronRight } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { toast } from "@/components/Toast";
 import { usePlayer } from "@/hooks/usePlayer";
 import { useStore } from "@/lib/store";
-import { useAuth } from "@/lib/auth-client";
 
 const RANKS = [
   "Bronze", "Silver", "Gold", "Platinum", "Diamond", "Heroic", "Grandmaster",
 ] as const;
+
+const ACCENT_COLORS = ["#FF3AF2", "#00F5D4", "#FFE600", "#FF6B35", "#7B2FFF"];
 
 function seededRandom(seed: number) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
-function getDisplayRank(uid: string): { name: string; color: string; bg: string } {
+function getDisplayRank(uid: string): { name: string; color: string; bg: string; border: string } {
   const rankIdx = Math.floor(seededRandom(Number(uid.slice(-4)) + 1) * RANKS.length);
   const rank = RANKS[rankIdx];
-  if (rank === "Heroic") return { name: "Heroic", color: "text-secondary", bg: "bg-secondary-container/30" };
-  if (rank === "Grandmaster") return { name: "Grandmaster", color: "text-tertiary", bg: "bg-tertiary-container/30" };
-  if (rank === "Diamond") return { name: "Diamond III", color: "text-on-surface-variant", bg: "bg-outline-variant/30" };
-  return { name: rank, color: "text-on-surface-variant", bg: "bg-outline-variant/30" };
+  if (rank === "Heroic") return { name: "Heroic", color: "text-accent", bg: "bg-accent/15", border: "border-accent" };
+  if (rank === "Grandmaster") return { name: "Grandmaster", color: "text-tertiary", bg: "bg-tertiary/15", border: "border-tertiary" };
+  if (rank === "Diamond") return { name: "Diamond III", color: "text-quinary", bg: "bg-quinary/15", border: "border-quinary" };
+  return { name: rank, color: "text-secondary", bg: "bg-secondary/15", border: "border-secondary" };
 }
 
 function getDisplayKd(uid: string): number {
@@ -35,140 +36,11 @@ function isOnline(uid: string): boolean {
   return seededRandom(Number(uid.slice(-4)) + 3) > 0.4;
 }
 
-function LandingPage() {
-  const router = useRouter();
-
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface/80 px-4 backdrop-blur-md">
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-primary-container text-2xl">local_fire_department</span>
-          <span className="font-headline-h2 text-[20px] font-bold text-on-surface">CEKUSERFF</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push("/premium")}
-            className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
-          >
-            <Crown className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Premium</span>
-          </button>
-          <button
-            onClick={() => router.push("/auth/sign-in")}
-            className="flex items-center gap-1 rounded-lg bg-primary-container/10 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:bg-primary-container/20"
-          >
-            <LogIn className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Masuk</span>
-          </button>
-        </div>
-      </header>
-
-      <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden pt-20">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,107,53,0.15),transparent_70%)]" />
-          <div className="relative z-10 mx-auto max-w-container-max px-4 py-16 text-center sm:py-24">
-            <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-container/20">
-              <span className="material-symbols-outlined text-primary-container text-[100px]">local_fire_department</span>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight text-on-surface sm:text-4xl">
-              Cek Statistik Player{' '}
-              <span className="text-primary-container">Free Fire</span>
-            </h1>
-            <p className="mx-auto mt-4 max-w-lg text-base text-on-surface-variant/80">
-              Pantau peringkat, K/D ratio, headshot rate, dan perkembangan musiman hanya dengan memasukkan UID player.
-            </p>
-            <div className="mt-8 flex items-center justify-center gap-3">
-              <button
-                onClick={() => router.push("/premium")}
-                className="flex h-12 items-center gap-2 rounded-xl bg-primary-container px-6 text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
-              >
-                <Crown className="h-4 w-4" />
-                Mulai Sekarang
-              </button>
-              <button
-                onClick={() => router.push("/auth/sign-in")}
-                className="flex h-12 items-center gap-2 rounded-xl border border-outline-variant bg-surface-container px-6 text-base font-semibold text-on-surface transition-all hover:bg-surface-container-high active:scale-[0.98]"
-              >
-                Pelajari Lebih Lanjut
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="mx-auto max-w-container-max px-4 py-16">
-          <div className="mb-10 text-center">
-            <h2 className="text-2xl font-bold text-on-surface">Fitur Unggulan</h2>
-            <p className="mt-2 text-sm text-on-surface-variant/80">
-              Semua yang kamu butuhin buat tracking performa player
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { icon: Search, label: "Cek UID Instan", desc: "Masukkan UID player dan dapatkan data statistik lengkap dalam hitungan detik.", color: "text-primary-container", bg: "bg-primary-container/20" },
-              { icon: TrendingUp, label: "Tracking Real-time", desc: "Pantau perubahan rank, K/D, dan performa player secara berkala.", color: "text-secondary", bg: "bg-secondary-container/20" },
-              { icon: GitCompare, label: "Bandingkan Player", desc: "Bandingkan statistik 2 player secara berdampingan untuk analisis 1v1.", color: "text-tertiary", bg: "bg-tertiary-container/20" },
-              { icon: Bookmark, label: "Bookmark Player", desc: "Simpan player favorit dan pantau perkembangannya dari waktu ke waktu.", color: "text-primary-container", bg: "bg-primary-container/20" },
-              { icon: History, label: "Riwayat Pencarian", desc: "Lihat kembali player yang pernah kamu cek dengan riwayat pencarian.", color: "text-secondary", bg: "bg-secondary-container/20" },
-              { icon: ShieldCheck, label: "Akses Semua Fitur", desc: "Akses semua fitur tanpa iklan.", color: "text-tertiary", bg: "bg-tertiary-container/20" },
-            ].map((f) => (
-              <div key={f.label} className="rounded-xl border border-outline-variant/50 bg-surface-container/50 p-5 transition-all hover:border-primary-container/30 hover:bg-surface-container">
-                <div className={`mb-3 flex h-10 w-10 items-center justify-center rounded-lg ${f.bg}`}>
-                  <f.icon className={`h-5 w-5 ${f.color}`} />
-                </div>
-                <h3 className="text-sm font-semibold text-on-surface">{f.label}</h3>
-                <p className="mt-1 text-xs text-on-surface-variant/70">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="mx-auto max-w-container-max px-4 pb-24">
-          <div className="relative overflow-hidden rounded-2xl border border-outline-variant bg-gradient-to-br from-surface-container via-surface-container-high to-surface-container p-8 text-center">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,107,53,0.1),transparent_60%)]" />
-            <div className="relative z-10">
-              <ShieldCheck className="mx-auto mb-4 h-10 w-10 text-primary-container" />
-              <h2 className="text-xl font-bold text-on-surface">Siap tracking performa player?</h2>
-              <p className="mt-2 text-sm text-on-surface-variant/80">Masuk sekarang dan mulai pantau statistik player Free Fire</p>
-              <button
-                onClick={() => router.push("/auth/sign-in")}
-                className="mx-auto mt-6 flex h-12 items-center gap-2 rounded-xl bg-primary-container px-6 text-base font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98]"
-              >
-                <LogIn className="h-4 w-4" />
-                Masuk Sekarang
-              </button>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-  );
-}
-
-function AppHome() {
+export default function HomePage() {
   const router = useRouter();
   const { search, loading, error } = usePlayer();
   const history = useStore((s) => s.history);
-  const { user, isAuthenticated, logout } = useAuth();
   const [uid, setUid] = useState("");
-  const [authOpen, setAuthOpen] = useState(false);
-  const authRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace("/");
-    }
-  }, [isAuthenticated, router]);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (authRef.current && !authRef.current.contains(e.target as Node)) setAuthOpen(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,35 +59,53 @@ function AppHome() {
     <div className="min-h-screen bg-background pb-24">
       {/* Loading Overlay */}
       {loading && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/95 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-background/95 backdrop-blur-md">
+          {/* Background particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute h-2 w-2 rounded-full"
+                style={{
+                  left: `${10 + Math.random() * 80}%`,
+                  top: `${10 + Math.random() * 80}%`,
+                  background: ACCENT_COLORS[i % ACCENT_COLORS.length],
+                  animation: `particle-float ${2 + Math.random() * 3}s ease-in-out ${Math.random() * 2}s infinite`,
+                  opacity: 0.4,
+                }}
+              />
+            ))}
+          </div>
+
           <div className="relative mb-8">
-            <div className="absolute inset-0 animate-ping rounded-full bg-primary-container/20" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-container/30 to-secondary-container/30 border border-primary-container/20">
-              <span className="material-symbols-outlined text-4xl text-primary-container animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <div className="absolute inset-0 animate-ping rounded-full bg-accent/20" />
+            <div className="absolute inset-[-8px] rounded-3xl border-2 border-accent/30 animate-pulse-ring" />
+            <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl border-4 border-dashed border-accent bg-accent/10 animate-pulse-glow">
+              <span className="material-symbols-outlined text-5xl text-accent animate-bounce" style={{ fontVariationSettings: "'FILL' 1" }}>
                 local_fire_department
               </span>
             </div>
           </div>
-          <h3 className="text-lg font-semibold text-on-surface">Mencari Pemain</h3>
-          <p className="mt-1 text-sm text-on-surface-variant/70">Menghubungi server Garena...</p>
-          <div className="mt-6 flex items-center gap-1.5">
+          <h3 className="font-heading text-2xl font-black uppercase tracking-wider text-foreground text-shadow-double animate-neon-flicker">MENCARI PEMAIN</h3>
+          <p className="mt-1 text-sm text-white/50 animate-pulse">Menghubungi server Garena...</p>
+          <div className="mt-6 flex items-center gap-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-2.5 w-2.5 rounded-full bg-primary-container" style={{ animation: `dotPulse 1.4s ease-in-out ${i * 0.2}s infinite` }} />
+              <div key={i} className="h-3.5 w-3.5 rounded-full" style={{ background: ACCENT_COLORS[i], animation: `dotPulse 1.4s ease-in-out ${i * 0.2}s infinite`, boxShadow: `0 0 8px ${ACCENT_COLORS[i]}60` }} />
             ))}
           </div>
-          <div className="mt-8 h-1 w-48 overflow-hidden rounded-full bg-outline-variant/30">
-            <div className="h-full rounded-full bg-gradient-to-r from-primary-container via-secondary-container to-tertiary" style={{ animation: "barSlide 2s ease-in-out infinite", width: "40%" }} />
+          <div className="mt-8 h-2 w-64 overflow-hidden rounded-full bg-white/10 border border-white/10">
+            <div className="h-full rounded-full bg-gradient-to-r from-accent via-secondary to-tertiary to-quaternary" style={{ animation: "barSlide 2s ease-in-out infinite", width: "40%", boxShadow: "0 0 12px rgba(255,58,242,0.5)" }} />
           </div>
-          <div className="mt-8 space-y-3 text-left">
+          <div className="mt-8 space-y-3 text-left w-full max-w-xs">
             {[
               { label: "Memvalidasi UID", done: true },
               { label: "Menghubungi server Garena", done: false, active: true },
               { label: "Mengambil data player", done: false },
               { label: "Memproses statistik", done: false },
             ].map((step, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                  step.done ? "bg-[#00D68F]/20 text-[#00D68F]" : step.active ? "bg-primary-container/20 text-primary-container" : "bg-outline-variant/20 text-outline-variant"
+              <div key={i} className="flex items-center gap-3 animate-stagger" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-black transition-all duration-300 ${
+                  step.done ? "border-secondary bg-secondary/20 text-secondary" : step.active ? "border-accent bg-accent/20 text-accent animate-pulse-ring" : "border-white/20 bg-white/5 text-white/30"
                 }`}>
                   {step.done ? (
                     <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
@@ -225,73 +115,42 @@ function AppHome() {
                     <span className="text-xs">{i + 1}</span>
                   )}
                 </div>
-                <span className={`text-sm ${step.done ? "text-[#00D68F]" : step.active ? "text-on-surface" : "text-on-surface-variant/50"}`}>
+                <span className={`text-sm font-bold ${step.done ? "text-secondary" : step.active ? "text-foreground" : "text-white/30"}`}>
                   {step.label}
                 </span>
               </div>
             ))}
           </div>
-          <style>{`@keyframes dotPulse{0%,80%,100%{transform:scale(0.6);opacity:0.3}40%{transform:scale(1);opacity:1}}@keyframes barSlide{0%{transform:translateX(-100%)}50%{transform:translateX(250%)}100%{transform:translateX(-100%)}}`}</style>
         </div>
       )}
 
-      <header suppressHydrationWarning className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-outline-variant bg-surface/80 px-4 backdrop-blur-md">
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-primary-container text-2xl">local_fire_department</span>
-          <span className="font-headline-h2 text-[20px] font-bold text-on-surface">CEKUSERFF</span>
-        </div>
+      <header suppressHydrationWarning className="fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b-4 border-accent bg-surface/90 px-4 backdrop-blur-xl">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.push("/premium")}
-            className="flex items-center gap-1 rounded-lg bg-gradient-to-r from-primary-container/20 to-secondary-container/20 px-3 py-1.5 text-[12px] font-semibold text-primary-container transition-colors hover:from-primary-container/30 hover:to-secondary-container/30"
-          >
-            <Crown className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Premium</span>
-          </button>
-
-          <div ref={authRef} className="relative">
-            {isAuthenticated && user ? (
-              <>
-                <button
-                  onClick={() => setAuthOpen(!authOpen)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-container/20 text-sm font-bold text-primary-container transition-colors hover:bg-primary-container/30"
-                >
-                  {user.label.charAt(0)}
-                </button>
-                {authOpen && (
-                  <div className="absolute right-0 mt-2 w-44 overflow-hidden rounded-xl border border-outline-variant bg-surface-container-high shadow-lg">
-                    <div className="border-b border-outline-variant/50 px-4 py-3">
-                      <p className="text-sm font-semibold text-on-surface">{user.label}</p>
-                      <p className="text-xs text-on-surface-variant">@{user.username}</p>
-                    </div>
-                    <button
-                      onClick={() => { logout(); setAuthOpen(false); }}
-                      className="flex w-full items-center gap-2 px-4 py-3 text-sm text-on-surface transition-colors hover:bg-surface-container-higher"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : null}
-          </div>
+          <span className="material-symbols-outlined text-accent text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>local_fire_department</span>
+          <span className="font-heading text-xl font-black uppercase tracking-wider text-foreground">CEKUSERFF</span>
         </div>
       </header>
 
-      <main className="mx-auto max-w-container-max space-y-6 px-4 pt-24">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-xl border border-outline-variant bg-surface-container-high p-6">
-          <div className="relative z-10 space-y-2 text-center">
-            <h1 className="font-headline-h1-mobile text-[20px] font-bold text-primary-container">Statistik Player Instan</h1>
-            <p className="font-body-md text-[14px] text-on-surface-variant opacity-80">
+      <main className="mx-auto max-w-7xl space-y-8 px-4 pt-24 relative z-10">
+        {/* Hero Search Section */}
+        <section className="relative overflow-hidden rounded-3xl border-4 border-accent p-8 animate-slide-up shimmer-border"
+          style={{
+            background: "rgba(45, 27, 78, 0.6)",
+            boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2",
+          }}
+        >
+          <div className="absolute inset-0 pattern-dots opacity-20" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,58,242,0.1),transparent_70%)]" />
+          <div className="relative z-10 space-y-3 text-center">
+            <h1 className="font-heading text-3xl font-black uppercase tracking-wider text-foreground text-shadow-double">STATISTIK PLAYER INSTAN</h1>
+            <p className="text-base text-white/60">
               Pantau peringkat, rasio K/D, dan perkembangan musiman.
             </p>
           </div>
-          <div className="relative z-10 mx-auto mt-6 max-w-md">
-            <form onSubmit={handleSearch} className="flex flex-col gap-2">
-              <div className="relative group transition-all duration-200 focus-within:shadow-[0_0_20px_rgba(255,107,53,0.15)] rounded-xl">
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary-container transition-colors">
+          <div className="relative z-10 mx-auto mt-8 max-w-md">
+            <form onSubmit={handleSearch} className="flex flex-col gap-3">
+              <div className="relative group">
+                <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-accent transition-colors text-xl">
                     search
                   </span>
                 <input
@@ -300,128 +159,116 @@ function AppHome() {
                   placeholder="Masukkan Player ID..."
                   value={uid}
                   onChange={(e) => setUid(e.target.value.replace(/\D/g, "").slice(0, 12))}
-                  className="h-14 w-full rounded-xl border border-outline-variant bg-surface-container-lowest pl-12 pr-4 text-on-surface outline-none transition-all focus:border-primary-container focus:ring-1 focus:ring-primary-container text-base"
+                  className="input-maximal pl-14"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading || !uid.trim()}
                 suppressHydrationWarning
-                className="flex h-12 w-full items-center justify-center gap-1 rounded-xl bg-primary-container text-[16px] font-semibold text-on-primary-container shadow-lg shadow-primary-container/20 transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
+                className="btn-primary flex h-14 w-full items-center justify-center gap-2 text-base disabled:opacity-50"
               >
-                {loading ? "Memuat..." : "Cari"}
+                {loading ? "MEMUAT..." : "CARI"}
               </button>
             </form>
             {error && (
-              <p className="mt-2 text-center text-[14px] text-error">{error}</p>
+              <p className="mt-3 text-center text-sm font-bold text-accent">{error}</p>
             )}
           </div>
         </section>
 
         {/* Quick Actions Bento Grid */}
-        <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div
-            onClick={() => router.push("/compare")}
-            className="glass-card group flex cursor-pointer items-center justify-between rounded-xl p-4 transition-colors hover:border-primary/50 active:scale-[0.97]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary-container/20">
-                <span className="material-symbols-outlined text-secondary">compare_arrows</span>
-              </div>
-              <div>
-                <h3 className="font-headline-h3 text-[16px] font-semibold text-on-surface">Bandingkan</h3>
-                <p className="font-label-sm text-[12px] text-on-surface-variant">Analisis data 1v1</p>
-              </div>
-            </div>
-            <span className="material-symbols-outlined text-outline transition-transform group-hover:translate-x-1">chevron_right</span>
-          </div>
-
-          <div
-            onClick={() => router.push("/bookmarks")}
-            className="glass-card group flex cursor-pointer items-center justify-between rounded-xl p-4 transition-colors hover:border-primary/50 active:scale-[0.97]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container/20">
-                <span className="material-symbols-outlined text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-              </div>
-              <div>
-                <h3 className="font-headline-h3 text-[16px] font-semibold text-on-surface">Bookmark</h3>
-                <p className="font-label-sm text-[12px] text-on-surface-variant">Pemain yang diikuti</p>
-              </div>
-            </div>
-            <span className="material-symbols-outlined text-outline transition-transform group-hover:translate-x-1">chevron_right</span>
-          </div>
-
-          <div
-            onClick={() => router.push("/history")}
-            className="glass-card group flex cursor-pointer items-center justify-between rounded-xl p-4 transition-colors hover:border-primary/50 active:scale-[0.97]"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-tertiary-container/20">
-                <span className="material-symbols-outlined text-tertiary">history</span>
-              </div>
-              <div>
-                <h3 className="font-headline-h3 text-[16px] font-semibold text-on-surface">Riwayat</h3>
-                <p className="font-label-sm text-[12px] text-on-surface-variant">Baru dilihat</p>
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {[
+            { href: "/compare", label: "BANDINGKAN", sub: "Analisis data 1v1", icon: "compare_arrows", color: "#00F5D4", borderColor: "#FF3AF2", rotate: "-rotate-1" },
+            { href: "/bookmarks", label: "BOOKMARK", sub: "Pemain yang diikuti", icon: "star", color: "#FF3AF2", borderColor: "#FFE600", rotate: "rotate-1" },
+            { href: "/history", label: "RIWAYAT", sub: "Baru dilihat", icon: "history", color: "#FFE600", borderColor: "#00F5D4", rotate: "-rotate-1" },
+          ].map((item, idx) => (
+            <div
+              key={item.href}
+              onClick={() => router.push(item.href)}
+              className={`card-hover group cursor-pointer rounded-3xl border-4 p-6 ${item.rotate} animate-card-entrance tilt-3d ripple-container`}
+              style={{
+                background: "rgba(45, 27, 78, 0.6)",
+                backdropFilter: "blur(12px)",
+                borderColor: item.color,
+                boxShadow: `8px 8px 0 ${item.borderColor}`,
+                animationDelay: `${0.1 + idx * 0.1}s`,
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl" style={{ background: `${item.color}20` }}>
+                    <span className="material-symbols-outlined text-2xl" style={{ color: item.color, fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-lg font-black uppercase tracking-wider text-foreground">{item.label}</h3>
+                    <p className="text-xs text-white/50">{item.sub}</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-white/30 transition-transform group-hover:translate-x-2">chevron_right</span>
               </div>
             </div>
-            <span className="material-symbols-outlined text-outline transition-transform group-hover:translate-x-1">chevron_right</span>
-          </div>
+          ))}
         </section>
 
         {/* Recent Searches */}
         {history.length > 0 && (
           <section className="space-y-4">
             <div className="flex items-end justify-between">
-              <h2 className="font-headline-h2 text-[20px] font-semibold text-on-surface">Pencarian Terakhir</h2>
+              <h2 className="font-heading text-2xl font-black uppercase tracking-wider text-foreground text-shadow-single">PENCARIAN TERAKHIR</h2>
               <button
                 onClick={() => useStore.getState().clearHistory()}
-                className="font-label-sm text-[12px] text-primary hover:underline"
+                className="font-heading text-xs font-bold uppercase tracking-wider text-accent hover:text-tertiary transition-colors"
               >
-                Hapus semua
+                HAPUS SEMUA
               </button>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {history.slice(0, 5).map((item, idx) => {
                 const online = isOnline(item.uid);
                 const rank = getDisplayRank(item.uid);
                 const kd = getDisplayKd(item.uid);
+                const color = ACCENT_COLORS[idx % ACCENT_COLORS.length];
                 return (
                   <div
                     key={`${item.uid}-${item.checkedAt}`}
                     onClick={() => router.push(`/player/${item.uid}`)}
-                    className={`glass-card flex cursor-pointer items-center justify-between rounded-xl p-2 transition-all hover:bg-surface-container-high ${
-                      idx === 0 ? "border-l-4 border-l-primary-container" : ""
-                    }`}
+                    className="card-hover cursor-pointer rounded-3xl border-4 p-4 transition-all animate-card-entrance ripple-container"
+                    style={{
+                      background: "rgba(45, 27, 78, 0.6)",
+                      backdropFilter: "blur(12px)",
+                      borderColor: color,
+                      boxShadow: `4px 4px 0 ${ACCENT_COLORS[(idx + 2) % ACCENT_COLORS.length]}`,
+                      animationDelay: `${0.05 + idx * 0.08}s`,
+                    }}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-outline-variant bg-surface-container-highest text-lg font-bold text-primary">
-                          {item.name.charAt(0)}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="relative">
+                          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 text-lg font-black" style={{ borderColor: color, background: `${color}15`, color }}>
+                            {item.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div
+                            className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-background ${
+                              online ? "bg-secondary animate-pulse-glow" : "bg-white/20"
+                            }`}
+                          />
                         </div>
-                        <div
-                          className={`absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-surface ${
-                            online
-                              ? "bg-[#00D68F] primary-glow"
-                              : "bg-outline-variant"
-                          }`}
-                        />
-                      </div>
-                      <div>
-                        <p className="font-headline-h3 text-[16px] font-semibold text-on-surface">{item.name}</p>
-                        <div className="flex items-center gap-1">
-                          <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${rank.bg} ${rank.color}`}>
-                            {rank.name}
-                          </span>
-                          <span className="font-label-sm text-[12px] text-on-surface-variant opacity-60">ID: {item.uid}</span>
+                        <div>
+                          <p className="font-heading text-lg font-black uppercase tracking-wider text-foreground">{item.name}</p>
+                          <div className="flex items-center gap-2">
+                            <span className={`rounded-full border-2 px-2 py-0.5 text-[10px] font-black uppercase ${rank.border} ${rank.bg} ${rank.color}`}>
+                              {rank.name}
+                            </span>
+                            <span className="text-xs text-white/40">ID: {item.uid}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={`font-display-stats text-[28px] font-bold ${idx === 0 ? "text-primary-container" : "text-on-surface opacity-70"}`}>
-                        {kd.toFixed(2)}
-                      </p>
-                      <p className="font-label-sm text-[12px] uppercase tracking-wider text-on-surface-variant">K/D Rate</p>
+                      <div className="text-right">
+                        <p className="font-display text-3xl" style={{ color }}>{kd.toFixed(2)}</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/40">K/D Rate</p>
+                      </div>
                     </div>
                   </div>
                 );
@@ -429,28 +276,9 @@ function AppHome() {
             </div>
           </section>
         )}
-
       </main>
 
       <BottomNav />
     </div>
   );
-}
-
-export default function HomePage() {
-  const { isAuthenticated, isLoading, user } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary-container border-t-transparent" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <LandingPage />;
-  }
-
-  return <AppHome />;
 }

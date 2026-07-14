@@ -1,9 +1,11 @@
-# FF Checker — Cek Statistik Free Fire Player
+# CEKUSERFF — Cek Statistik Free Fire Player
 
-Platform pengecekan statistik Free Fire paling cepat, bersih, dan all-in-one. Cukup paste UID, semua data muncul dalam 1 layar — tanpa iklan, tanpa ribet.
+Platform pengecekan statistik Free Fire paling cepat, berani, dan berani tampil beda. Cukup paste UID, semua data muncul instan — tanpa login, tanpa iklan, tanpa ribet. 100% gratis.
 
-![FF Checker](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss)
 ![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 
 ---
@@ -12,17 +14,17 @@ Platform pengecekan statistik Free Fire paling cepat, bersih, dan all-in-one. Cu
 
 ### 🔍 **Instant Search**
 - Paste UID, langsung lihat profil player dalam < 3 detik
-- Statistik lengkap: K/D, Win Rate, Headshot %, Rank, Guild
-- Online status real-time (Online/Offline/In Game)
+- Statistik lengkap: K/D, Win Rate, Headshot %, Rank, Guild, dan 30+ data lainnya
+- Data langsung dari server Garena via Protobuf
 
 ### ⚔️ **Compare Mode**
-- Bandingkan 2 player side-by-side
-- Indicator otomatis untuk menunjukkan siapa yang lebih unggul
+- Bandingkan 2 player side-by-side dengan 5 kategori statistik
+- Indicator otomatis trophy untuk player yang lebih unggul
 - Swap player dengan 1 klik
 
 ### 📸 **Share Card**
-- Export profil player jadi gambar siap share
-- Layout clean dengan branding FF Checker
+- Export profil player jadi gambar (1080x1920) siap share
+- Layout clean dengan branding CEKUSERFF
 - Share ke WhatsApp, Instagram, atau Twitter
 
 ### ⭐ **Bookmark & Tracking**
@@ -31,21 +33,63 @@ Platform pengecekan statistik Free Fire paling cepat, bersih, dan all-in-one. Cu
 - Trend indicator (naik/turun) untuk setiap metric
 
 ### 📜 **History**
-- Riwayat pengecekan lengkap
-- Time-grouped: Hari ini, Kemarin, Minggu ini
+- Riwayat pengecekan lengkap dengan time-grouping
+- Hari ini, Kemarin, Minggu ini, Lainnya
 - Max 100 entries, auto-cleanup
+
+### ⚙️ **Settings**
+- Toggle tema (Light/Dark/System)
+- Pilih server default
+- Kelola cache & penyimpanan
 
 ---
 
 ## 🚀 Tech Stack
 
-- **Framework:** [Next.js 15](https://nextjs.org) (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **State Management:** Zustand
-- **Icons:** Lucide React
-- **Share Card:** html-to-image
-- **Storage:** localStorage (no backend for V1)
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
+| **UI** | React 19 |
+| **Language** | TypeScript 5 |
+| **Styling** | [Tailwind CSS 4](https://tailwindcss.com) |
+| **State** | [Zustand](https://zustand-demo.pmnd.rs) (localStorage) |
+| **API** | [`@arbakti_store/freefire-api`](https://www.npmjs.com/package/@arbakti_store/freefire-api) (Garena Protobuf) |
+| **Icons** | Material Symbols Outlined |
+| **Fonts** | Outfit (Headings) · DM Sans (Body) · Bangers (Display) |
+| **Share Card** | Canvas API (native) |
+
+---
+
+## 🎨 Design System — Maximalism
+
+Desain bold, loud, dan penuh energi. Bukan minimalis — ini maximalism.
+
+### Color Palette
+
+| Token | Hex | Kegunaan |
+|-------|-----|----------|
+| **Accent (Magenta)** | `#FF3AF2` | Primary actions, borders, glow |
+| **Secondary (Cyan)** | `#00F5D4` | Success states, secondary highlights |
+| **Tertiary (Yellow)** | `#FFE600` | Warnings, trophies, shadows |
+| **Quaternary (Orange)** | `#FF6B35` | BR stats, energy |
+| **Quinary (Purple)** | `#7B2FFF` | Deep accents, gradients |
+| **Background** | `#0D0D1A` | Cosmic black |
+| **Surface** | `#150F28` | Card backgrounds |
+| **Surface Card** | `rgba(45, 27, 78, 0.6)` | Glassmorphism cards |
+
+### Design Language
+- **Borders:** 4px solid, multi-colored offset shadows (`8px 8px 0`, `16px 16px 0`)
+- **Cards:** Glassmorphism + pattern overlays (dots, stripes, checker, mesh)
+- **Buttons:** Gradient backgrounds, thick borders, offset box-shadows
+- **Text:** Triple text-shadows, gradient fills, neon glow effects
+- **Layout:** Asymmetric rotations (`rotate-1`, `-rotate-1`), bento grids
+
+### Animations (30+ CSS keyframes)
+- **Entrance:** `slide-up-fade`, `card-entrance`, `elastic-in`, `stagger-fade`
+- **Ambient:** `float`, `glow-breath`, `neon-flicker`, `morph-shape`
+- **Interactive:** `tilt-3d`, `scale-bounce`, `ripple-out`, `shimmer-border`
+- **Loading:** `dotPulse`, `barSlide`, `particle-float`, `pulse-ring`
+- **Decorative:** `gradient-shift`, `mega-glow`, `border-dance`, `spin-slow`
 
 ---
 
@@ -53,9 +97,8 @@ Platform pengecekan statistik Free Fire paling cepat, bersih, dan all-in-one. Cu
 
 ### Prerequisites
 - Node.js 18+ atau Bun
-- npm/yarn/pnpm/bun
 
-### Clone & Install
+### Quick Start
 
 ```bash
 # Clone repo
@@ -64,19 +107,12 @@ cd cekuserff
 
 # Install dependencies
 npm install
-# atau
-bun install
-```
 
-### Jalankan Development Server
-
-```bash
+# Jalankan dev server
 npm run dev
-# atau
-bun dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000) di browser.
+Buka [http://localhost:3000](http://localhost:3000).
 
 ---
 
@@ -85,173 +121,147 @@ Buka [http://localhost:3000](http://localhost:3000) di browser.
 ```
 cekuserff/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── page.tsx           # Home / Search
-│   │   ├── player/[id]/       # Player Profile
-│   │   ├── compare/           # Compare 2 Players
-│   │   ├── bookmarks/         # Bookmarked Players
-│   │   ├── history/           # Search History
-│   │   ├── settings/          # App Settings
-│   │   └── api/player/[uid]/  # API Route (proxy)
-│   ├── components/            # React Components
-│   │   ├── TopAppBar.tsx     # Navigation bar
-│   │   └── BottomNav.tsx     # Mobile bottom nav
-│   ├── hooks/                 # Custom React Hooks
-│   │   └── usePlayer.ts      # Player data fetching
-│   ├── lib/                   # Utilities & Logic
-│   │   ├── api.ts            # API client
-│   │   ├── store.ts          # Zustand store
-│   │   ├── tracker.ts        # Stat tracking logic
-│   │   ├── share.ts          # Share card generator
-│   │   └── constants.ts      # Constants & config
-│   └── types/                 # TypeScript types
-│       └── index.ts          # Type definitions
-├── design-references/         # Design mockups & references
-├── .agents/                   # Project documentation
-│   ├── PRD.md                # Product Requirements
-│   ├── DESIGN.md             # Design System
-│   ├── TECH-SPEC.md          # Technical Specification
-│   └── TASKS.md              # Task List
-└── public/                    # Static assets
+│   ├── app/                        # Next.js App Router
+│   │   ├── page.tsx               # Home — Search + Dashboard
+│   │   ├── layout.tsx             # Root layout (fonts)
+│   │   ├── globals.css            # Maximalism design tokens & animations
+│   │   ├── player/[id]/page.tsx   # Player Profile + Share Card
+│   │   ├── compare/page.tsx       # Compare 2 Players
+│   │   ├── bookmarks/page.tsx     # Bookmarks + History tabs
+│   │   ├── history/page.tsx       # Redirects to bookmarks?tab=history
+│   │   ├── settings/page.tsx      # Theme, Server, Cache settings
+│   │   └── api/player/[uid]/      # API Route → Garena Protobuf
+│   ├── components/
+│   │   ├── BottomNav.tsx          # Mobile bottom navigation
+│   │   ├── FloatingDecorations.tsx # Animated emoji + orbs background
+│   │   ├── PlayerProfileView.tsx  # Full profile display component
+│   │   ├── Providers.tsx          # Global patterns + decorations
+│   │   ├── Toast.tsx              # Toast notification system
+│   │   ├── ToastWrapper.tsx       # Toast container
+│   │   └── TopAppBar.tsx          # Top navigation (back, bookmark, share)
+│   ├── hooks/
+│   │   └── usePlayer.ts           # Player data fetching hook
+│   ├── lib/
+│   │   ├── api.ts                 # Legacy API client
+│   │   ├── ff-api.ts              # Garena Protobuf wrapper
+│   │   ├── store.ts               # Zustand store (localStorage)
+│   │   ├── constants.ts           # UID rules, servers, ranks
+│   │   ├── share.ts               # Share card helper
+│   │   └── tracker.ts             # Stat tracking logic
+│   └── types/
+│       └── index.ts               # PlayerData, Bookmark, etc.
+├── design-references/              # Design mockups
+├── .agents/                        # Project docs (PRD, DESIGN, etc.)
+├── public/                         # Static assets
+├── next.config.ts                  # serverExternalPackages config
+├── tailwind.config.ts              # Tailwind v4 config
+└── package.json
 ```
 
 ---
 
 ## 🔌 API & Data Source
 
-FF Checker menggunakan **Free Fire Public API** (third-party/unofficial) untuk mengambil data player.
+### Direct Garena Connection
 
-### Endpoint yang Digunakan:
-- `GET /player/{uid}` — Player profile & statistics
-- `GET /player/{uid}/status` — Online status
+CEKUSERFF menggunakan [`@arbakti_store/freefire-api`](https://www.npmjs.com/package/@arbakti_store/freefire-api) — library npm yang berkomunikasi langsung dengan server Garena menggunakan **Protobuf**.
 
-### Rate Limiting:
-- Max 30 request per menit per IP
-- Response time target < 200ms
+- **Tidak perlu API key** — menggunakan guest credentials bawaan
+- **Tidak perlu database** — semua data dari Garena langsung
+- **Response time:** ~1-3 detik tergantung server Garena
 
-> **Note:** API eksternal dapat berubah sewaktu-waktu. Jika API down, app akan menampilkan error state.
+### Data yang Diambil
+- Profil player (nama, level, EXP, guild, signature)
+- Statistik BR (matches, wins, kills, headshots, damage, dll)
+- Statistik Clash Squad (matches, wins, kills)
+- Rank & tier information
+- Status akun (online, in-game, banned)
+- Equipment (weapon skins, outfit, skills, pet)
+- Detail akun (usia, created date, season, credit score)
 
----
-
-## 🎨 Design System
-
-### Color Palette (Dark Theme Default)
-
-- **Background:** `#0F0F0F` (Midnight)
-- **Surface:** `#1A1A1A` (Card background)
-- **Primary:** `#FF6B00` (Orange accent — Free Fire signature color)
-- **Secondary:** `#00D9FF` (Cyan — untuk highlight & badges)
-- **Text Primary:** `#FFFFFF` (Pure white)
-- **Text Secondary:** `#A0A0A0` (Muted gray)
-- **Success:** `#00FF88` (Green — untuk stat naik)
-- **Danger:** `#FF4444` (Red — untuk stat turun)
-
-### Typography
-
-- **Font Family:** Inter (system fallback: -apple-system, BlinkMacSystemFont)
-- **Headings:** Bold, 24-32px
-- **Body:** Regular, 14-16px
-- **Caption:** Regular, 12px
+### Known Limitations
+- Rank points selalu 0 (protobuf schema mismatch di library)
+- Badges & title selalu 0 (reason yang sama)
 
 ---
 
 ## 📱 Responsive Design
 
-- **Mobile-first:** Prioritas utama untuk layar < 768px
-- **Breakpoints:**
-  - Mobile: < 640px
-  - Tablet: 640px - 1024px
-  - Desktop: > 1024px
+- **Mobile-first** — dirancang untuk layar < 768px
+- **Breakpoints:** Mobile (< 640px) · Tablet (640-1024px) · Desktop (> 1024px)
+- **Bottom Navigation** untuk mobile, full layout untuk desktop
 
 ---
 
 ## 🚢 Deployment
 
-### Deploy ke Vercel (Recommended)
+### Vercel (Recommended)
 
 ```bash
-# Install Vercel CLI
 npm i -g vercel
-
-# Deploy
 vercel
 ```
 
-### Deploy ke Netlify
+### Netlify / Cloudflare Pages
 
 ```bash
-# Build
 npm run build
-
-# Deploy folder out/
-netlify deploy --prod --dir=out
+# Deploy folder .next/ atau out/
 ```
-
-### Deploy ke Cloudflare Pages
-
-1. Connect GitHub repo ke Cloudflare Pages
-2. Set build command: `npm run build`
-3. Set output directory: `out`
 
 ---
 
 ## 🛠️ Commands
 
 ```bash
-# Development
-npm run dev          # Jalankan dev server
+npm run dev          # Jalankan dev server (Turbopack)
 npm run build        # Build production
 npm run start        # Jalankan production build
-npm run lint         # Lint code dengan ESLint
-npm run typecheck    # Type checking dengan TypeScript
+npm run lint         # ESLint
 ```
 
 ---
 
-## 📝 Roadmap (V2+)
+## 📝 Roadmap
 
-- [ ] **Multi-language** — Tambah support bahasa Inggris
-- [ ] **Cloud Sync** — Sinkronisasi bookmark & history antar device
-- [ ] **Backend Server** — Rate limiting & caching server-side
-- [ ] **Push Notifications** — Notifikasi real-time untuk player yang di-bookmark
-- [ ] **Advanced Analytics** — Grafik performa player dari waktu ke waktu
-- [ ] **Guild Leaderboard** — Ranking guild berdasarkan stat agregat
+- [ ] Multi-language (English support)
+- [ ] Cloud Sync bookmark & history
+- [ ] Push notifications untuk player yang di-bookmark
+- [ ] Grafik performa player dari waktu ke waktu
+- [ ] Guild leaderboard
 
 ---
 
 ## 🤝 Kontribusi
 
-Kontribusi sangat welcome! Silakan:
-
 1. Fork repo ini
-2. Buat branch baru (`git checkout -b feature/AmazingFeature`)
-3. Commit perubahan (`git commit -m 'Add some AmazingFeature'`)
-4. Push ke branch (`git push origin feature/AmazingFeature`)
+2. Buat branch baru (`git checkout -b feature/fitur-baru`)
+3. Commit perubahan (`git commit -m 'Tambah fitur baru'`)
+4. Push ke branch (`git push origin feature/fitur-baru`)
 5. Buat Pull Request
 
 ---
 
 ## 📄 License
 
-Project ini menggunakan **MIT License** — bebas digunakan untuk keperluan personal maupun komersial.
+MIT License — bebas digunakan untuk keperluan personal maupun komersial.
 
 ---
 
 ## 🙏 Credits
 
 - **Free Fire** — Garena International
-- **Icons** — [Lucide Icons](https://lucide.dev)
-- **Font** — [Inter](https://rsms.me/inter/)
-- **Design Inspiration** — Modern mobile gaming UX patterns
+- **API Library** — [`@arbakti_store/freefire-api`](https://www.npmjs.com/package/@arbakti_store/freefire-api)
+- **Icons** — [Material Symbols](https://fonts.google.com/icons)
+- **Fonts** — [Outfit](https://fonts.google.com/specimen/Outfit) · [DM Sans](https://fonts.google.com/specimen/DM+Sans) · [Bangers](https://fonts.google.com/specimen/Bangers)
+- **Design Inspiration** — Maximalism, brutalism, gaming UX
 
 ---
 
 ## 📧 Kontak
 
-Ada pertanyaan atau feedback? Reach out via:
-
 - **GitHub Issues:** [Report Bug](https://github.com/codebytrisno/cekuserff/issues)
-- **Email:** codebytrisno@example.com
+- **Developer:** [codebytrisno.vercel.app](https://codebytrisno.vercel.app/)
 
 ---
 
