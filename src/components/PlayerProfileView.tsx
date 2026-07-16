@@ -9,7 +9,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
     <div className="space-y-6">
       {/* Hero Card */}
       <section className="relative overflow-hidden rounded-3xl border-4 border-accent p-6 animate-card-entrance"
-        style={{ background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2" }}
+        style={{ background: "#2D1B4E", backdropFilter: "none", boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2" }}
       >
         <div className="absolute inset-0 pattern-dots opacity-15" />
         <div className="absolute top-0 right-0 h-40 w-40 bg-accent/10 blur-3xl rounded-full animate-morph" />
@@ -54,7 +54,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
           {/* Clan Info Box */}
           {data.guild && (
             <div className="mt-5 rounded-2xl border-2 border-white/10 p-4 animate-stagger"
-              style={{ background: "rgba(255,255,255,0.04)", animationDelay: "0.25s" }}
+              style={{ background: "#2D1B4E", animationDelay: "0.25s" }}
             >
               <div className="flex items-start gap-3">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-quinary bg-quinary/15 text-xl font-black text-quinary animate-scale-bounce" style={{ animationDelay: "0.3s" }}>
@@ -111,7 +111,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
 
           {/* Signature */}
           {data.signature && (
-            <div className="mt-4 rounded-xl border-2 border-white/10 p-3 animate-stagger" style={{ background: "rgba(255,255,255,0.04)", animationDelay: "0.3s" }}>
+            <div className="mt-4 rounded-xl border-2 border-white/10 p-3 animate-stagger" style={{ background: "#2D1B4E", animationDelay: "0.3s" }}>
               <p className="text-[10px] font-black uppercase tracking-wider text-white/40 mb-1">Bio FreeFire</p>
               <p className="text-sm text-white/70 italic leading-relaxed">"{data.signature}"</p>
             </div>
@@ -121,7 +121,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
 
       {/* BR Stats */}
       {data.totalMatches > 0 && (
-        <section className="relative overflow-hidden rounded-3xl border-4 border-quaternary p-6 animate-card-entrance" style={{ animationDelay: "0.3s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #7B2FFF" }}
+        <section className="relative overflow-hidden rounded-3xl border-4 border-quaternary p-6 animate-card-entrance" style={{ animationDelay: "0.3s", background: "#2D1B4E", backdropFilter: "none", boxShadow: "8px 8px 0 #7B2FFF" }}
         >
           <div className="absolute inset-0 pattern-stripes opacity-15" />
           <div className="relative z-10">
@@ -149,7 +149,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
 
       {/* CS Stats */}
       {data.csMatches > 0 && (
-        <section className="relative overflow-hidden rounded-3xl border-4 border-secondary p-6 animate-card-entrance" style={{ animationDelay: "0.4s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FFE600" }}
+        <section className="relative overflow-hidden rounded-3xl border-4 border-secondary p-6 animate-card-entrance" style={{ animationDelay: "0.4s", background: "#2D1B4E", backdropFilter: "none", boxShadow: "8px 8px 0 #FFE600" }}
         >
           <div className="absolute inset-0 pattern-stripes-cyan opacity-15" />
           <div className="relative z-10">
@@ -167,7 +167,7 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
       )}
 
       {/* Rank Card */}
-      <section className="relative overflow-hidden rounded-3xl border-4 border-tertiary p-6 animate-card-entrance" style={{ animationDelay: "0.5s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "0 0 30px rgba(255,230,0,0.3), 8px 8px 0 #FF3AF2" }}
+      <section className="relative overflow-hidden rounded-3xl border-4 border-tertiary p-6 animate-card-entrance" style={{ animationDelay: "0.5s", background: "#2D1B4E", backdropFilter: "none", boxShadow: "0 0 30px rgba(255,230,0,0.3), 8px 8px 0 #FF3AF2" }}
       >
         <div className="absolute inset-0 pattern-dots opacity-10" />
         <div className="relative z-10">
@@ -202,9 +202,9 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
 
       {/* Profile Details */}
       <section className="overflow-hidden rounded-3xl border-4 border-accent animate-card-entrance"
-        style={{ animationDelay: "0.7s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FFE600" }}
+        style={{ animationDelay: "0.7s", background: "#2D1B4E", backdropFilter: "none", boxShadow: "8px 8px 0 #FFE600" }}
       >
-        <div className="border-b-4 border-dashed border-accent bg-accent/10 px-6 py-4">
+        <div className="border-b-4 border-dashed border-accent bg-[#2D1B4E] px-6 py-4">
           <h4 className="font-heading text-lg font-black uppercase tracking-wider text-foreground">DETAIL PROFIL</h4>
         </div>
         <div className="divide-y divide-white/10">
@@ -249,8 +249,8 @@ function InfoItem({ icon, label, value, colorIndex = 0, delay = 0, small }: {
   return (
     <div className="flex items-center gap-3 rounded-xl border-2 p-3 animate-stagger transition-colors hover:bg-white/[0.02]"
       style={{
-        background: "rgba(255,255,255,0.04)",
-        borderColor: "rgba(255,255,255,0.08)",
+        background: "#2D1B4E",
+        borderColor: "rgba(255,255,255,0.1)",
         animationDelay: `${0.08 + delay * 0.04}s`,
       }}
     >
@@ -269,8 +269,8 @@ function StatBox({ label, value, highlight, colorIndex = 0, delay = 0 }: { label
     <div
       className={`flex flex-col justify-center rounded-2xl border-2 p-3 animate-card-entrance transition-all ${highlight ? "tilt-3d" : "hover:scale-[1.03]"}`}
       style={{
-        background: "rgba(45, 27, 78, 0.5)",
-        borderColor: highlight ? color : "rgba(255,255,255,0.08)",
+        background: "#2D1B4E",
+        borderColor: highlight ? color : "rgba(255,255,255,0.15)",
         animationDelay: `${0.1 + delay * 0.05}s`,
         boxShadow: highlight ? `0 0 15px ${color}30` : undefined,
       }}

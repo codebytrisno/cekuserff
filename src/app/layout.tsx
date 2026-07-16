@@ -3,6 +3,7 @@ import { Outfit, DM_Sans, Bangers } from "next/font/google";
 import "./globals.css";
 import ToastWrapper from "@/components/ToastWrapper";
 import { Providers } from "@/components/Providers";
+import { FFDecorations } from "@/components/FFDecorations";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -49,6 +50,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.svg?v=3" />
       </head>
       <body className="flex min-h-full flex-col bg-background text-foreground font-sans">
+        <FFDecorations />
         <Providers>
           {children}
         </Providers>
