@@ -51,6 +51,7 @@ export interface PlayerData {
   title: number | null;
   releaseVersion: string;
   headPic: number;
+  clanId: string | null;
   clanLevel: number;
   clanMembers: number;
   clanCapacity: number;

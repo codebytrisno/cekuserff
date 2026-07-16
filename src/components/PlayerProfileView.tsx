@@ -41,6 +41,11 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
             <div className="mt-2 flex items-center justify-center gap-2 flex-wrap animate-slide-up" style={{ animationDelay: "0.2s" }}>
               <span className="rounded-full border-2 border-quinary bg-quinary/15 px-3 py-0.5 text-[10px] font-black uppercase text-quinary">{data.server}</span>
               {data.guild && <span className="text-xs text-white/40">Guild: {data.guild}</span>}
+              {data.clanId && (
+                <span className="rounded-full border-2 border-white/20 px-3 py-0.5 text-[10px] font-black uppercase text-white/50">
+                  ID: {data.clanId}
+                </span>
+              )}
             </div>
           </div>
 
@@ -63,6 +68,12 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
                     <span className="material-symbols-outlined text-sm text-quinary">group</span>
                     <span>{data.clanMembers}/{data.clanCapacity} Member</span>
                   </div>
+                  {data.clanId && (
+                    <div className="mt-1 flex items-center justify-center gap-2 text-xs text-white/50">
+                      <span className="material-symbols-outlined text-sm text-quinary">tag</span>
+                      <span>Guild ID: {data.clanId}</span>
+                    </div>
+                  )}
                   <div className="mt-2.5 flex items-center justify-center gap-3 flex-wrap">
                     <div className="flex items-center gap-2">
                       <span className="material-symbols-outlined text-sm text-tertiary">verified</span>
@@ -104,6 +115,25 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
               <p className="text-sm text-white/70 italic leading-relaxed">"{data.signature}"</p>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Account Stats Summary — Bento */}
+      <section className="relative overflow-hidden rounded-3xl border-4 border-quinary p-6 animate-card-entrance"
+        style={{ animationDelay: "0.3s", background: TINT.yellow, boxShadow: "8px 8px 0 #FFE600" }}
+      >
+        <div className="absolute inset-0 pattern-stripes opacity-10" />
+        <div className="relative z-10 flex flex-col items-center text-center">
+          <div className="mb-4 flex items-center justify-center gap-2">
+            <span className="material-symbols-outlined text-quinary text-xl animate-wiggle" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span>
+            <h3 className="font-heading text-lg font-black uppercase tracking-wider text-foreground">RINGKASAN AKUN</h3>
+          </div>
+          <div className="w-full grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatBox label="Total Match" value={(data.totalMatches + data.csMatches).toLocaleString()} colorIndex={0} delay={20} />
+            <StatBox label="Total Kill" value={(data.brKills + data.csKills).toLocaleString()} colorIndex={1} delay={21} />
+            <StatBox label="Total Win" value={(data.brWins + data.csWins).toLocaleString()} colorIndex={2} delay={22} />
+            <StatBox label="KD Ratio" value={String(data.kd)} highlight colorIndex={3} delay={23} />
+          </div>
         </div>
       </section>
 
@@ -156,15 +186,22 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
       <section className="relative overflow-hidden rounded-3xl border-4 border-tertiary p-6 animate-card-entrance" style={{ animationDelay: "0.5s", background: TINT.yellow, boxShadow: "0 0 30px rgba(255,230,0,0.3), 8px 8px 0 #FF3AF2" }}>
         <div className="absolute inset-0 pattern-dots opacity-10" />
         <div className="relative z-10 flex flex-col items-center text-center">
-          <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-tertiary bg-tertiary/15 text-2xl font-black text-tertiary animate-scale-bounce" style={{ animationDelay: "0.6s" }}>
-              {data.rank.charAt(0)}
+            <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-tertiary bg-tertiary/15 text-2xl font-black text-tertiary animate-scale-bounce" style={{ animationDelay: "0.6s" }}>
+                {data.rank.charAt(0)}
+              </div>
+              <div className="text-center">
+                <h3 className="font-heading text-xl font-black uppercase tracking-wider text-foreground">{data.rank} TIER</h3>
+                <p className="text-xs text-white/50">Skor Rank: {data.rankPoints.toLocaleString()}</p>
+              </div>
+              {data.maxRank > 0 && String(data.maxRank) !== data.rank && (
+                <div className="flex flex-col items-center text-center gap-1 rounded-2xl border-2 border-quinary bg-quinary/15 px-3 py-2">
+                  <span className="material-symbols-outlined text-quinary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-quinary">Max</span>
+                  <span className="text-xs font-black text-foreground">{data.maxRank}</span>
+                </div>
+              )}
             </div>
-            <div className="text-center">
-              <h3 className="font-heading text-xl font-black uppercase tracking-wider text-foreground">{data.rank} TIER</h3>
-              <p className="text-xs text-white/50">Skor Rank: {data.rankPoints.toLocaleString()}</p>
-            </div>
-          </div>
           <div className="mb-4">
             <p className="text-[10px] font-black uppercase tracking-wider text-white/40">TIER SELANJUTNYA</p>
             <p className="font-heading text-lg font-black uppercase text-quinary animate-glow-breath">{getNextRank(data.rank)}</p>
@@ -181,6 +218,33 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
           </div>
         </div>
       </section>
+
+      {/* CS Rank Card — Cyan */}
+      {data.csRank > 0 && (
+        <section className="relative overflow-hidden rounded-3xl border-4 border-secondary p-6 animate-card-entrance"
+          style={{ animationDelay: "0.55s", background: TINT.cyan, boxShadow: "8px 8px 0 #FF6B35" }}
+        >
+          <div className="absolute inset-0 pattern-stripes-cyan opacity-15" />
+          <div className="relative z-10 flex flex-col items-center text-center">
+            <div className="mb-4 flex items-center justify-center gap-4 flex-wrap">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-secondary bg-secondary/15 text-2xl font-black text-secondary animate-scale-bounce" style={{ animationDelay: "0.6s" }}>
+                {String(data.csRank).charAt(0)}
+              </div>
+              <div className="text-center">
+                <h3 className="font-heading text-xl font-black uppercase tracking-wider text-foreground">CS {data.csRank} TIER</h3>
+                <p className="text-xs text-white/50">Skor CS: {data.csRankPoints.toLocaleString()}</p>
+              </div>
+              {data.csMaxRank > 0 && data.csMaxRank !== data.csRank && (
+                <div className="flex flex-col items-center text-center gap-1 rounded-2xl border-2 border-tertiary bg-tertiary/15 px-3 py-2">
+                  <span className="material-symbols-outlined text-tertiary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>military_tech</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-tertiary">Max CS</span>
+                  <span className="text-xs font-black text-foreground">{data.csMaxRank}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Profile Details — Pink */}
       <section className="overflow-hidden rounded-3xl border-4 border-accent animate-card-entrance"
@@ -200,11 +264,23 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
           <DetailRow icon="event" label="Season" value={data.seasonId ? `Season ${data.seasonId}` : "N/A"} delay={8} />
           {data.primeLevel > 0 && <DetailRow icon="workspace_premium" label="Level Prime" value={`Level ${data.primeLevel}`} highlight delay={9} />}
           {data.petId && <DetailRow icon="pets" label="ID Pet" value={data.petId} delay={10} />}
-          {data.weaponSkins.length > 0 && <DetailRow icon="military_tech" label="Skin Weapon" value={`${data.weaponSkins.length} terpasang`} delay={11} />}
-          {data.clothes.length > 0 && <DetailRow icon="checkroom" label="Outfit" value={`${data.clothes.length} item`} delay={12} />}
-          {data.skills.length > 0 && <DetailRow icon="psychology" label="Skill" value={`${data.skills.length} aktif`} delay={13} />}
+          <DetailRow icon="military_tech" label="Skin Weapon" value={`${data.weaponSkins.length} terpasang`} delay={11} />
+          <DetailRow icon="checkroom" label="Outfit" value={`${data.clothes.length} item`} delay={12} />
+          <DetailRow icon="psychology" label="Skill" value={`${data.skills.length} aktif`} delay={13} />
           {data.language && <DetailRow icon="language" label="Language" value={data.language.replace("Language_", "")} delay={14} />}
           <DetailRow icon="gavel" label="Status Ban" value={data.isBanned ? `BANNED (${data.banPeriod}h)` : "BERSIH"} highlight={!data.isBanned} error={data.isBanned} delay={15} />
+        </div>
+
+        <div className="space-y-4 p-4">
+          {data.weaponSkins.length > 0 && (
+            <BadgeGrid items={data.weaponSkins} icon="military_tech" title="SENJATA & SKIN" colorIndex={1} delay={16} />
+          )}
+          {data.skills.length > 0 && (
+            <BadgeGrid items={data.skills.map((s) => `Skill ${s.skillId}`)} icon="psychology" title="SKILL AKTIF" colorIndex={4} delay={18} />
+          )}
+          {data.clothes.length > 0 && (
+            <BadgeGrid items={data.clothes} icon="checkroom" title="OUTFIT" colorIndex={2} delay={20} />
+          )}
         </div>
       </section>
     </div>
@@ -246,6 +322,28 @@ function DetailRow({ icon, label, value, highlight, error, delay = 0 }: { icon: 
         <span className="text-sm font-bold">{label}</span>
       </div>
       <span className={`text-sm font-black ${error ? "text-accent" : highlight ? "text-secondary" : "text-foreground"}`}>{value}</span>
+    </div>
+  );
+}
+
+function BadgeGrid({ items, icon, title, colorIndex, delay = 0 }: {
+  items: string[]; icon: string; title: string; colorIndex: number; delay?: number;
+}) {
+  const color = ACCENT_COLORS[colorIndex % ACCENT_COLORS.length];
+  return (
+    <div className="rounded-2xl border-2 p-4 animate-stagger" style={{ background: TINT.pink, borderColor: color + "40", animationDelay: `${delay * 0.04}s` }}>
+      <div className="mb-3 flex items-center justify-center gap-2">
+        <span className="material-symbols-outlined text-sm" style={{ color }}>{icon}</span>
+        <h5 className="font-heading text-sm font-black uppercase tracking-wider" style={{ color }}>{title}</h5>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2">
+        {items.map((item, i) => (
+          <span key={`${item}-${i}`} className="rounded-full border px-3 py-1 text-[11px] font-bold text-foreground animate-scale-bounce"
+            style={{ background: TINT.yellow, borderColor: color + "50", animationDelay: `${delay * 0.04 + i * 0.02}s` }}>
+            {item}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
