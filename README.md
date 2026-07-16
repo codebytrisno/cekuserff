@@ -75,7 +75,7 @@ Desain bold, loud, dan penuh energi. Bukan minimalis — ini maximalism.
 | **Quinary (Purple)** | `#7B2FFF` | Deep accents, gradients |
 | **Background** | `#0D0D1A` | Cosmic black |
 | **Surface** | `#150F28` | Card backgrounds |
-| **Surface Card** | `rgba(45, 27, 78, 0.6)` | Glassmorphism cards |
+| **Surface Card** | `#2D1B4E` | Solid card backgrounds (100% opacity) |
 
 ### Design Language
 - **Borders:** 4px solid, multi-colored offset shadows (`8px 8px 0`, `16px 16px 0`)
@@ -83,6 +83,13 @@ Desain bold, loud, dan penuh energi. Bukan minimalis — ini maximalism.
 - **Buttons:** Gradient backgrounds, thick borders, offset box-shadows
 - **Text:** Triple text-shadows, gradient fills, neon glow effects
 - **Layout:** Asymmetric rotations (`rotate-1`, `-rotate-1`), bento grids
+
+### Free Fire Branding
+- **Background:** Official FF Garena CDN image as full-screen subtle overlay
+- **Character Silhouettes:** Alok, Kelly, Jai, Laura — transparent PNGs with grayscale + low opacity, floating at page edges
+- **Inline SVG Logos:** Free Fire & Free Fire Max logo from Iconify Arcticons, used as watermarks + hero section branding
+- **Floating Icons:** 18+ Material Symbols themed around FF (shield, diamond, controller, star, bolt, etc.)
+- **Fire Particles:** 12 floating particles in accent colors, rising from bottom
 
 ### Animations (30+ CSS keyframes)
 - **Entrance:** `slide-up-fade`, `card-entrance`, `elastic-in`, `stagger-fade`
@@ -133,6 +140,7 @@ cekuserff/
 │   │   └── api/player/[uid]/      # API Route → Garena Protobuf
 │   ├── components/
 │   │   ├── BottomNav.tsx          # Mobile bottom navigation
+│   │   ├── FFDecorations.tsx      # Free Fire themed: character silhouettes, logo SVG, floating icons, fire particles
 │   │   ├── FloatingDecorations.tsx # Animated emoji + orbs background
 │   │   ├── PlayerProfileView.tsx  # Full profile display component
 │   │   ├── Providers.tsx          # Global patterns + decorations
@@ -253,7 +261,10 @@ MIT License — bebas digunakan untuk keperluan personal maupun komersial.
 - **Free Fire** — Garena International
 - **API Library** — [`@arbakti_store/freefire-api`](https://www.npmjs.com/package/@arbakti_store/freefire-api)
 - **Icons** — [Material Symbols](https://fonts.google.com/icons)
-- **Fonts** — [Outfit](https://fonts.google.com/specimen/Outfit) · [DM Sans](https://fonts.google.com/specimen/DM+Sans) · [Bangers](https://fonts.google.com/specimen/Bangers)
+- **FF Logo** — [Iconify Arcticons](https://iconify.design) (Free Fire & Free Fire Max)
+- **FF Characters** — Alok, Kelly, Jai, Laura (transparent PNGs from TopPNG & CityPNG)
+- **FF Background** — Official Garena CDN (`freefiremobile-a.akamaihd.net`)
+- **Fonts** — [Outfit](https://fonts.google.com/specimen/Outfit) · [DM Sans](https://fonts.google.com/specimen/DM Sans) · [Bangers](https://fonts.google.com/specimen/Bangers)
 - **Design Inspiration** — Maximalism, brutalism, gaming UX
 
 ---
