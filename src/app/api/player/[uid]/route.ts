@@ -75,6 +75,11 @@ const ADENPEDIA_URL = "https://adenpedia.my.id/c5198248e9325989k123xc34910xfreef
 async function fetchFromAdenpedia(uid: string) {
   const res = await fetch(`${ADENPEDIA_URL}?uid=${uid}`, {
     signal: AbortSignal.timeout(10000),
+    headers: {
+      "User-Agent": "Mozilla/5.0 (compatible; CEKUSERFF/1.0; +https://cekuserff.vercel.app)",
+      "Accept": "application/json",
+      "Referer": "https://adenpedia.my.id/",
+    },
   });
   if (!res.ok) throw new Error("Adenpedia proxy returned " + res.status);
   return res.json();
