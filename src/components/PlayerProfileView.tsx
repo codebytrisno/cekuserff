@@ -8,49 +8,115 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
   return (
     <div className="space-y-6">
       {/* Hero Card */}
-      <section className="relative overflow-hidden rounded-3xl border-4 border-accent p-6 animate-slide-up"
+      <section className="relative overflow-hidden rounded-3xl border-4 border-accent p-6 animate-card-entrance"
         style={{ background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FFE600, 16px 16px 0 #FF3AF2" }}
       >
         <div className="absolute inset-0 pattern-dots opacity-15" />
         <div className="absolute top-0 right-0 h-40 w-40 bg-accent/10 blur-3xl rounded-full animate-morph" />
-        <div className="relative z-10 flex items-center gap-4">
-          <div className="relative animate-elastic" style={{ animationDelay: "0.2s" }}>
-            <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-4 border-accent bg-accent/15 text-2xl font-black text-accent animate-glow-breath">
-              {data.name.charAt(0).toUpperCase()}
-            </div>
-            <div className="absolute -inset-1 rounded-full border-2 border-accent/30 animate-pulse-ring" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="font-heading text-2xl font-black uppercase tracking-wider text-foreground text-shadow-single truncate animate-slide-up" style={{ animationDelay: "0.1s" }}>{data.name}</h1>
-              {data.isBanned && (
-                <span className="rounded-full border-2 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider animate-elastic border-accent bg-accent/15 text-accent" style={{ animationDelay: "0.3s" }}>
-                  BANNED
-                </span>
-              )}
-            </div>
-            <p className="mt-1 text-sm text-white/50 animate-slide-up" style={{ animationDelay: "0.15s" }}>UID: {displayUid}</p>
-            <div className="mt-2 flex items-center gap-2 flex-wrap animate-slide-up" style={{ animationDelay: "0.2s" }}>
-              <span className="rounded-full border-2 border-quinary bg-quinary/15 px-3 py-0.5 text-[10px] font-black uppercase text-quinary">{data.server}</span>
-              {data.guild && <span className="text-xs text-white/40">Guild: {data.guild}</span>}
-            </div>
-            {data.signature && (
-              <p className="mt-1 text-xs text-white/30 italic animate-slide-up" style={{ animationDelay: "0.25s" }}>"{data.signature}"</p>
-            )}
-          </div>
-        </div>
-      </section>
 
-      {/* Stats Grid */}
-      <section className="grid grid-cols-2 gap-4">
-        <StatBox label="Level" value={String(data.level)} colorIndex={0} delay={0} />
-        <StatBox label="EXP" value={data.exp.toLocaleString()} colorIndex={1} delay={1} />
-        <StatBox label="Rank Points" value={data.rankPoints.toLocaleString()} colorIndex={2} highlight delay={2} />
-        <StatBox label="CS Rank Points" value={data.csRankPoints.toLocaleString()} colorIndex={3} delay={3} />
-        <StatBox label="Max Rank" value={`#${data.maxRank}`} colorIndex={4} delay={4} />
-        <StatBox label="CS Max Rank" value={`#${data.csMaxRank}`} colorIndex={0} delay={5} />
-        <StatBox label="Likes" value={data.liked.toLocaleString()} colorIndex={1} delay={6} />
-        <StatBox label="Badges" value={String(data.badges)} colorIndex={2} delay={7} />
+        <div className="relative z-10">
+          {/* Profile Row */}
+          <div className="flex items-start gap-4">
+            <div className="relative animate-elastic shrink-0" style={{ animationDelay: "0.2s" }}>
+              <div className="flex h-[88px] w-[88px] items-center justify-center overflow-hidden rounded-full border-4 border-accent bg-accent/15 text-3xl font-black text-accent animate-glow-breath">
+                {data.name.charAt(0).toUpperCase()}
+              </div>
+              <div className="absolute -inset-1 rounded-full border-2 border-accent/30 animate-pulse-ring" />
+            </div>
+
+            <div className="flex-1 min-w-0 pt-1">
+              <div className="flex items-center gap-2 flex-wrap animate-slide-up" style={{ animationDelay: "0.1s" }}>
+                <h1 className="font-heading text-xl font-black uppercase tracking-wider text-foreground text-shadow-single truncate">
+                  {data.name}
+                </h1>
+                {data.isBanned && (
+                  <span className="rounded-full border-2 px-3 py-0.5 text-[10px] font-black uppercase tracking-wider animate-elastic border-accent bg-accent/15 text-accent" style={{ animationDelay: "0.3s" }}>
+                    BANNED
+                  </span>
+                )}
+              </div>
+
+              <p className="mt-1 text-sm text-white/50 animate-slide-up" style={{ animationDelay: "0.15s" }}>
+                UID: <strong className="text-foreground">{displayUid}</strong>
+              </p>
+
+              <div className="mt-2 flex items-center gap-2 flex-wrap animate-slide-up" style={{ animationDelay: "0.2s" }}>
+                <span className="rounded-full border-2 border-quinary bg-quinary/15 px-3 py-0.5 text-[10px] font-black uppercase text-quinary">
+                  {data.server}
+                </span>
+                {data.guild && (
+                  <span className="text-xs text-white/40">Guild: {data.guild}</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Clan Info Box */}
+          {data.guild && (
+            <div className="mt-5 rounded-2xl border-2 border-white/10 p-4 animate-stagger"
+              style={{ background: "rgba(255,255,255,0.04)", animationDelay: "0.25s" }}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 border-quinary bg-quinary/15 text-xl font-black text-quinary animate-scale-bounce" style={{ animationDelay: "0.3s" }}>
+                  {data.guild.charAt(0)}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-heading text-base font-black uppercase tracking-wider text-foreground">{data.guild}</span>
+                    <span className="text-xs font-bold text-tertiary">(Lv. {data.clanLevel})</span>
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-2 text-xs text-white/50">
+                    <span className="material-symbols-outlined text-sm text-quinary">shield_person</span>
+                    <span>Kapten: {data.name}</span>
+                  </div>
+                  <div className="mt-1 flex items-center gap-2 text-xs text-white/50">
+                    <span className="material-symbols-outlined text-sm text-quinary">group</span>
+                    <span>{data.clanMembers}/{data.clanCapacity} Member</span>
+                  </div>
+                  <div className="mt-2.5 flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-sm text-tertiary">verified</span>
+                      <span className="text-xs font-bold text-foreground">{data.badges}</span>
+                    </div>
+                    {data.primeLevel > 0 && (
+                      <>
+                        <span className="text-white/20">|</span>
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-sm text-tertiary">workspace_premium</span>
+                          <span className="text-xs text-white/50">Prime:</span>
+                          <span className="text-xs font-bold text-tertiary">Level {data.primeLevel}</span>
+                        </div>
+                      </>
+                    )}
+                    <span className="text-white/20">|</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs text-white/50">Estimasi:</span>
+                      <span className="text-xs font-bold text-tertiary">{estimatePrice(data)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Info Grid */}
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <InfoItem icon="bar_chart" label="Level" value={String(data.level)} colorIndex={0} delay={0} />
+            <InfoItem icon="stars" label="EXP" value={data.exp.toLocaleString()} colorIndex={1} delay={1} />
+            <InfoItem icon="favorite" label="Like" value={data.liked.toLocaleString()} colorIndex={2} delay={2} />
+            <InfoItem icon="calendar_today" label="Dibuat pada" value={data.accountCreatedAt || data.accountAge} colorIndex={3} delay={3} small />
+            <InfoItem icon="schedule" label="Terakhir Login" value={data.lastActive} colorIndex={4} delay={4} small />
+            <InfoItem icon="public" label="Server" value={data.server} colorIndex={0} delay={5} />
+          </div>
+
+          {/* Signature */}
+          {data.signature && (
+            <div className="mt-4 rounded-xl border-2 border-white/10 p-3 animate-stagger" style={{ background: "rgba(255,255,255,0.04)", animationDelay: "0.3s" }}>
+              <p className="text-[10px] font-black uppercase tracking-wider text-white/40 mb-1">Bio FreeFire</p>
+              <p className="text-sm text-white/70 italic leading-relaxed">"{data.signature}"</p>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* BR Stats */}
@@ -134,34 +200,6 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
         </div>
       </section>
 
-      {/* Guild Card */}
-      {data.guild && (
-        <section className="relative overflow-hidden rounded-3xl border-4 border-quinary p-6 animate-card-entrance" style={{ animationDelay: "0.6s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FF3AF2" }}
-        >
-          <div className="absolute inset-0 pattern-checker opacity-15" />
-          <div className="relative z-10">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-quinary text-xl animate-bounce-subtle" style={{ fontVariationSettings: "'FILL' 1" }}>groups</span>
-              <h3 className="font-heading text-lg font-black uppercase tracking-wider text-foreground">GUILD</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="animate-stagger animate-stagger-1">
-                <p className="text-[10px] font-black uppercase tracking-wider text-white/40">Nama</p>
-                <p className="font-bold text-foreground">{data.guild}</p>
-              </div>
-              <div className="animate-stagger animate-stagger-2">
-                <p className="text-[10px] font-black uppercase tracking-wider text-white/40">Level</p>
-                <p className="font-bold text-foreground">{data.clanLevel}</p>
-              </div>
-              <div className="animate-stagger animate-stagger-3">
-                <p className="text-[10px] font-black uppercase tracking-wider text-white/40">Anggota</p>
-                <p className="font-bold text-foreground">{data.clanMembers} / {data.clanCapacity}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Profile Details */}
       <section className="overflow-hidden rounded-3xl border-4 border-accent animate-card-entrance"
         style={{ animationDelay: "0.7s", background: "rgba(45, 27, 78, 0.6)", backdropFilter: "blur(12px)", boxShadow: "8px 8px 0 #FFE600" }}
@@ -195,6 +233,32 @@ export function PlayerProfileView({ data, uid }: { data: PlayerData; uid?: strin
           />
         </div>
       </section>
+    </div>
+  );
+}
+
+function InfoItem({ icon, label, value, colorIndex = 0, delay = 0, small }: {
+  icon: string;
+  label: string;
+  value: string;
+  colorIndex?: number;
+  delay?: number;
+  small?: boolean;
+}) {
+  const color = ACCENT_COLORS[colorIndex % ACCENT_COLORS.length];
+  return (
+    <div className="flex items-center gap-3 rounded-xl border-2 p-3 animate-stagger transition-colors hover:bg-white/[0.02]"
+      style={{
+        background: "rgba(255,255,255,0.04)",
+        borderColor: "rgba(255,255,255,0.08)",
+        animationDelay: `${0.08 + delay * 0.04}s`,
+      }}
+    >
+      <span className="material-symbols-outlined text-lg shrink-0" style={{ color, fontVariationSettings: "'FILL' 1" }}>{icon}</span>
+      <div className="min-w-0">
+        <p className="text-[10px] font-black uppercase tracking-wider text-white/40">{label}</p>
+        <p className={`font-bold text-foreground ${small ? "text-xs" : "text-sm"}`}>{value}</p>
+      </div>
     </div>
   );
 }
@@ -236,4 +300,10 @@ function getNextRank(rank: string): string {
   const idx = ranks.indexOf(rank);
   if (idx === -1 || idx >= ranks.length - 1) return "MAX";
   return ranks[idx + 1];
+}
+
+function estimatePrice(data: PlayerData): string {
+  const base = (data.level * 5000) + (data.primeLevel * 500000) + (data.badges * 10000) + (data.exp * 0.5);
+  const formatted = Math.round(base).toLocaleString("id-ID");
+  return `Rp${formatted}`;
 }
