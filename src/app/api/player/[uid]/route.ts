@@ -74,14 +74,20 @@ const ADENPEDIA_URL = "https://adenpedia.my.id/c5198248e9325989k123xc34910xfreef
 
 async function fetchFromAdenpedia(uid: string) {
   const res = await fetch(`${ADENPEDIA_URL}?uid=${uid}`, {
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(15000),
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; CEKUSERFF/1.0; +https://cekuserff.vercel.app)",
-      "Accept": "application/json",
+      "User-Agent": "Mozilla/5.0 (Linux; Android 14; SM-S928B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.165 Mobile Safari/537.36",
+      "Accept": "application/json, text/plain, */*",
+      "Accept-Language": "id-ID,id;q=0.9,en;q=0.8",
       "Referer": "https://adenpedia.my.id/",
+      "Cache-Control": "no-cache",
     },
   });
-  if (!res.ok) throw new Error("Adenpedia proxy returned " + res.status);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`[adenpedia] ${res.status} for uid=${uid}: ${body.slice(0, 200)}`);
+    throw new Error("Adenpedia proxy returned " + res.status);
+  }
   return res.json();
 }
 
